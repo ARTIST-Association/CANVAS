@@ -28,7 +28,7 @@
       "inspectorComponents": ["static/js/editor/inspectorComponents.mjs"],
       "inspectorClass": ["static/js/editor/inspector.mjs"],
       "previewHandler": ["static/js/editor/previewHandler.mjs"],
-      "projectSettingsManager": ["static/js/projectSettingsManager.mjs"],
+      "projectSettingsManager": ["static/js/editor/projectSettingsManager.mjs"],
       "createCommands": ["static/js/commands/createCommands.mjs"],
       "jobInterface": ["static/js/editor/jobInterface.mjs"],
       "navbar": ["static/js/editor/navbar.mjs"],
@@ -36,7 +36,7 @@
       "promptCommands": ["static/js/editor/promptCommands.mjs"],
       "bootstrap": ["static/js/bootstrap/bootstrap.esm.js"],
       "modeSelector": ["static/js/editor/modeSelector.mjs"],
-      "projectOverviewHandler": ["static/js/editor/projectOverviewHandler.mjs"],
+      "projectOverviewHandler": ["static/js/projectOverviewHandler.mjs"],
       "message_dict": ["static/js/message_dict.js"],
       "path_dict": ["static/js/path_dict.js"]
     }

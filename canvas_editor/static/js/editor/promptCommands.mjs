@@ -264,7 +264,7 @@ export class AutoModePromptCommand extends ThemePromptCommand {
    * @param {CommandPrompt} commandPrompt the command prompt that handles this command
    */
   constructor(commandPrompt) {
-    super("Use auto mode", commandPrompt);
+    super("Adapt theme to system theme", commandPrompt);
   }
 
   /**
@@ -470,8 +470,7 @@ export class OpenSettingsPromptCommand extends PromptCommand {
    * Executes the open settings command.
    */
   execute() {
-    const settingsModal = new Modal(document.getElementById("settings"));
-    settingsModal.show();
+    globalThis.location.href = "/settings/change_username";
   }
 }
 
@@ -543,14 +542,14 @@ export class LogoutPromptCommand extends PromptCommand {
    * Executes the logout command.
    */
   execute() {
-    fetch(window.location.origin + "/logout/", {
+    fetch(globalThis.location.origin + "/accounts/logout/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": SaveAndLoadHandler.getCookie("csrftoken"),
       },
     }).then(() => {
-      window.location.href = window.location.origin;
+      globalThis.location.href = "/accounts/login";
     });
   }
 }

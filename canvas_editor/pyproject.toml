@@ -91,4 +91,5 @@ convention = "numpy"
 
 [tool.djlint]
 profile = "django"
-
+# Mainly for custom all auth templates
+custom_blocks="element, slot"
