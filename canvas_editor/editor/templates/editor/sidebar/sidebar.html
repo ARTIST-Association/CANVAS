@@ -1,0 +1,77 @@
+<div class="d-flex flex-column flex-shrink-0 py-2 border-left m-2 mt-0 bg-body-secondary rounded-3"
+     id="sidebar">
+    <!-- properties -->
+    <ul class="nav nav-tabs nav-underline px-2 nav-fill mb-auto"
+        id="propertiesTab"
+        role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active text-reset"
+                    id="object-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#object-tab-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="object-tab-pane"
+                    aria-selected="true">
+                <i class="bi-box me-2"></i>Inspector
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-reset"
+                    id="overview-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#overview-tab-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="overview-tab-pane"
+                    aria-selected="true">
+                <i class="bi-projector me-2"></i>Overview
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-reset"
+                    id="project-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#project-tab-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="project-tab-pane"
+                    aria-selected="true">
+                <i class="bi-kanban me-2"></i>Project
+            </button>
+        </li>
+    </ul>
+    <div id="content" class="overflow-auto d-flex flex-fill flex-grow-1 w-100">
+        <div class="tab-content h-100 w-100 p-2" id="myTabContent">
+            <!--Inspector-->
+            {% include "editor/sidebar/inspector.html" %}
+            <!--Item overview-->
+            {% include "editor/sidebar/itemOverview.html" %}
+            <!--Project settings-->
+            {% include "editor/sidebar/projectSettings.html" %}
+        </div>
+    </div>
+    <div id="settings" class="pb-3 pt-2">
+        <hr class="m-0" />
+    </div>
+    <!-- user settings-->
+    {% include "editor/sidebar/userSettings.html" %}
+</div>
+<script>{
+    // fix the size of the inspector pane to prevent overflowing (open for better solutions)
+    const content = document.getElementById("content");
+    const tab = document.getElementById("propertiesTab");
+    const userSettings = document.getElementById("settings");
+    const calculateMaxHeight = () => {
+        const tabRect = tab.getBoundingClientRect();
+        const userSettingsRect = userSettings.getBoundingClientRect();
+
+            let maxHeight = tabRect.bottom - userSettingsRect.top;
+            maxHeight = Math.abs(maxHeight);
+            content.style.height = maxHeight + "px";
+        };
+
+        window.addEventListener("resize", calculateMaxHeight);
+        document.addEventListener("DOMContentLoaded", calculateMaxHeight);
+    }
+</script>

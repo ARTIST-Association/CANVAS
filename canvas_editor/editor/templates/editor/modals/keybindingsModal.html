@@ -1,0 +1,219 @@
+<!--keybindings modal-->
+<div class="modal modal-lg fade"
+     id="keyboardModal"
+     tabindex="-1"
+     aria-labelledby="keyboardModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="max-height: 90vh;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="keyboardModalLabel">Keybindings</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body gap-1">
+                <div class="row align-items-center">
+                    <div class="col-3 fw-medium">Choose your client</div>
+                    <div class="col-9">
+                        <select id="clientSelect" class="form-select">
+                            <option value="">-- Please select --</option>
+                            <option value="mac">Mac OS</option>
+                            <option value="other">Windows/Others</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body gap-1 p-0" style="overflow-y: auto;">
+                <div id="clientContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Mac keybindings-->
+<div class="modal fade"
+     id="macKeybindings"
+     tabindex="-1"
+     aria-labelledby="keybindings"
+     aria-hidden="true">
+    <hr style="margin: 0; padding: 0; border: 0.5px solid #888" />
+    <div class="modal-body gap-1">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Esc</span>
+            </div>
+            <div class="col-9 fw-medium">Close dialogs</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Cmd</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">Z</span>
+            </div>
+            <div class="col-9 fw-medium">Undo</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <div class="mb-3">
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Cmd</span>
+                    <span class="mx-1">+</span>
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Shift</span>
+                    <span class="mx-1">+</span>
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Z</span>
+                </div>
+                <div>
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Cmd</span>
+                    <span class="mx-1">+</span>
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Y</span>
+                </div>
+            </div>
+            <div class="col-9 fw-medium d-flex align-items-center">Redo</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3" id="delete-key">
+                <span class="border rounded-1 p-2" style="font-size: 80%">fn</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">backspace</span>
+            </div>
+            <div class="col-9 fw-medium">Delete object</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Cmd</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">D</span>
+            </div>
+            <div class="col-9 fw-medium">Duplicate object</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Shift</span>
+                <i class="bi bi-hand-index"></i>
+            </div>
+            <div class="col-9 fw-medium">Snap to grid</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+            </div>
+            <div class="col-9 fw-medium">Add to object selection</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">M</span>
+            </div>
+            <div class="col-9 fw-medium">Cycle through modes</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">&#9251;</span>
+            </div>
+            <div class="col-9 fw-medium">Command palette</div>
+        </div>
+    </div>
+</div>
+<!--Windows keybindings-->
+<div class="modal fade"
+     id="windowsKeybindings"
+     tabindex="-1"
+     aria-labelledby="keybindings"
+     aria-hidden="true">
+    <hr style="margin: 0; padding: 0; border: 0.5px solid #888" />
+    <div class="modal-body gap-1">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Esc</span>
+            </div>
+            <div class="col-9 fw-medium">Close dialogs</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">Z</span>
+            </div>
+            <div class="col-9 fw-medium">Undo</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <div class="mb-3">
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+                    <span class="mx-1">+</span>
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Shift</span>
+                    <span class="mx-1">+</span>
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Z</span>
+                </div>
+                <div>
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+                    <span class="mx-1">+</span>
+                    <span class="border rounded-1 p-2" style="font-size: 80%">Y</span>
+                </div>
+            </div>
+            <div class="col-9 fw-medium d-flex align-items-center">Redo</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3" id="delete-key">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Delete</span>
+            </div>
+            <div class="col-9 fw-medium">Delete object</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">D</span>
+            </div>
+            <div class="col-9 fw-medium">Duplicate object</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Shift</span>
+                <i class="bi bi-hand-index"></i>
+            </div>
+            <div class="col-9 fw-medium">Snap to grid</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+            </div>
+            <div class="col-9 fw-medium">Add to object selection</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">M</span>
+            </div>
+            <div class="col-9 fw-medium">Cycle through modes</div>
+        </div>
+        <hr style="padding: 0; border: 0.5px solid #888" />
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="border rounded-1 p-2" style="font-size: 80%">Ctrl</span>
+                <span class="mx-1">+</span>
+                <span class="border rounded-1 p-2" style="font-size: 80%">&#9251;</span>
+            </div>
+            <div class="col-9 fw-medium">Command palette</div>
+        </div>
+    </div>
+</div>

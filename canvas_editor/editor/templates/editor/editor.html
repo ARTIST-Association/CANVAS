@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    {{ block.super }}
+    <link href="{% static 'css/editor.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script src="{% static 'js/darkmode.js' %}"></script>
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js",
+      "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.178.0/examples/jsm/",
+      "bootstrap": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.esm.min.js",
+      "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/esm/popper.min.js",
+      "navbar": "{% static 'js/editor/navbar.mjs' %}",
+      "compass": "{% static 'js/editor/compass.mjs' %}",
+      "objects": "{% static 'js/editor/objects.mjs' %}",
+      "canvasObject": "{% static 'js/editor/objects/canvasObject.mjs' %}",
+      "heliostat": "{% static 'js/editor/objects/heliostat.mjs' %}",
+      "receiver": "{% static 'js/editor/objects/receiver.mjs' %}",
+      "lightSource": "{% static 'js/editor/objects/lightSource.mjs' %}",
+      "terrain": "{% static 'js/editor/objects/terrain.mjs' %}",
+      "command": "{% static 'js/commands/command.mjs' %}",
+      "undoRedoHandler": "{% static 'js/commands/undoRedoHandler.mjs' %}",
+      "singleObjectCommands": "{% static 'js/commands/singleObjectCommands.mjs' %}",
+      "picker": "{% static 'js/editor/picker.mjs' %}",
+      "saveAndLoadHandler": "{% static 'js/editor/saveAndLoadHandler.mjs' %}",
+      "bulkObjectCommands": "{% static 'js/commands/bulkObjectCommands.mjs' %}",
+      "overview": "{% static 'js/editor/overview.mjs' %}",
+      "editor": "{% static 'js/editor/editor.mjs' %}",
+      "objectManager": "{% static 'js/editor/objectManager.mjs' %}",
+      "quickSelector": "{% static 'js/editor/quickSelector.mjs' %}",
+      "updateCommands": "{% static 'js/commands/updateCommands.mjs' %}",
+      "duplicateCommands": "{% static 'js/commands/duplicateCommands.mjs' %}",
+      "deleteCommands": "{% static 'js/commands/deleteCommands.mjs' %}",
+      "inspectorComponents": "{% static 'js/editor/inspectorComponents.mjs' %}",
+      "inspectorClass": "{% static 'js/editor/inspector.mjs' %}",
+      "previewHandler": "{% static 'js/editor/previewHandler.mjs' %}",
+      "projectSettingsManager": "{% static 'js/projectSettingsManager.mjs' %}",
+      "projectOverviewHandler": "{% static 'js/editor/projectOverviewHandler.mjs' %}",
+      "createCommands": "{% static 'js/commands/createCommands.mjs' %}",
+      "navBar": "{% static 'js/editor/navbar.mjs' %}",
+      "jobInterface": "{% static 'js/editor/jobInterface.mjs' %}",
+      "commandPrompt": "{% static 'js/editor/commandPrompt.mjs' %}",
+      "promptCommands": "{% static 'js/editor/promptCommands.mjs' %}",
+      "modeSelector": "{% static 'js/editor/modeSelector.mjs' %}",
+      "message_dict": "{% static 'js/message_dict.js' %}",
+      "path_dict": "{% static 'js/path_dict.js' %}"
+    }
+  }
+    </script>
+    <script type="module">
+  import { Editor } from "{% static 'js/editor/editor.mjs' %}";
+
+  window.addEventListener("DOMContentLoaded", (_) => {
+    const editor = Editor.getInstance("{{ project_id }}");
+    editor.loadProject();
+  });
+    </script>
+{% endblock %}
+{% block body %}
+    <!-- loading animation -->
+    {% include "editor/loadingAnimation.html" %}
+    <!-- message system -->
+    {% include "editor/messageSystem.html" %}
+    <!-- HDF5 Creation Modal -->
+    {% include "editor/modals/hdf5CreationModal.html" %}
+    <!--settings modal-->
+    {% include "settings.html" %}
+    <!--job interface modal-->
+    {% include "editor/modals/jobInterface.html" %}
+    <!-- command prompt modal-->
+    {% include "editor/modals/commandPromptModal.html" %}
+    <!-- create new project modal -->
+    {% include "modals/createNewProjectModal.html" %}
+    <!-- open existing project modal -->
+    {% include "editor/modals/openExistingProjectModal.html" %}
+    <!-- confirm modal to download the project -->
+    {% include "editor/modals/confirmDownloadModal.html" %}
+    <!-- keybindings modal -->
+    {% include "editor/modals/keybindingsModal.html" %}
+    <!-- about modal -->
+    {% include "editor/modals/aboutModal.html" %}
+    <!-- main content -->
+    <div class="container-fluid d-flex flex-column min-vh-100 p-0">
+        <!-- navigation bar -->
+        {% include "editor/navbar.html" %}
+        <!-- main editor pane -->
+        <main class="d-flex flex-row flex-fill">
+            <!-- canvas -->
+            <div class="mb-2 mx-0 ms-2 overflow-hidden rounded-3 shadow position-relative"
+                 id="canvas">
+                <!--mode selector-->
+                {% include "editor/modeSelector.html" %}
+                <!--quick settings-->
+                {% include "editor/quickSettings.html" %}
+            </div>
+            <!-- sidebar -->
+            {% include "editor/sidebar/sidebar.html" %}
+        </main>
+    </div>
+{% endblock body %}

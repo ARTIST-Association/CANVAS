@@ -1,0 +1,28 @@
+<!-- Confirm download modal -->
+<div class="modal fade"
+     id="downloadConfirmModal"
+     tabindex="-1"
+     aria-labelledby="downloadConfirmLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Exporting scenario</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                The scenario file is being generated and then downloaded. This could
+                take a short moment.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a type="button"
+                   class="btn btn-primary"
+                   href="{% url 'download' project_name %}">Export</a>
+            </div>
+        </div>
+    </div>
+</div>

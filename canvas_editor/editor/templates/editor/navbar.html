@@ -1,0 +1,189 @@
+{% load static %}
+<nav class="navbar navbar-expand-sm navbar-light">
+    <a class="navbar-brand ms-4" href="/projects">
+        <img src="{% static 'img/logo_canvas_round.svg' %}"
+             alt="canvas logo"
+             width="32px"
+             height="32px" />
+    </a>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <!--undo redo buttons-->
+            <li class="nav-item">
+                <div class="d-flex px-2">
+                    <div class="shadow-sm bg-body-secondary rounded-4 border d-flex">
+                        <button class="btn text-reset rounded-4"
+                                id="undo"
+                                style="--bs-btn-hover-bg: var(--bs-tertiary-bg)"
+                                title="Undo">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                        <button class="btn text-reset rounded-4"
+                                id="redo"
+                                style="--bs-btn-hover-bg: var(--bs-tertiary-bg)"
+                                title="Redo">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                </div>
+            </li>
+            <!-- command prompt -->
+            <li class="nav-item bg-body-secondary rounded-4 p-0 d-flex justify-content-center border shadow-sm">
+                <button class="btn text-reset rounded-4"
+                        id="commandPromptToggle"
+                        style="--bs-btn-hover-bg: var(--bs-tertiary-bg)"
+                        title="Command prompt">
+                    <i class="bi bi-search"></i>
+                </button>
+            </li>
+            <!-- file -->
+            <li class="nav-item dropdown mx-2">
+                <a class="nav-link dropdown-toggle"
+                   id="fileDropdown"
+                   href="#"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    <i class="bi-file-earmark me-2"></i>File
+                </a>
+                <div class="dropdown-menu" aria-labelledby="fileDropdown">
+                    <a class="dropdown-item"
+                       id="new"
+                       href="#createNewProject"
+                       data-bs-toggle="modal">
+                        <i class="bi-file-earmark-plus me-2"></i>New
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       id="import"
+                       href="#openProject"
+                       data-bs-toggle="modal">
+                        <i class="bi-file-earmark-arrow-up me-2"></i>Open
+                    </a>
+                    <form id="exportForm"
+                          class="dropdown-item"
+                          action="{% url 'download' project_name=project_name %}"
+                          method="GET">
+                        {% csrf_token %}
+                        <button class="btn link-btn" type="submit">
+                            <i class="bi-file-earmark-arrow-down me-2"></i>Export
+                        </button>
+                    </form>
+                    <script type="module">
+                    import * as bootstrap from "bootstrap"
+                    // Handle form submission and display the modal
+                    document
+                        .getElementById("exportForm")
+                        .addEventListener("submit", function (event) {
+                            event.preventDefault(); // Prevent default form submission
+                            let modal = new bootstrap.Modal(
+                                document.getElementById("loadingModal")
+                            );
+                            modal.show();
+
+                            let form =
+                                document.getElementById("exportForm");
+                            let formData = new FormData(form);
+
+                            fetch(form.action, {
+                                method: form.method,
+                            })
+                                .then((response) => {
+                                    // Trigger file download after response
+                                    return response.blob();
+                                })
+                                .then((data) => {
+                                    let link =
+                                        document.createElement("a");
+
+                                    link.href =
+                                        URL.createObjectURL(data);
+                                    link.download = `{{ project_name }}.h5`;
+                                    link.click();
+
+                                    // After download, close modal and redirect
+                                    modal.hide();
+                                    window.location.href =
+                                        "/editor/{{ project_name }}";
+                                })
+                                .catch((error) => {
+                                    console.error("Error:", error);
+                                    modal.hide();
+                                });
+                        });
+                    </script>
+                </div>
+            </li>
+            <!-- insert -->
+            <li class="nav-item dropdown mx-2">
+                <a class="nav-link dropdown-toggle"
+                   id="insertDropdown"
+                   href="#"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    <i class="bi-plus-square me-2"></i>Insert
+                </a>
+                <div class="dropdown-menu" aria-labelledby="insertDropdown">
+                    <a class="dropdown-item" id="add-heliostat-nav-bar" href="#">
+                        <i class="bi-arrow-up-right-square me-2"></i>Heliostat
+                    </a>
+                    <a class="dropdown-item" id="add-receiver-nav-bar" href="#">
+                        <i class="bi-align-bottom me-2"></i>Receiver
+                    </a>
+                    <a class="dropdown-item" id="add-lightSource-nav-bar" href="#">
+                        <i class="bi-lightbulb me-2"></i>Light source
+                    </a>
+                </div>
+            </li>
+            <!-- view -->
+            <li class="nav-item dropdown mx-2">
+                <a class="nav-link dropdown-toggle"
+                   id="viewDropdown"
+                   href="#"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    <i class="bi-view-list me-2"></i>View
+                </a>
+                <div class="dropdown-menu" aria-labelledby="viewDropdown">
+                    <a class="dropdown-item" id="fullscreen" href="#">
+                        <i class="bi-arrows-fullscreen me-2"></i>Fullscreen
+                    </a>
+                </div>
+            </li>
+            <!-- help -->
+            <li class="nav-item dropdown mx-2">
+                <a class="nav-link dropdown-toggle"
+                   id="helpDropdown"
+                   href="#"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    <i class="bi-question-square me-2"></i>Help
+                </a>
+                <div class="dropdown-menu" aria-labelledby="helpDropdown">
+                    <a class="dropdown-item"
+                       data-bs-toggle="modal"
+                       data-bs-target="#keyboardModal">
+                        <i class="bi-keyboard me-2"></i>Keybindings
+                    </a>
+                    <a class="dropdown-item"
+                       href="https://github.com/CANVAS-PSE/CANVAS-PSE2425"
+                       target="_blank">
+                        <i class="bi-code-slash me-2"></i>Source
+                    </a>
+                    <a class="dropdown-item"
+                       data-bs-toggle="modal"
+                       data-bs-target="#aboutModal">
+                        <i class="bi-info me-2"></i>About
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

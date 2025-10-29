@@ -1,0 +1,54 @@
+{% load static %}
+{% load custom_filters %}
+<div class="modal fade"
+    id="shareModal-{{ project.name }}"
+    tabindex="-1"
+    aria-labelledby="shareModel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="shareModelHeader">Share this project</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex flex-column gap-2">
+                <script>
+                    function copyToClipboard(projectName) {
+                            const copyLinkButton = document.getElementById(`copyLink-${projectName}`);
+                            navigator.clipboard.writeText(copyLinkButton.previousElementSibling.value);
+                            copyLinkButton.innerHTML = 'Copied';
+                            copyLinkButton.classList.add('active');
+                    }
+                </script>
+                <div>
+                    By clicking
+                    <i>Share {{ project.name | truncate_with_end:15}}</i>, for the next 72 hours anybody with the link
+                    below can get his own
+                    copy of this project.
+                </div>
+                <div class="fw-bolder">Copy the link below, or it will be automatically copied when pressing the share button.</div>
+                <div class="input-group mt-3">
+                    <input type="text"
+                          class="form-control"
+                          value="{{ request.build_absolute_uri }}sharedProjects/{{ project.uid }}/{{ project.token }}"
+                          readonly />
+                    <button class="btn btn-outline-secondary"
+                            id="copyLink-{{ project.name }}"
+                            type="button"
+                            onclick="copyToClipboard('{{ project.name }}')">
+                        Copy
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{% url 'shareProject' project_name=project.name %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit" onclick="copyToClipboard('{{ project.name }}')" class="btn btn-primary">Share {{ project.name | truncate_with_end:15}}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

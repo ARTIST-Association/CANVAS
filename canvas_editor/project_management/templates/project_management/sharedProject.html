@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+    <div class="d-flex flex-column gap-3 w-100 min-vh-100 justify-content-center align-items-center">
+        <div class="fs-1">
+            {{ project.owner.first_name }} has shared <i class="fw-bolder">{{ project.name }}</i> with you
+        </div>
+        {% if project.preview %}
+            <img src="{{ project.preview.url }}"
+                 alt="{{ project.name }}"
+                 class="img-fluid h-100 rounded-4"
+                 style="object-fit: cover;
+                        object-position: center" />
+        {% else %}
+            <img src="{% static 'img/emptyEditor.png' %}"
+                 alt="{{ project.name }}"
+                 class="img-fluid h-100 rounded-4"
+                 style="object-fit: cover;
+                        object-position: center" />
+        {% endif %}
+        <div class="fs-4">{{ project.description }}</div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <button class="btn btn-primary rounded-4 fs-3" type="submit">Add to own projects</button>
+        </form>
+    </div>
+{% endblock body %}

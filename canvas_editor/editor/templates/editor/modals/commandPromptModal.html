@@ -1,0 +1,29 @@
+<div class="modal" id="commandPrompt">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header p-1 px-3">
+                <div id="commandInput"></div>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        style="transform: scale(0.7)"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="overflow-auto" id="commandList" style="max-height: 10rem"></div>
+                <div class="d-flex justify-content-around text-secondary pt-2">
+                    <div>
+                        <i class="bi bi-arrow-down-up"></i> To navigate
+                    </div>
+                    <div>
+                        <i class="bi bi-arrow-return-right"></i> To execute
+                    </div>
+                    <div class="d-flex gap-1">
+                        <div class="key p-0 border px-1 rounded-2">Esc</div>
+                        To dismiss
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

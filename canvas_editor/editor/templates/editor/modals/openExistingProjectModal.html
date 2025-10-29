@@ -1,0 +1,56 @@
+{% load static %}
+<div class="modal modal-lg fade"
+     id="openProject"
+     tabindex="-1"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Projects</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex flex-column gap-3">
+                {% for project in projects %}
+                    <div class="px-2">
+                        <div class="card rounded-3 bg-body-tertiary overflow-hidden mx-auto w-100">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <a class="col-md-4" href="{% url 'editor' project.name %}">
+                                        {% if project.preview %}
+                                            <img src="{{ project.preview.url }}"
+                                                 alt="{{ project.name }}"
+                                                 class="img-fluid h-100" />
+                                        {% else %}
+                                            <img src="{% static 'img/emptyEditor.png' %} "
+                                                 alt="{{ project.name }}"
+                                                 class="img-fluid h-100" />
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <div class="d-flex gap-1">
+                                            <div class="d-flex flex-column">
+                                                <h1 class="fw-bolder">{{ project.name }}</h1>
+                                                <p class="fw-light">{{ project.description }}</p>
+                                                <p class="text-start">Last edited: {{ project.last_edited }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <a role="button"
+                                               href="{% url 'editor' project_name=project.name %}"
+                                               class="btn btn-primary">Open</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

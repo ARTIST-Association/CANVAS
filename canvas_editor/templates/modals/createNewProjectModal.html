@@ -1,0 +1,23 @@
+<div class="modal fade"
+     id="createNewProject"
+     tabindex="-1"
+     aria-labelledby="createNewProjectModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+            <div class="modal-body">
+                <p class="font-italic">
+                    Projects will only be saved if they have a name unique to
+                    your already existing projects!
+                </p>
+                <form action="{% url 'projects' %}"
+                      method="POST"
+                      class="d-flex flex-column gap-3"
+                      enctype="multipart/form-data">
+                    {% csrf_token %} {{ create_new_project_form }}
+                    <button class="btn btn-primary rounded-3" type="submit">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

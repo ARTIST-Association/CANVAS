@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block subject %}{% endblock %}</title>
+  </head>
+  <body>
+    <div>
+      Dear {{ user.first_name | safe }},<br />
+      <br />
+    </div>
+    <div>{% block content %}{% endblock %}</div>
+    <div>
+      <br />
+      If you encounter any issues or have further questions, please feel free to
+      contact us at:<br />
+      Email:
+      <a href="mailto:canvas-editor@scc.kit.edu">canvas-editor@scc.kit.edu</a
+      ><br />
+      <br />
+      Best regards,<br />
+      Your Canvas Team
+    </div>
+  </body>
+</html>

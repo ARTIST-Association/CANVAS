@@ -1,0 +1,21 @@
+{
+  "name": "canvas_editor",
+  "version": "1.0-beta",
+  "description": "3D editor for the AI-enhanced differentiable Ray Tracer ARTIST",
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "scripts": {},
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@types/bootstrap": "^5.2.10",
+    "@types/three": "^0.178.1",
+    "eslint": "^9.35.0",
+    "eslint-plugin-jsdoc": "^54.0.0",
+    "globals": "^15.15.0",
+    "lint-staged": "^16.1.2"
+  },
+  "lint-staged": {
+    "*.{js,mjs}": "npx eslint --config canvas_editor/eslint.config.mjs"
+  }
+}

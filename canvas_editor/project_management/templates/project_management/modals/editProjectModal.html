@@ -1,0 +1,32 @@
+<div class="modal fade"
+    id="updateModal-{{ project.name }}"
+    tabindex="-1"
+    aria-labelledby="updateModal"
+    aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h1 class="modal-title fs-5" id="deleteModalHeader">Edit Project</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <p class="font-italic">
+                  Projects will only be
+                  updated if they have a
+                  unique name!
+              </p>
+              <form action="{% url 'updateProject' project_name=project.name %}"
+                    method="POST"
+                    class="d-flex flex-column gap-2">
+                  {% csrf_token %}
+                  <label for="projectName_{{ forloop.counter }}">Project Name</label>
+                  <input type="text" id="projectName_{{ forloop.counter }}" name="name" class="form-control" value="{{ project.name }}" required>
+
+                  <label for="projectDescription_{{ forloop.counter }}">Description</label>
+                  <input id="projectDescription_{{ forloop.counter }}" name="description" class="form-control">{{ project.description }}</input>
+                  <button class="btn btn-primary rounded-3" type="submit">Save</button>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>

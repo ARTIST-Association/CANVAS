@@ -1,0 +1,508 @@
+{% load static %} {% block body %}
+<div
+  class="modal fade"
+  id="settings"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl modal-dialog-centered" style="height: 80vh">
+    <div class="modal-content rounded-4 h-100 overflow-auto">
+      <div class="modal-header">
+        <h5 class="modal-title">Settings</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body gap-2 d-flex flex-column h-100">
+        <div class="d-flex flex-fill">
+          <div
+            class="nav flex-column nav-pills me-3 sticky-top"
+            id="v-pills-tab"
+            role="tablist"
+            aria-orientation="vertical"
+          >
+            <button
+              class="nav-link active"
+              id="v-pills-general-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#v-pills-general"
+              type="button"
+              role="tab"
+              aria-controls="v-pills-profile"
+              aria-selected="false"
+            >
+              <div class="d-flex gap-2">
+                <i class="bi bi-gear"></i>
+                <p class="m-0">General</p>
+              </div>
+            </button>
+            <button
+              class="nav-link"
+              id="v-pills-profil-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#v-pills-profil"
+              type="button"
+              role="tab"
+              aria-controls="v-pills-profil"
+              aria-selected="true"
+            >
+              <div class="d-flex gap-2">
+                <i class="bi bi-person"></i>
+                <p class="m-0">Account</p>
+              </div>
+            </button>
+            <button
+              class="nav-link"
+              id="v-pills-appearance-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#v-pills-appearance"
+              type="button"
+              role="tab"
+              aria-controls="v-pills-appearance"
+              aria-selected="true"
+            >
+              <div class="d-flex gap-2">
+                <i class="bi bi-palette"></i>
+                <p class="m-0">Appearance</p>
+              </div>
+            </button>
+          </div>
+          <div
+            class="tab-content d-flex border-start p-3 flex-fill"
+            id="v-pills-tabContent"
+          >
+            <div
+              class="tab-pane fade show active w-100"
+              id="v-pills-general"
+              role="tabpanel"
+              aria-labelledby="v-pills-general-tab"
+              tabindex="0"
+            >
+              <form class="d-flex flex-column h-100">
+                No settings available.
+                <div class="flex-grow-1"></div>
+                <div class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+              </form>
+            </div>
+            <div
+              class="tab-pane fade w-100"
+              id="v-pills-profil"
+              role="tabpanel"
+              aria-labelledby="v-pills-profil-tab"
+              tabindex="0"
+            >
+              <form
+                class="d-flex flex-column h-100"
+                method="POST"
+                action="{% url 'update_account' %}"
+                enctype="multipart/form-data"
+              >
+                {% csrf_token %}
+                <div class="flex-grow-1 overflow-auto">
+                  <!-- profile picture -->
+                  <h5 class="fw-bold">Profile Picture</h5>
+                  <div class="d-flex align-items-center mb-3">
+                    <!-- current profile picture -->
+                    <div class="d-flex align-items-center">
+                      <img
+                        id="previewImage"
+                        src="{{ request.user.userprofile.image_url }}"
+                        data-default-src="{{ request.user.userprofile.default_picture_url }}"
+                        alt="Profile Picture"
+                        class="rounded-circle me-2"
+                        style="width: 32px; height: 32px; object-fit: cover"
+                      />
+
+                      <!-- Custom Upload Button -->
+                      <div class="ms-3">
+                        <label for="profile_picture" class="btn btn-primary"
+                          >Upload New Picture</label
+                        >
+                        <span id="fileName" class="ms-2">No file chosen</span>
+                        <input
+                          type="file"
+                          id="profile_picture"
+                          name="profile_picture"
+                          class="d-none"
+                          accept="image/*"
+                        />
+                        <!-- button to delete the current profile picture -->
+                        <input
+                          type="hidden"
+                          id="delete_picture"
+                          name="delete_picture"
+                          value="0"
+                        />
+                        <button
+                          type="button"
+                          class="btn btn-danger ms-2"
+                          id="deleteProfilePictureBtn"
+                        >
+                          Delete Picture
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <h5 class="fw-bold">Account Details</h5>
+                  <div class="mb-3 d-flex">
+                    <div class="me-2 w-50">
+                      <label for="first_name" class="form-label"
+                        >First Name</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="first_name"
+                        name="first_name"
+                        value="{{ user.first_name }}"
+                      />
+                    </div>
+                    <div class="w-50">
+                      <label for="last_name" class="form-label"
+                        >Last Name</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="last_name"
+                        name="last_name"
+                        value="{{ user.last_name }}"
+                      />
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      value="{{ user.email }}"
+                    />
+                  </div>
+                  <!-- Change Password Section (Only for non-OpenID users) -->
+                  <div id="passwordSection" style="display: none">
+                    <hr />
+                    <h5 class="fw-bold">Change Password</h5>
+                    <!-- Password requirements -->
+                    <div id="password-requirements" class="alert alert-info">
+                      <strong>Password must contain:</strong>
+                      <ul>
+                        <li id="length">At least 8 characters</li>
+                        <li id="uppercase">At least one uppercase letter</li>
+                        <li id="lowercase">At least one lowercase letter</li>
+                        <li id="number">At least one digit</li>
+                        <li id="special">
+                          At least one special character (!@#$%^&*)
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="mb-3">
+                      <label for="old_password" class="form-label"
+                        >Old Password</label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="old_password"
+                        name="old_password"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="new_password" class="form-label"
+                        >New Password</label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="new_password"
+                        name="new_password"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="password_confirmation" class="form-label"
+                        >Confirm New Password</label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password_confirmation"
+                        name="password_confirmation"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                  <!-- Button to trigger Delete Account Modal -->
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteAccountModal"
+                  >
+                    Delete Account
+                  </button>
+                  <!-- Save Button -->
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+              </form>
+            </div>
+            <div
+              class="tab-pane fade w-100"
+              id="v-pills-appearance"
+              role="tabpanel"
+              aria-labelledby="v-pills-appearance-tab"
+              tabindex="0"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <div>Theme:</div>
+                <select class="form-select" id="theme-select">
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                  <option value="auto">Auto</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delete Account Confirmation Modal -->
+<div
+  class="modal fade"
+  id="deleteAccountModal"
+  tabindex="-1"
+  aria-labelledby="deleteAccountModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteAccountModalLabel">
+          Confirm Account Deletion
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Are you sure you want to delete your account? Please enter your
+          password to confirm.
+        </p>
+        <form method="POST" action="/delete_account/">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="confirm_password" class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="confirm_password"
+              name="password"
+              required
+            />
+          </div>
+          <div class="d-flex justify-content-end">
+            <button
+              type="button"
+              class="btn btn-secondary me-2"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-danger">Delete Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Error/Success Messages Modal -->
+<div
+  class="modal fade"
+  id="messageModal"
+  tabindex="-1"
+  aria-labelledby="messageModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageModalLabel">Messages</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <ul id="message-list"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% if messages %}
+<script type="module">
+  import * as bootstrap from "bootstrap"
+  if (window.location.pathname == '/projects/') {
+      document.addEventListener("DOMContentLoaded", function () {
+          var messageList = document.getElementById('message-list');
+          var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+
+          {% for message in messages %}
+              var listItem = document.createElement('li');
+              listItem.textContent = "{{ message|escapejs }}";
+
+              {% if message.tags == "success" %}
+                  listItem.style.color = "green";
+              {% elif message.tags == "error" %}
+                  listItem.style.color = "red";
+              {% else %}
+                  listItem.style.color = "black";
+              {% endif %}
+
+              messageList.appendChild(listItem);
+          {% endfor %}
+
+              if (messageList.children.length > 0) {
+                  messageModal.show();
+              }
+          });
+  }
+</script>
+{% endif %} {% endblock body %}
+<!-- Script to handle custom behavior for Ctrl + S -->
+<script>
+  document.addEventListener("keydown", function (event) {
+    // Check if Ctrl + S is pressed
+    if (event.ctrlKey && event.key === "s") {
+      event.preventDefault(); // Prevent default browser "save" action
+
+      // Check if we are on the Account settings tab
+      const accountTab = document.getElementById("v-pills-profil");
+      if (accountTab && accountTab.classList.contains("show")) {
+        const form = document.querySelector(
+          'form[action="{% url "update_account" %}"]'
+        );
+        if (form) {
+          form.submit(); // Submit the form
+        }
+      }
+    }
+  });
+</script>
+<!-- script for preview of the selected image -->
+<script>
+  document
+    .getElementById("profile_picture")
+    .addEventListener("change", function (event) {
+      let file = event.target.files[0];
+      let fileNameElement = document.getElementById("fileName");
+      let previewImage = document.getElementById("previewImage");
+
+      if (file) {
+        fileNameElement.textContent = file.name;
+
+        let reader = new FileReader();
+        reader.onload = function (e) {
+          previewImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        fileNameElement.textContent = "No file chosen";
+      }
+    });
+</script>
+<!-- Script: Reset profile picture to default when the delete button is clicked -->
+<script>
+  document
+    .getElementById("deleteProfilePictureBtn")
+    .addEventListener("click", function () {
+      document.getElementById("delete_picture").value = "1";
+      const img = document.getElementById("previewImage");
+      img.src = img.dataset.defaultSrc;
+    });
+</script>
+<!-- JavaScript to handle AJAX request when the modal is opened -->
+<script>
+  document
+    .getElementById("settings")
+    .addEventListener("show.bs.modal", function () {
+      fetch("/get_user_info/")
+        .then((response) => response.json())
+        .then((data) => {
+          const isOpenIDUser = data.is_openid_user;
+
+          // Show or hide the password change section based on whether the user is OpenID
+          const passwordSection = document.getElementById("passwordSection");
+          const emailField = document.getElementById("email");
+          if (isOpenIDUser) {
+            emailField.disabled = true;
+            passwordSection.style.display = "none";
+          } else {
+            passwordSection.style.display = "block";
+          }
+        });
+    });
+</script>
+<!-- JavaScript to handle password requirements -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const passwordInput = document.getElementById("new_password");
+
+    const requirements = {
+      length: document.getElementById("length"),
+      uppercase: document.getElementById("uppercase"),
+      lowercase: document.getElementById("lowercase"),
+      number: document.getElementById("number"),
+      special: document.getElementById("special"),
+    };
+
+    passwordInput.addEventListener("input", function () {
+      const password = passwordInput.value;
+
+      updateRequirement(requirements.length, password.length >= 8);
+      updateRequirement(requirements.uppercase, /[A-Z]/.test(password));
+      updateRequirement(requirements.lowercase, /[a-z]/.test(password));
+      updateRequirement(requirements.number, /\d/.test(password));
+      updateRequirement(
+        requirements.special,
+        /[!@#$%^&*()\-_=+<>?/]/.test(password)
+      );
+    });
+
+    function updateRequirement(element, isValid) {
+      if (isValid) {
+        // If valid, check mark (✅) and change the color to green
+        if (!element.innerHTML.startsWith("✅")) {
+          element.innerHTML = `✅ ${element.textContent.replace(
+            /^✅ |^❌ /,
+            ""
+          )}`;
+          element.style.color = "green";
+        }
+      } else {
+        // If invalid, X mark (❌) and change the color to red
+        if (!element.innerHTML.startsWith("❌")) {
+          element.innerHTML = `❌ ${element.textContent.replace(
+            /^✅ |^❌ /,
+            ""
+          )}`;
+          element.style.color = "red";
+        }
+      }
+    }
+  });
+</script>

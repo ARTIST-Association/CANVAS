@@ -1,0 +1,37 @@
+fail_fast: false
+repos:
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.16.1 # Use the sha / tag you want to point at
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          [types-pytz, types-python-dateutil, types-requests, types-waitress]
+        exclude: "/migrations/"
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+    # JavaScript/HTML/CSS Formatter: prettier
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        additional_dependencies: ["prettier@3.2.5"]
+        files: \.(js|mjs|json|css)$
+        require_serial: true
+  - repo: local
+    hooks:
+      - id: lint-staged
+        name: lint-staged
+        entry: npx lint-staged
+        language: "system"
+        pass_filenames: false
+        require_serial: true

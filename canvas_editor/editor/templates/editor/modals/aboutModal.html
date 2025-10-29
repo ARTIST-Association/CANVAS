@@ -1,0 +1,66 @@
+{% load static %}
+<div class="modal fade"
+     id="aboutModal"
+     tabindex="-1"
+     aria-labelledby="aboutModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aboutModalLabel">About</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-bold">CANVAS Editor</p>
+                <p>
+                    Version 1.0
+                    <br />
+                    For non-commercial use only
+                </p>
+                <p>Powered by open-source software</p>
+                <div>
+                    <ul>
+                        <li>
+                            <a href="https://www.python.org/">Python</a>
+                        </li>
+                        <li>
+                            <a href="https://www.djangoproject.com/">Django</a>
+                        </li>
+                        <li>
+                            <a href="https://getbootstrap.com/">Bootstrap</a>
+                        </li>
+                        <li>
+                            <a href="https://threejs.org/">three.js</a>
+                        </li>
+                    </ul>
+                    Powered by open-source models
+                    <ul>
+                        <li>
+                            <a href="https://sketchfab.com/3d-models/heliostat-a69be2b713d54a6eab3ce3e49fb65060">Heliostat</a>
+                        </li>
+                        <li>
+                            <a href="https://sketchfab.com/3d-models/tower-fe6dcf4c1f344b339c49d59ba9dd1aa3">Receiver</a>
+                        </li>
+                    </ul>
+                    Copyright © 2024 ARTIST Association
+                </div>
+                <div class="d-flex justify-content-center pt-3 pb-3">
+                    <img class="about-logo px-3"
+                         height="auto"
+                         width="auto"
+                         alt="logo of the KIT"
+                         src="{% static 'img/logo_kit.svg' %}" />
+                    <img class="about-logo px-3"
+                         height="auto"
+                         width="auto"
+                         alt="logo of the DLR"
+                         src="{% static 'img/logo_dlr.svg' %}" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

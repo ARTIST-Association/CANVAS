@@ -1,0 +1,47 @@
+<div class="tab-pane fade"
+     id="overview-tab-pane"
+     role="tabpanel"
+     aria-labelledby="overview-tab"
+     tabindex="0">
+    <div class="accordion w-100" id="accordionOverview">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#overviewCollapseOne"
+                        aria-expanded="true"
+                        aria-controls="overviewCollapseOne">Heliostats</button>
+            </h2>
+            <div id="overviewCollapseOne" class="accordion-collapse collapse show">
+                <div class="accordion-body d-flex flex-column gap-2" id="heliostatList"></div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#overviewCollapseTwo"
+                        aria-expanded="false"
+                        aria-controls="overviewCollapseTwo">Receivers</button>
+            </h2>
+            <div id="overviewCollapseTwo" class="accordion-collapse collapse">
+                <div class="accordion-body d-flex flex-column gap-2" id="receiverList"></div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#overviewCollapseThree"
+                        aria-expanded="false"
+                        aria-controls="overviewCollapseThree">Light Sources</button>
+            </h2>
+            <div id="overviewCollapseThree" class="accordion-collapse collapse">
+                <div class="accordion-body d-flex flex-column gap-2" id="lightsourceList"></div>
+            </div>
+        </div>
+    </div>
+</div>
