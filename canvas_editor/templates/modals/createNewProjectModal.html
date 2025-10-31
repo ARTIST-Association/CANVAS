@@ -21,3 +21,15 @@
         </div>
     </div>
 </div>
+{% if create_new_project_form.errors %}
+    <!-- Open the module when the form has errors -->
+    <script type="module">
+  import * as bootstrap from "bootstrap"
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const myModalEl = document.getElementById("createNewProject");
+            const myModal = new bootstrap.Modal(myModalEl);
+            myModal.show();
+        });
+    </script>
+{% endif %}

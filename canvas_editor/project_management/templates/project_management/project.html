@@ -1,140 +1,109 @@
 {% load static %}
 {% load custom_filters %}
 <div class="project" data-is-favorite="{{ project.favorite }}">
-  <div class="card rounded-4 bg-body-tertiary overflow-hidden mx-auto">
-    <div class="row g-0">
-      <div class="col-md-4">
-        <a class="col-md-4" href="{% url 'editor' project.name %}">
-          {% if project.preview %}
-          <img
-            src="{{ project.preview.url }}"
-            alt="{{ project.name }}"
-            class="img-fluid h-100"
-            style="object-fit: cover; object-position: center"
-          />
-          {% else %}
-          <img
-            src="{% static 'img/emptyEditor.png' %}"
-            alt="{{ project.name }}"
-            class="img-fluid h-100"
-            style="object-fit: cover; object-position: center"
-          />
-          {% endif %}
-        </a>
-      </div>
-      <div class="col-md-6">
-        <div class="d-flex">
-          <!-- favorites-->
-          <div class="position-absolute end-0 top-0">
-            {% if project.favorite %}
-            <div
-              class="btn btn-primary custom-btn shadow favoriteButton"
-              style="border-radius: 0%"
-              data-is-favorite="{{ project.favorite }}"
-              data-project-name="{{ project.name }}"
-              title="Mark/Unmark as favorite"
-            >
-              <i class="bi bi-star-fill text-warning"></i>
+    <div class="card rounded-4 bg-body-tertiary overflow-hidden mx-auto">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <a class="col-md-4" href="{% url 'editor' project.name %}">
+                    {% if project.preview %}
+                        <img src="{{ project.preview.url }}"
+                             alt="{{ project.name }}"
+                             class="img-fluid h-100"
+                             style="object-fit: cover;
+                                    object-position: center" />
+                    {% else %}
+                        <img src="{% static 'img/emptyEditor.png' %}"
+                             alt="{{ project.name }}"
+                             class="img-fluid h-100"
+                             style="object-fit: cover;
+                                    object-position: center" />
+                    {% endif %}
+                </a>
             </div>
-            {% else %}
-            <div
-              class="btn btn-primary custom-btn shadow favoriteButton"
-              style="border-radius: 0%"
-              data-is-favorite="{{ project.favorite }}"
-              data-project-name="{{ project.name }}"
-              title="Mark/Unmark as favorite"
-            >
-              <i class="bi bi-star"></i>
-            </div>
-            {% endif %}
-          </div>
-          <div class="col-md-8">
-            <div class="card-body">
-              <div class="d-flex gap-1">
-                <div
-                  class="d-flex flex-column text-wrap text-break mt-2 flex-grow-1"
-                  style="
-                    word-wrap: break-word;
-                    overflow-wrap: break-word;
-                    white-space: normal;
-                    min-width: 200%;
-                    max-width: 100%;
-                  "
-                >
-                  <h1 class="fw-bolder">
-                    {{ project.name | truncate_with_end:100}}
-                  </h1>
-                  <p class="fw-light">{{ project.description }}</p>
-                  <p class="text-start">
-                    Last edited: {{ project.last_edited }}
-                  </p>
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <!-- favorites-->
+                    <div class="position-absolute end-0 top-0">
+                        {% if project.favorite %}
+                            <div class="btn btn-primary custom-btn shadow favoriteButton"
+                                 style="border-radius: 0%"
+                                 data-is-favorite="{{ project.favorite }}"
+                                 data-project-name="{{ project.name }}"
+                                 title="Mark/Unmark as favorite">
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                        {% else %}
+                            <div class="btn btn-primary custom-btn shadow favoriteButton"
+                                 style="border-radius: 0%"
+                                 data-is-favorite="{{ project.favorite }}"
+                                 data-project-name="{{ project.name }}"
+                                 title="Mark/Unmark as favorite">
+                                <i class="bi bi-star"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <div class="d-flex gap-1">
+                                <div class="d-flex flex-column text-wrap text-break mt-2 flex-grow-1"
+                                     style="word-wrap: break-word;
+                                            overflow-wrap: break-word;
+                                            white-space: normal;
+                                            min-width: 200%;
+                                            max-width: 100%">
+                                    <h1 class="fw-bolder">{{ project.name | truncate_with_end:100 }}</h1>
+                                    <p class="fw-light">{{ project.description }}</p>
+                                    <p class="text-start">Last edited: {{ project.last_edited }}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a role="button"
+                                   href="{% url 'editor' project_name=project.name %}"
+                                   class="btn btn-primary">Open</a>
+                                <!-- Update Button -->
+                                <button type="button"
+                                        class="btn btn-primary custom-btn shadow"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#updateModal-{{ project.name }}"
+                                        title="Edit project name or description">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <!--update  project modal-->
+                                {% include "project_management/modals/updateProjectModal.html" %}
+                                <!-- Duplicate Button -->
+                                <form action="{% url 'duplicateProject' project_name=project.name %}"
+                                      method="post">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-primary custom-btn shadow"
+                                            title="Duplicate project">
+                                        <i class="bi bi-copy"></i>
+                                    </button>
+                                </form>
+                                <!-- Share Button -->
+                                <button class="btn btn-primary custom-btn shadow"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#shareModal-{{ project.name }}"
+                                        title="Share project">
+                                    <i class="bi bi-share"></i>
+                                </button>
+                                <!--share project modal-->
+                                {% include "project_management/modals/shareProjectModal.html" %}
+                                <!-- Delete Button -->
+                                <button type="button"
+                                        class="btn btn-outline-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal-{{ project.name }}"
+                                        title="Delete project">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <!--delete project modal-->
+                                {% include "project_management/modals/deleteProjectModal.html" %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="d-flex gap-2">
-                <a
-                  role="button"
-                  href="{% url 'editor' project_name=project.name %}"
-                  class="btn btn-primary"
-                  >Open</a
-                >
-                <!-- Edit Button -->
-                <button
-                  type="button"
-                  class="btn btn-primary custom-btn shadow"
-                  data-bs-toggle="modal"
-                  data-bs-target="#updateModal-{{ project.name }}"
-                  title="Edit project name or description"
-                >
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-                <!--create project modal-->
-                {% include "project_management/modals/editProjectModal.html" %}
-
-                <!-- Duplicate Button -->
-                <form
-                  action="{% url 'duplicateProject' project_name=project.name %}"
-                  method="post"
-                >
-                  {% csrf_token %}
-                  <button
-                    type="submit"
-                    class="btn btn-primary custom-btn shadow"
-                    title="Duplicate project"
-                  >
-                    <i class="bi bi-copy"></i>
-                  </button>
-                </form>
-
-                <!-- Share Button -->
-                <button
-                  class="btn btn-primary custom-btn shadow"
-                  data-bs-toggle="modal"
-                  data-bs-target="#shareModal-{{ project.name }}"
-                  title="Share project"
-                >
-                  <i class="bi bi-share"></i>
-                </button>
-                <!--share project modal-->
-                {% include "project_management/modals/shareProjectModal.html" %}
-
-                <!-- Delete Button -->
-                <button
-                  type="button"
-                  class="btn btn-outline-danger"
-                  data-bs-toggle="modal"
-                  data-bs-target="#deleteModal-{{ project.name }}"
-                  title="Delete project"
-                >
-                  <i class="bi bi-trash"></i>
-                </button>
-
-                <!--delete project modal-->
-                {% include "project_management/modals/deleteProjectModal.html" %}
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>

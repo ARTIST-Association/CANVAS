@@ -14,7 +14,6 @@ from canvas.path_dict import (
 from canvas.test_constants import (
     COPY_SUFFIX,
     DESCRIPTION_FIELD,
-    EMPTY_FIELD,
     FILE_FIELD,
     NAME_FIELD,
     OWNER_FIELD,
@@ -247,7 +246,7 @@ class ProjectPageTest(TestCase):
         self.assertEqual(Project.objects.count(), 1)
 
     def test_update_project_post_name_description_changed_description_is_empty(self):
-        """Test updating a project via POST request with changed name and empty description."""
+        """Test updating a project via POST request with changed name and no updated description."""
         response = self.client.post(
             self.update_project_url,
             {
@@ -258,7 +257,9 @@ class ProjectPageTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Project.objects.first().name, UPDATED_PROJECT_NAME)
-        self.assertEqual(Project.objects.first().description, EMPTY_FIELD)
+        self.assertEqual(
+            Project.objects.first().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST
+        )
         self.assertEqual(Project.objects.count(), 1)
 
     def test_update_project_post_name_not_changed(self):
