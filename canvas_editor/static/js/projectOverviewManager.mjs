@@ -30,7 +30,7 @@ export class ProjectOverviewManager {
       projectElement.dataset.isFavorite = "False";
       favoriteButton.children[0].classList.remove(
         "bi-star-fill",
-        "text-warning",
+        "text-warning"
       );
       favoriteButton.children[0].classList.add("bi-star");
     } else if (isFavorite == "False") {
@@ -60,7 +60,7 @@ export class ProjectOverviewManager {
       "form-check",
       "form-switch",
       "position-relative",
-      "mx-auto",
+      "mx-auto"
     );
     const favoriteSwitch = document.createElement("input");
     favoriteSwitch.classList.add("form-check-input");
@@ -80,23 +80,16 @@ export class ProjectOverviewManager {
       .getElementById("projectList")
       .insertBefore(
         favoriteSwitchWrapper,
-        document.getElementById("projectList").children[0],
+        document.getElementById("projectList").children[0]
       );
 
     favoriteSwitch.addEventListener("change", () => {
       document.querySelectorAll(".project").forEach((project) => {
-        if (favoriteSwitch.checked) {
-          if (project.dataset.isFavorite == "true") {
-            project.classList.add("d-block");
-            project.classList.remove("d-none");
-          } else {
-            project.classList.add("d-none");
-            project.classList.remove("d-block");
-          }
-        } else {
-          project.classList.add("d-block");
-          project.classList.remove("d-none");
-        }
+        const shouldShow =
+          !favoriteSwitch.checked || project.dataset.isFavorite === "true";
+
+        project.classList.toggle("d-block", shouldShow);
+        project.classList.toggle("d-none", !shouldShow);
       });
     });
   }

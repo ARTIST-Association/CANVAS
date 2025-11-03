@@ -32,7 +32,7 @@ export class ProjectSettingsManager {
    * Method to initialize the project settings manager
    */
   async initialize() {
-    await this.#getPresets();
+    await this.#loadPresets();
 
     this.#environmentSettingsEntry = document.getElementById(
       "environment-settings",
@@ -43,7 +43,7 @@ export class ProjectSettingsManager {
     this.#otherSettingsEntry = document.getElementById("other-settings");
 
     //render the graphics settings
-    this.#renderUISettings();
+    this.#renderGraphicsSettings();
 
     this.#environmentSettingsEntry.textContent = "No settings available";
     this.#otherSettingsEntry.textContent = "No settings available";
@@ -52,7 +52,7 @@ export class ProjectSettingsManager {
   /**
    * Method to get the presets for shadows and fog from the project settings
    */
-  async #getPresets() {
+  async #loadPresets() {
     const projectJson = await this.#saveAndLoadHandler.getProjectData();
     const settingsList = projectJson["settings"];
     this.#shadowEnabled = settingsList["shadows"];
@@ -64,10 +64,10 @@ export class ProjectSettingsManager {
    * This method creates checkboxes for shadow and fog settings,
    * and applies the settings to the editor.
    */
-  #renderUISettings() {
+  #renderGraphicsSettings() {
     this.#graphicsSettingsEntry.innerHTML = "";
 
-    const graphicSettings = [
+    const graphicsSettings = [
       {
         label: "Shadow",
         key: "shadow",
@@ -96,7 +96,7 @@ export class ProjectSettingsManager {
       },
     ];
 
-    graphicSettings.forEach(({ label, key, enabled, apply }) => {
+    graphicsSettings.forEach(({ label, key, enabled, apply }) => {
       const checkbox = this.#createCheckbox(
         label,
         enabled,

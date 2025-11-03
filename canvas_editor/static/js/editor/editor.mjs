@@ -3,7 +3,7 @@ import { ViewHelper } from "compass";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
 import { Navbar } from "navbar";
-import { OverviewHandler } from "overview";
+import { OverviewHandler } from "overviewHandler";
 import { Picker } from "picker";
 import { ProjectSettingsManager } from "projectSettingsManager";
 import { ObjectManager } from "objectManager";
@@ -41,7 +41,7 @@ export class Editor {
   #saveAndLoadHandler;
   #navbar; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
   #picker;
-  #overview; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
+  #overviewHandler; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
   #modeSelector; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
   #projectSettingManager;
   #objectManager;
@@ -98,7 +98,7 @@ export class Editor {
       this.#selectionBox,
       this.#selectableGroup,
     );
-    this.#overview = new OverviewHandler(this.#picker);
+    this.#overviewHandler = new OverviewHandler(this.#picker);
     this.#projectSettingManager = new ProjectSettingsManager();
     this.#projectSettingManager.initialize();
     this.#objectManager = new ObjectManager(
