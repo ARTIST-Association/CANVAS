@@ -45,33 +45,13 @@ export class OverviewHandler {
       this.#render();
     });
 
-    // re-render when a new item is selected
-    document.getElementById("canvas").addEventListener("itemSelected", () => {
-      if (this.#overviewButton.classList.contains("active")) {
-        this.#render();
+    ["itemSelected", "itemCreated", "itemDeleted", "itemUpdated"].forEach(
+      (evt) => {
+        document.getElementById("canvas").addEventListener(evt, () => {
+          if (this.#overviewButton.classList.contains("active")) this.#render();
+        });
       }
-    });
-
-    // re-render when object is created
-    document.getElementById("canvas").addEventListener("itemCreated", () => {
-      if (this.#overviewButton.classList.contains("active")) {
-        this.#render();
-      }
-    });
-
-    // re-render when object is deleted
-    document.getElementById("canvas").addEventListener("itemDeleted", () => {
-      if (this.#overviewButton.classList.contains("active")) {
-        this.#render();
-      }
-    });
-
-    // re-render when object is updated
-    document.getElementById("canvas").addEventListener("itemUpdated", () => {
-      if (this.#overviewButton.classList.contains("active")) {
-        this.#render();
-      }
-    });
+    );
 
     // handle F2 to rename
     document.addEventListener("keyup", (event) => {
@@ -107,21 +87,21 @@ export class OverviewHandler {
     objects.heliostatList.forEach((heliostat) => {
       const selected = selectedObjects.includes(heliostat);
       this.#heliostatList.appendChild(
-        this.#createHeliostatEntry(heliostat, selected),
+        this.#createHeliostatEntry(heliostat, selected)
       );
     });
 
     objects.receiverList.forEach((receiver) => {
       const selected = selectedObjects.includes(receiver);
       this.#receiverList.appendChild(
-        this.#createReceiverEntry(receiver, selected),
+        this.#createReceiverEntry(receiver, selected)
       );
     });
 
     objects.lightsourceList.forEach((lightsource) => {
       const selected = selectedObjects.includes(lightsource);
       this.#lightsourceList.appendChild(
-        this.#createLightsourceEntry(lightsource, selected),
+        this.#createLightsourceEntry(lightsource, selected)
       );
     });
 
@@ -163,14 +143,14 @@ export class OverviewHandler {
       "p-2",
       "rounded-2",
       "overviewElem",
-      selected ? "bg-primary-subtle" : "bg-body-secondary",
+      selected ? "bg-primary-subtle" : "bg-body-secondary"
     );
 
     const icon = document.createElement("i");
     icon.classList.add(
       "bi-arrow-up-right-square",
       "d-flex",
-      "align-items-center",
+      "align-items-center"
     );
     heliostatEntry.appendChild(icon);
 
@@ -217,7 +197,7 @@ export class OverviewHandler {
       "p-2",
       "rounded-2",
       "overviewElem",
-      selected ? "bg-primary-subtle" : "bg-body-secondary",
+      selected ? "bg-primary-subtle" : "bg-body-secondary"
     );
 
     const icon = document.createElement("i");
@@ -270,7 +250,7 @@ export class OverviewHandler {
       "p-2",
       "rounded-2",
       "overviewElem",
-      selected ? "bg-primary-subtle" : "bg-body-secondary",
+      selected ? "bg-primary-subtle" : "bg-body-secondary"
     );
 
     const icon = document.createElement("i");
@@ -322,7 +302,7 @@ export class OverviewHandler {
             if (this.#selectedObjects.includes(object)) {
               this.#selectedObjects.splice(
                 this.#selectedObjects.indexOf(object),
-                1,
+                1
               );
             } else {
               this.#selectedObjects.push(object);
