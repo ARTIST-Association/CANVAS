@@ -2,6 +2,8 @@ import { Heliostat } from "heliostat";
 import { LightSource } from "lightSource";
 import { projectIdRequiredError } from "message_dict";
 import { Receiver } from "receiver";
+import * as cookieUtils from "cookieUtils";
+
 
 /**
  * Provides a wrapper for the API
@@ -302,30 +304,6 @@ export class SaveAndLoadHandler {
   }
 
   /**
-   * Utility function that gets the cookie specified by the name
-   * @param {string} name The name of the cookie you want to get.
-   * @returns {string|null} the cookie or null if it couldn't be found.
-   */
-  static getCookie(name) {
-    if (!document.cookie) {
-      return null;
-    }
-
-    // document.cookie is a key=value list separated by ';'
-    const xsrfCookies = document.cookie
-      .split(";")
-      .map((c) => c.trim())
-      //filter the right cookie name
-      .filter((c) => c.startsWith(name + "="));
-
-    if (xsrfCookies.length === 0) {
-      return null;
-    }
-    // return the decoded value of the first cookie found
-    return decodeURIComponent(xsrfCookies[0].split("=")[1]);
-  }
-
-  /**
    * Wrapper function for an standard api call
    * @param {string} endpoint The endpoint to make the api call to
    * @param {"PUT" | "POST" | "GET" | "DELETE"} method The method you want to use
@@ -337,7 +315,7 @@ export class SaveAndLoadHandler {
       method: method,
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": SaveAndLoadHandler.getCookie("csrftoken"),
+        "X-CSRFToken": cookieUtils.getCookie("csrftoken"),
       },
       body: JSON.stringify(body),
     })
