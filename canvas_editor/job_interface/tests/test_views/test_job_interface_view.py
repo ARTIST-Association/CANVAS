@@ -30,9 +30,7 @@ class JobInterfaceViewTest(TestCase):
     def setUp(self):
         """Set up a test user, log in, and create a test project and job for use in all tests."""
         self.client = Client()
-        self.user = User.objects.create_user(
-            username=TEST_USERNAME, password=SECURE_PASSWORD
-        )
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=SECURE_PASSWORD)
         self.project = Project.objects.create(
             name=TEST_PROJECT_NAME,
             description=TEST_PROJECT_DESCRIPTION,
@@ -46,9 +44,7 @@ class JobInterfaceViewTest(TestCase):
 
         # urls
         self.createNewJob_url = reverse(job_create_new_job_view, args=[self.project.pk])
-        self.getJobStatus_url = reverse(
-            job_status_view, args=[self.project.pk, self.job.pk]
-        )
+        self.getJobStatus_url = reverse(job_status_view, args=[self.project.pk, self.job.pk])
 
     def _assert_job_status(self, delta_minutes, expected_status, expect_result):
         """Assert that the job status is as expected after a certain time has passed."""
@@ -62,9 +58,7 @@ class JobInterfaceViewTest(TestCase):
         self.assertEqual(data[STATUS], expected_status)
         self.assertEqual(
             data[PROGRESS],
-            round(
-                ((timezone.now() - self.job.starting_time).total_seconds() / 60) / 3, 2
-            ),
+            round(((timezone.now() - self.job.starting_time).total_seconds() / 60) / 3, 2),
         )
         if expect_result:
             self.assertIsNotNone(data[RESULT])
@@ -78,9 +72,7 @@ class JobInterfaceViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Job.objects.count(), 2)
         self.assertEqual(response.json()[JOB_ID_FIELD], Job.objects.last().pk)
-        self.assertTrue(
-            (Job.objects.last().starting_time - timezone.now()).total_seconds() < 2
-        )
+        self.assertTrue((Job.objects.last().starting_time - timezone.now()).total_seconds() < 2)
         self.assertEqual(Job.objects.last().owner, self.user)
         self.assertEqual(Job.objects.last().project, self.project)
 
@@ -110,9 +102,7 @@ class JobInterfaceViewTest(TestCase):
 
     def test_get_job_status_get_creating_hdf5(self):
         """Test retrieving job status via GET request."""
-        self._assert_job_status(
-            delta_minutes=0, expected_status="Creating HDF5 file", expect_result=False
-        )
+        self._assert_job_status(delta_minutes=0, expected_status="Creating HDF5 file", expect_result=False)
 
     def test_get_job_status_get_aligning_heliostats(self):
         """Test retrieving job status via GET request."""
@@ -124,9 +114,7 @@ class JobInterfaceViewTest(TestCase):
 
     def test_get_job_status_get_finished(self):
         """Test retrieving job status via GET request."""
-        self._assert_job_status(
-            delta_minutes=3, expected_status="Finished", expect_result=True
-        )
+        self._assert_job_status(delta_minutes=3, expected_status="Finished", expect_result=True)
 
     def test_get_job_status_get_logged_out(self):
         """Test that retrieving job status via GET request when logged out redirects to login page."""

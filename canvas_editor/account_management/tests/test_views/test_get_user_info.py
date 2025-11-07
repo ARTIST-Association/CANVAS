@@ -32,9 +32,7 @@ class GetUserInfoTest(TestCase):
         Creates a test user for user info retrieval tests.
         """
         self.client = Client()
-        self.user = User.objects.create_user(
-            username=TEST_USERNAME, email=TEST_EMAIL, password=SECURE_PASSWORD
-        )
+        self.user = User.objects.create_user(username=TEST_USERNAME, email=TEST_EMAIL, password=SECURE_PASSWORD)
         self.get_user_info_url = reverse(view_name_dict.account_get_user_info_view)
 
     def test_get_user_info_not_authenticated(self):
