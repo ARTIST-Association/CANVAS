@@ -46,30 +46,46 @@ jobs:
 
           mv TEST-*.xml ../reports/ || true
 
+      - name: Coverage report
+        working-directory: canvas_editor
+        run: |
           coverage xml -o ../reports/coverage.xml
+          mv .coverage ../reports/coverage
 
       - name: Upload Test Reports
         uses: actions/upload-artifact@v5
         with:
           name: test-reports-py${{ matrix.python-version }}
-          path: reports/**/*.xml
+          path: reports/
 
-  sonarqube:
-    name: SonarQube
+  coverage:
+    name: Code coverage
     runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
 
       - name: Download coverage reports
         uses: actions/download-artifact@v6
         with:
           pattern: test-reports-py*
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.12
+
+      - name: Install coverage.py
+        run: |
+          pip install coverage
+
+      - name: Combine coverage files
+        run: |
+          coverage combine test-reports-py*/coverage
+          coverage xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7  # release v5.5.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
