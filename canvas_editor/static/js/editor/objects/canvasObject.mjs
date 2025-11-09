@@ -3,20 +3,29 @@ import { Object3D, Vector3 } from "three";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { methodMustBeImplementedError } from "message_dict";
+import { Command } from "command";
 
 /**
  * Represents a Object in CANVAS
  */
 export class CanvasObject extends Object3D {
   objectName;
+  #undoRedoHandler;
+  #rotatableAxis;
+  #isMovable;
+  #isSelectable;
 
   /**
    * Creates a new selectable object
    * @param {string} name the name of the object
    */
-  constructor(name) {
+  constructor(name, undoRedoHandler, rotatableAxis = [], isMovable, isSelectable) {
     super();
     this.objectName = name;
+    this.#undoRedoHandler = undoRedoHandler;
+    this.#rotatableAxis = rotatableAxis;
+    this.#isMovable = isMovable;
+    this.#isSelectable = isSelectable;
   }
 
   /**
@@ -30,11 +39,29 @@ export class CanvasObject extends Object3D {
   }
 
   /**
-   * Updates and saves the new name through a command
-   * @param {string} name the new name you want to save and update
+   * Update and save the name of the object
+   * @param {string} name the new name
+   * @returns {void}
    */
   // eslint-disable-next-line no-unused-vars -- required for interface compatibility
   updateAndSaveObjectName(name) {
+    const UpdatePropertyCommand = this.updatePropertyCommand;
+    if (!UpdatePropertyCommand) {
+      throw new Error("updateNameCommand not implemented");
+    }
+
+    this.#undoRedoHandler.executeCommand(
+      new UpdatePropertyCommand(this, "objectName", name),
+    );
+  }
+
+  /**
+   * Returns the command class used to update the name of the object
+   * @abstract
+   * @throws {Error}  Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command}
+   */
+  get updatePropertyCommand() {
     throw new Error(methodMustBeImplementedError);
   }
 
@@ -75,46 +102,72 @@ export class CanvasObject extends Object3D {
   }
 
   /**
-   * Duplicates the object
+   * Duplicate the object
+   * @returns {void}
    */
   duplicate() {
+      const DuplicateCommand = this.duplicateCommand;
+  if (!DuplicateCommand) {
+    throw new Error("duplicateCommand not implemented");
+  }
+
+  this.#undoRedoHandler.executeCommand(new DuplicateCommand(this));
+  }
+
+  /**
+   * Returns the command class used to duplicate the object
+   * @abstract
+   * @throws {Error} - Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command}
+   */
+  get duplicateCommand() {
     throw new Error(methodMustBeImplementedError);
   }
+
   /**
    * Deletes the object
    */
   delete() {
+    const DeleteCommand = this.deleteCommand;
+  if (!DeleteCommand) {
+    throw new Error("deleteCommand not implemented");
+  }
+
+  this.#undoRedoHandler.executeCommand(new DeleteCommand(this));
+  }
+
+  /**
+   * Returns the command class used to delete the object
+   * @abstract
+   * @throws {Error} - Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command}
+   */
+  get deleteCommand() {
     throw new Error(methodMustBeImplementedError);
   }
 
   /**
-   * Returns the axis on which the object is rotatable
-   * @abstract
-   * @throws {Error} - Throws an error if the method is not implemented in subclasses.
-   * @returns {string[]} array containing all rotatable axis.
+   * Returns the rotatable axis of the object
+   * @returns {string[]} containing all rotatable axis
    */
   get rotatableAxis() {
-    throw new Error(methodMustBeImplementedError);
+    return this.#rotatableAxis;
   }
 
   /**
-   * Returns whether the object is movable or not
-   * @abstract
-   * @throws {Error} - Throws an error if the method is not implemented in subclasses.
+   * Returns whether an object is movable or not
    * @returns {boolean} whether the object is movable
    */
   get isMovable() {
-    throw new Error(methodMustBeImplementedError);
+    return this.#isMovable;
   }
 
   /**
    * Returns whether an object is selectable or not
-   * @abstract
-   * @throws {Error} - Throws an error if the method is not implemented in subclasses.
    * @returns {boolean} whether the object is selectable
    */
   get isSelectable() {
-    throw new Error(methodMustBeImplementedError);
+    return this.#isSelectable;
   }
 
   /**

@@ -11,6 +11,7 @@ import { Vector3 } from "three";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { UpdateHeliostatCommand } from "updateCommands";
 import * as THREE from "three";
+import { Command } from "command";
 
 /**
  * Class that represents the Heliostat object
@@ -24,11 +25,9 @@ export class Heliostat extends CanvasObject {
   #headerComponent;
   #positionComponent;
   #undoRedoHandler = UndoRedoHandler.getInstance();
-  #isMovable = true;
   /**
    * @type { string[] }
    */
-  #rotatableAxis = null;
   #lastPosition;
 
   /**
@@ -38,7 +37,7 @@ export class Heliostat extends CanvasObject {
    * @param {number} [apiID] The id for api usage
    */
   constructor(heliostatName, position, apiID = null) {
-    super(heliostatName);
+    super(heliostatName, UndoRedoHandler.getInstance(), null, true, true);
     loadGltf("/static/models/heliostat.glb", this, true);
     this.position.copy(position);
     this.#lastPosition = new Vector3(position.x, position.y, position.z);
@@ -119,27 +118,27 @@ export class Heliostat extends CanvasObject {
   }
 
   /**
-   * Update and save the name of the object
-   * @param {string} name the new name for the object
+   * Returns the command class used to update the name of the object
+   * @returns {new (...args: any[]) => Command} the command class used to update the name
    */
-  updateAndSaveObjectName(name) {
-    this.#undoRedoHandler.executeCommand(
-      new UpdateHeliostatCommand(this, "objectName", name),
-    );
+  get updatePropertyCommand() {
+    return UpdateHeliostatCommand;
   }
 
   /**
-   * Duplicate the object
+   * Returns the command class used to duplicate the object
+   * @returns {new (...args: any[]) => Command} the command class used to duplicate the object
    */
-  duplicate() {
-    this.#undoRedoHandler.executeCommand(new DuplicateHeliostatCommand(this));
+  get duplicateCommand() {
+    return DuplicateHeliostatCommand;
   }
 
   /**
-   * Delete the object
+   * Returns the command class used to delete the object
+   * @returns {new (...args: any[]) => Command} the command class used to delete the object
    */
-  delete() {
-    this.#undoRedoHandler.executeCommand(new DeleteHeliostatCommand(this));
+  get deleteCommand() {
+    return DeleteHeliostatCommand;
   }
 
   /**
@@ -158,30 +157,6 @@ export class Heliostat extends CanvasObject {
    */
   get inspectorComponents() {
     return [this.#headerComponent, this.#positionComponent];
-  }
-
-  /**
-   * Get an array containing all rotatable axis
-   * @returns {string[]} containing all rotatable axis
-   */
-  get rotatableAxis() {
-    return this.#rotatableAxis;
-  }
-
-  /**
-   * Get whether the object is selectable
-   * @returns {boolean} whether the object is selectable
-   */
-  get isSelectable() {
-    return true;
-  }
-
-  /**
-   * Get whether the object is movable
-   * @returns {boolean} whether the object is movable
-   */
-  get isMovable() {
-    return this.#isMovable;
   }
 
   /**

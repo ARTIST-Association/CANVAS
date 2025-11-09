@@ -1,4 +1,5 @@
 import { CanvasObject } from "canvasObject";
+import { Command } from "command";
 import { DeleteLightSourceCommand } from "deleteCommands";
 import { DuplicateLightSourceCommand } from "duplicateCommands";
 import {
@@ -44,8 +45,6 @@ export class LightSource extends CanvasObject {
   #distributionCovarianceComponent;
 
   #undoRedoHandler = UndoRedoHandler.getInstance();
-  #isMovable = false;
-  #rotatableAxis = null;
 
   /**
    * Create the light source object
@@ -66,7 +65,7 @@ export class LightSource extends CanvasObject {
     distributionCovariance,
     apiID = null,
   ) {
-    super(lightSourceName);
+    super(lightSourceName, UndoRedoHandler.getInstance(), null, false, false);
     this.apiID = apiID;
     this.numberOfRays = numberOfRays;
     this.lightSourceType = lightSourceType;
@@ -147,50 +146,27 @@ export class LightSource extends CanvasObject {
   }
 
   /**
-   * Update and save the name of the object
-   * @param {string} name the new name
+   * Returns the command class used to update the name of the object
+   * @returns {new (...args: any[]) => Command} the command class used to update the name
    */
-  updateAndSaveObjectName(name) {
-    this.#undoRedoHandler.executeCommand(
-      new UpdateLightsourceCommand(this, "objectName", name),
-    );
+  get updatePropertyCommand() {
+    return UpdateLightsourceCommand;
   }
 
   /**
-   * Duplicate the object
+   * Returns the command class used to duplicate the object
+   * @returns {new (...args: any[]) => Command} the command class used to duplicate the object
    */
-  duplicate() {
-    this.#undoRedoHandler.executeCommand(new DuplicateLightSourceCommand(this));
+  get duplicateCommand() {
+    return DuplicateLightSourceCommand;
   }
+  
   /**
-   * Delete the object
+   * Returns the command class used to delete the object
+   * @returns {new (...args: any[]) => Command} the command class used to delete the object
    */
-  delete() {
-    this.#undoRedoHandler.executeCommand(new DeleteLightSourceCommand(this));
-  }
-
-  /**
-   * Returns whether the light source is rotatable or not
-   * @returns {string[]} false, as the light source is not rotatable
-   */
-  get rotatableAxis() {
-    return this.#rotatableAxis;
-  }
-
-  /**
-   * Returns whether the light source is movable or not
-   * @returns {boolean} false, as the light source is movable
-   */
-  get isMovable() {
-    return this.#isMovable;
-  }
-
-  /**
-   * Get whether the object is selectable
-   * @returns {boolean} if the object is selectable
-   */
-  get isSelectable() {
-    return false;
+  get deleteCommand() {
+    return DeleteLightSourceCommand;
   }
 
   /**

@@ -13,6 +13,7 @@ import { UndoRedoHandler } from "undoRedoHandler";
 import { UpdateReceiverCommand } from "updateCommands";
 import * as THREE from "three";
 import { towerBasePath, towerTopPath } from "path_dict";
+import { Command } from "command";
 
 /**
  * Class that represents the receiver object
@@ -66,8 +67,6 @@ export class Receiver extends CanvasObject {
   #curvatureComponent;
   #planeComponent;
   #resolutionComponent;
-  #isMovable = true;
-  #rotatableAxis = null;
   #lastPosition;
 
   /**
@@ -97,7 +96,7 @@ export class Receiver extends CanvasObject {
     curvatureU,
     apiID = null,
   ) {
-    super(receiverName);
+    super(receiverName, UndoRedoHandler.getInstance(), null, true, true);
     // place the 3D object
     this.#base = new ReceiverBase();
     this.add(this.#base);
@@ -363,51 +362,27 @@ export class Receiver extends CanvasObject {
   }
 
   /**
-   * Update and save the name of the object
-   * @param {string} name the new name
+   * Returns the command class used to update the name of the object
+   * @returns {new (...args: any[]) => Command} the command class used to update the name
    */
-  updateAndSaveObjectName(name) {
-    this.#undoRedoHandler.executeCommand(
-      new UpdateReceiverCommand(this, "objectName", name),
-    );
+  get updatePropertyCommand() {
+    return UpdateReceiverCommand;
   }
 
   /**
-   * Deletes the receiver
+   * Returns the command class used to delete the object
+   * @returns {new (...args: any[]) => Command} the command class used to delete the object
    */
-  delete() {
-    this.#undoRedoHandler.executeCommand(new DeleteReceiverCommand(this));
+  get deleteCommand() {
+    return DeleteReceiverCommand;
   }
 
   /**
-   * Duplicates the receiver
+   * Returns the command class used to duplicate the object
+   * @returns {new (...args: any[]) => Command} the command class used to duplicate the object
    */
-  duplicate() {
-    this.#undoRedoHandler.executeCommand(new DuplicateReceiverCommand(this));
-  }
-
-  /**
-   * Get all rotatable axis
-   * @returns {string[]} containing all rotatable axis
-   */
-  get rotatableAxis() {
-    return this.#rotatableAxis;
-  }
-
-  /**
-   * Get whether the object is movable or not
-   * @returns {boolean} whether the object is movable
-   */
-  get isMovable() {
-    return this.#isMovable;
-  }
-
-  /**
-   * Get whether the object is selectable
-   * @returns {boolean} whether the object is selectable
-   */
-  get isSelectable() {
-    return true;
+  get duplicateCommand() {
+    return DuplicateReceiverCommand;
   }
 
   /**
