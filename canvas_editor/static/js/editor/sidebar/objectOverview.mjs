@@ -89,11 +89,10 @@ export class OverviewEntry extends LitElement {
           />
         </div>`
       : html`<div
+          @click="${this.#onClick}"
           class="d-flex gap-2 p-2 rounded-2 align-items-center ${this._selected
             ? "bg-primary-subtle"
-            : "bg-body-secondary"}
-        "
-          @click="${this.#onClick}"
+            : "bg-body-secondary"}"
         >
           <i class="bi ${this.#icon}"></i>
           <p class="mb-0 text-truncate flex-grow-1">
@@ -101,7 +100,10 @@ export class OverviewEntry extends LitElement {
           </p>
           <button
             class="btn btn-sm btn-outline-secondary custom-btn"
-            @click="${() => (this._editing = true)}"
+            @click="${(/** @type {MouseEvent} */ e) => {
+              this._editing = true;
+              e.stopPropagation();
+            }}"
           >
             <i class="bi bi-pencil-square"></i>
           </button>
