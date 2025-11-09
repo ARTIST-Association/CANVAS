@@ -19,6 +19,7 @@
       "saveAndLoadHandler": ["static/js/editor/saveAndLoadHandler.mjs"],
       "bulkObjectCommands": ["static/js/commands/bulkObjectCommands.mjs"],
       "overview": ["static/js/editor/overview.mjs"],
+      "object-overview": ["static/js/editor/sidebar/objectOverview.mjs"],
       "editor": ["static/js/editor/editor.mjs"],
       "objectManager": ["static/js/editor/objectManager.mjs"],
       "quickSelector": ["static/js/editor/quickSelector.mjs"],

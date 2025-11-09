@@ -3,7 +3,6 @@ import { ViewHelper } from "compass";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
 import { Navbar } from "navbar";
-import { OverviewHandler } from "overview";
 import { Picker } from "picker";
 import { ProjectSettingsManager } from "projectSettingsManager";
 import { ObjectManager } from "objectManager";
@@ -28,6 +27,7 @@ import {
   skyboxPyPath,
   skyboxPzPath,
 } from "path_dict";
+import { Overview, OverviewController } from "object-overview";
 
 /**
  * Represents the main editor class.
@@ -41,7 +41,7 @@ export class Editor {
   #saveAndLoadHandler;
   #navbar; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
   #picker;
-  #overview; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
+  #overview;
   #modeSelector; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
   #projectSettingManager;
   #objectManager;
@@ -98,7 +98,11 @@ export class Editor {
       this.#selectionBox,
       this.#selectableGroup,
     );
-    this.#overview = new OverviewHandler(this.#picker);
+
+    this.#overview = new Overview(this.#picker);
+    document.getElementById("overview-tab-pane").append(this.#overview);
+    new OverviewController(this.#overview);
+
     this.#projectSettingManager = new ProjectSettingsManager();
     this.#projectSettingManager.initialize();
     this.#objectManager = new ObjectManager(

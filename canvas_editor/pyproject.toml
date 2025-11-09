@@ -91,4 +91,3 @@ convention = "numpy"
 
 [tool.djlint]
 profile = "django"
-
