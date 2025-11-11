@@ -6,6 +6,11 @@ import {
 } from "inspectorComponents";
 import { Vector3 } from "three";
 
+/**
+ * Class that represents movable canvas objects
+ * For now this includes Heliostats and Receivers
+ * @extends {CanvasObject}
+ */
 export class movableCanvasObject extends CanvasObject {
   #positionComponent;
   #lastPosition;
@@ -14,6 +19,8 @@ export class movableCanvasObject extends CanvasObject {
    * Creates a new movable object
    * @param {string} movableObjectName the name of the movable object
    * @param {import("undoRedoHandler").UndoRedoHandler} undoRedoHandler the undo redo handler
+   * @param {THREE.Vector3} position the position of the movable object
+   * @param {string} defaultLabel the default label when no name is given
    */
   constructor(movableObjectName, undoRedoHandler, position, defaultLabel) {
     super(movableObjectName, undoRedoHandler, defaultLabel, true, true);

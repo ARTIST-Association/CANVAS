@@ -60,6 +60,9 @@ export class Heliostat extends movableCanvasObject {
 
   /**
    * Get an array of all inspectorComponents for this object
+   * The inspectorComponents from the parent class are also included
+   * Header component is already included from CanvasObject class
+   * and position components from movableCanvasObject class
    * @returns {InspectorComponent[]} array of inspectorComponents
    */
   get inspectorComponents() {

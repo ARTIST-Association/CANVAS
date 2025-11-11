@@ -162,6 +162,7 @@ export class LightSource extends CanvasObject {
 
   /**
    * Get an array of all inspectorComponents used for this object
+   * The inspectorComponents from the parent class are also included
    * @returns {InspectorComponent[]} array of all inspectorComponents
    */
   get inspectorComponents() {

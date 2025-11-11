@@ -5,7 +5,12 @@ import {
 import { Object3D, Vector3 } from "three";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { methodMustBeImplementedError } from "message_dict";
+import {
+  methodMustBeImplementedError,
+  deleteCommandNotImplementedError,
+  duplicateCommandNotImplementedError,
+  updateNameCommandNotImplementedError,
+} from "message_dict";
 import { Command } from "command";
 
 /**
@@ -54,15 +59,6 @@ export class CanvasObject extends Object3D {
   }
 
   /**
-   * Get the inspectorComponents used for this object
-   * The child classes should extend this method to add their own components
-   * @returns {InspectorComponent[]} array of the inspectorComponents used
-   */
-  get inspectorComponents() {
-    return [this.#headerComponent];
-  }
-
-  /**
    * Update and save the name of the object
    * @param {string} name the new name
    * @returns {void}
@@ -71,22 +67,12 @@ export class CanvasObject extends Object3D {
   updateAndSaveObjectName(name) {
     const UpdatePropertyCommand = this.updatePropertyCommand;
     if (!UpdatePropertyCommand) {
-      throw new Error("updateNameCommand not implemented");
+      throw new Error(updateNameCommandNotImplementedError);
     }
 
     this.#undoRedoHandler.executeCommand(
       new UpdatePropertyCommand(this, "objectName", name)
     );
-  }
-
-  /**
-   * Returns the command class used to update the name of the object
-   * @abstract
-   * @throws {Error}  Throws an error if the method is not implemented in subclasses.
-   * @returns {new (...args: any[]) => Command}
-   */
-  get updatePropertyCommand() {
-    throw new Error(methodMustBeImplementedError);
   }
 
   /**
@@ -132,10 +118,41 @@ export class CanvasObject extends Object3D {
   duplicate() {
     const DuplicateCommand = this.duplicateCommand;
     if (!DuplicateCommand) {
-      throw new Error("duplicateCommand not implemented");
+      throw new Error(duplicateCommandNotImplementedError);
     }
 
     this.#undoRedoHandler.executeCommand(new DuplicateCommand(this));
+  }
+
+  /**
+   * Deletes the object
+   */
+  delete() {
+    const DeleteCommand = this.deleteCommand;
+    if (!DeleteCommand) {
+      throw new Error(deleteCommandNotImplementedError);
+    }
+
+    this.#undoRedoHandler.executeCommand(new DeleteCommand(this));
+  }
+
+  /**
+   * Get the inspectorComponents used for this object
+   * The child classes should extend this method to add their own components
+   * @returns {InspectorComponent[]} array of the inspectorComponents used
+   */
+  get inspectorComponents() {
+    return [this.#headerComponent];
+  }
+
+  /**
+   * Returns the command class used to update the name of the object
+   * @abstract
+   * @throws {Error}  Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command}
+   */
+  get updatePropertyCommand() {
+    throw new Error(methodMustBeImplementedError);
   }
 
   /**
@@ -146,18 +163,6 @@ export class CanvasObject extends Object3D {
    */
   get duplicateCommand() {
     throw new Error(methodMustBeImplementedError);
-  }
-
-  /**
-   * Deletes the object
-   */
-  delete() {
-    const DeleteCommand = this.deleteCommand;
-    if (!DeleteCommand) {
-      throw new Error("deleteCommand not implemented");
-    }
-
-    this.#undoRedoHandler.executeCommand(new DeleteCommand(this));
   }
 
   /**
