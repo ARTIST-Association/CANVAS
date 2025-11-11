@@ -1,35 +1,25 @@
-import { CanvasObject, loadGltf } from "canvasObject";
+import { loadGltf } from "canvasObject";
 import { DeleteHeliostatCommand } from "deleteCommands";
 import { DuplicateHeliostatCommand } from "duplicateCommands";
-import {
-  HeaderInspectorComponent,
-  SingleFieldInspectorComponent,
-  MultiFieldInspectorComponent,
-  InspectorComponent,
-} from "inspectorComponents";
-import { Vector3 } from "three";
+import { InspectorComponent } from "inspectorComponents";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { UpdateHeliostatCommand } from "updateCommands";
 import * as THREE from "three";
+import { Command } from "command";
+import { movableCanvasObject } from "movableCanvasObjects";
 
 /**
  * Class that represents the Heliostat object
  */
-export class Heliostat extends CanvasObject {
+export class Heliostat extends movableCanvasObject {
   /**
    * The api id used for this heliostat.
    * @type {number}
    */
   apiID;
-  #headerComponent;
-  #positionComponent;
-  #undoRedoHandler = UndoRedoHandler.getInstance();
-  #isMovable = true;
   /**
    * @type { string[] }
    */
-  #rotatableAxis = null;
-  #lastPosition;
 
   /**
    * Creates a Heliostat object
@@ -38,134 +28,44 @@ export class Heliostat extends CanvasObject {
    * @param {number} [apiID] The id for api usage
    */
   constructor(heliostatName, position, apiID = null) {
-    super(heliostatName);
+    super(heliostatName, UndoRedoHandler.getInstance(), position, "Heliostat");
     loadGltf("/static/models/heliostat.glb", this, true);
     this.position.copy(position);
-    this.#lastPosition = new Vector3(position.x, position.y, position.z);
     this.apiID = apiID;
-
-    // create components for inspector
-    this.#headerComponent = new HeaderInspectorComponent(
-      () => (this.objectName !== "" && this.objectName ? this.objectName : "Heliostat"),
-      (name) => this.updateAndSaveObjectName(name),
-      this,
-    );
-
-    const nCoordinate = new SingleFieldInspectorComponent(
-      "N",
-      "number",
-      () => this.position.x,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateHeliostatCommand(this, "position", new Vector3(newValue, this.position.y, this.position.z)),
-        );
-      },
-      -Infinity,
-    );
-
-    const uCoordinate = new SingleFieldInspectorComponent(
-      "U",
-      "number",
-      () => this.position.y,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateHeliostatCommand(this, "position", new Vector3(this.position.x, newValue, this.position.z)),
-        );
-      },
-      0,
-    );
-
-    const eCoordinate = new SingleFieldInspectorComponent(
-      "E",
-      "number",
-      () => this.position.z,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateHeliostatCommand(this, "position", new Vector3(this.position.x, this.position.y, newValue)),
-        );
-      },
-      -Infinity,
-    );
-
-    this.#positionComponent = new MultiFieldInspectorComponent("Position", [nCoordinate, uCoordinate, eCoordinate]);
   }
 
   /**
-   * Updates the position of the heliostat
-   * @param {THREE.Vector3} position the new position
+   * Returns the command class used to update the name of the object
+   * @returns {new (...args: any[]) => Command} the command class used to update the name
    */
-  updatePosition(position) {
-    this.position.copy(position);
-    this.#lastPosition = new Vector3(position.x, position.y, position.z);
+  get updatePropertyCommand() {
+    return UpdateHeliostatCommand;
   }
 
   /**
-   * Update and save the name of the object
-   * @param {string} name the new name for the object
+   * Returns the command class used to duplicate the object
+   * @returns {new (...args: any[]) => Command} the command class used to duplicate the object
    */
-  updateAndSaveObjectName(name) {
-    this.#undoRedoHandler.executeCommand(new UpdateHeliostatCommand(this, "objectName", name));
+  get duplicateCommand() {
+    return DuplicateHeliostatCommand;
   }
 
   /**
-   * Duplicate the object
+   * Returns the command class used to delete the object
+   * @returns {new (...args: any[]) => Command} the command class used to delete the object
    */
-  duplicate() {
-    this.#undoRedoHandler.executeCommand(new DuplicateHeliostatCommand(this));
-  }
-
-  /**
-   * Delete the object
-   */
-  delete() {
-    this.#undoRedoHandler.executeCommand(new DeleteHeliostatCommand(this));
-  }
-
-  /**
-   * Updates the position of the heliostat
-   * @param {Vector3} position - the new position of the heliostat
-   */
-  updateAndSaveObjectPosition(position) {
-    this.#undoRedoHandler.executeCommand(new UpdateHeliostatCommand(this, "position", position));
+  get deleteCommand() {
+    return DeleteHeliostatCommand;
   }
 
   /**
    * Get an array of all inspectorComponents for this object
+   * The inspectorComponents from the parent class are also included
+   * Header component is already included from CanvasObject class
+   * and position components from movableCanvasObject class
    * @returns {InspectorComponent[]} array of inspectorComponents
    */
   get inspectorComponents() {
-    return [this.#headerComponent, this.#positionComponent];
-  }
-
-  /**
-   * Get an array containing all rotatable axis
-   * @returns {string[]} containing all rotatable axis
-   */
-  get rotatableAxis() {
-    return this.#rotatableAxis;
-  }
-
-  /**
-   * Get whether the object is selectable
-   * @returns {boolean} whether the object is selectable
-   */
-  get isSelectable() {
-    return true;
-  }
-
-  /**
-   * Get whether the object is movable
-   * @returns {boolean} whether the object is movable
-   */
-  get isMovable() {
-    return this.#isMovable;
-  }
-
-  /**
-   * Get the current position of the object
-   * @returns {THREE.Vector3} the position of the object
-   */
-  get lastPosition() {
-    return this.#lastPosition;
+    return [...super.inspectorComponents];
   }
 }

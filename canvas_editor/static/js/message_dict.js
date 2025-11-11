@@ -10,3 +10,6 @@ export const methodMustBeImplementedError = "This method must be implemented in 
 export const invalidCompassStyleError = "Invalid compass style specified";
 export const projectIdRequiredError = "When executing get instance for the first time the project id is needed";
 export const errorUploadingFile = "Error uploading file:";
+export const updateNameCommandNotImplementedError = "updateNameCommand not implemented";
+export const duplicateCommandNotImplementedError = "duplicateCommand not implemented";
+export const deleteCommandNotImplementedError = "deleteCommand not implemented";
