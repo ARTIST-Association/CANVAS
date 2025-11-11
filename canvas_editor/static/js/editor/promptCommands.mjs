@@ -2,7 +2,8 @@ import { Modal } from "bootstrap";
 import { CommandPrompt } from "commandPrompt";
 import { abstractClassError, methodMustBeImplementedError } from "message_dict";
 import { ObjectManager } from "objectManager";
-import { SaveAndLoadHandler } from "saveAndLoadHandler";
+import * as cookieUtils from "cookieUtils";
+
 
 /**
  * Parent class of all prompt commands
@@ -389,7 +390,7 @@ export class ExportProjectPromptCommand extends PromptCommand {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": SaveAndLoadHandler.getCookie("csrftoken"),
+        "X-CSRFToken": cookieUtils.getCookie("csrftoken"),
       },
     })
       .then((response) => {
@@ -526,7 +527,7 @@ export class LogoutPromptCommand extends PromptCommand {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": SaveAndLoadHandler.getCookie("csrftoken"),
+        "X-CSRFToken": cookieUtils.getCookie("csrftoken"),
       },
     }).then(() => {
       window.location.href = window.location.origin;

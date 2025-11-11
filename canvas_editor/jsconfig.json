@@ -38,7 +38,8 @@
       "modeSelector": ["static/js/editor/modeSelector.mjs"],
       "projectOverviewHandler": ["static/js/editor/projectOverviewHandler.mjs"],
       "message_dict": ["static/js/message_dict.js"],
-      "path_dict": ["static/js/path_dict.js"]
+      "path_dict": ["static/js/path_dict.js"],
+      "cookieUtils": ["static/js/utils/cookieUtils.js"]
     }
   }
 }
