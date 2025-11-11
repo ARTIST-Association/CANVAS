@@ -3,7 +3,6 @@ import { Command } from "command";
 import { DeleteLightSourceCommand } from "deleteCommands";
 import { DuplicateLightSourceCommand } from "duplicateCommands";
 import {
-  HeaderInspectorComponent,
   SingleFieldInspectorComponent,
   SelectFieldInspectorComponent,
   InspectorComponent,
@@ -37,7 +36,6 @@ export class LightSource extends CanvasObject {
    */
   distributionCovariance;
 
-  #header;
   #numberOfRaysComponent;
   #lightsourceTypeComponent;
   #distributionTypeComponent;
@@ -63,9 +61,15 @@ export class LightSource extends CanvasObject {
     distributionType,
     distributionMean,
     distributionCovariance,
-    apiID = null,
+    apiID = null
   ) {
-    super(lightSourceName, UndoRedoHandler.getInstance(), null, false, false);
+    super(
+      lightSourceName,
+      UndoRedoHandler.getInstance(),
+      "Light Source",
+      false,
+      false
+    );
     this.apiID = apiID;
     this.numberOfRays = numberOfRays;
     this.lightSourceType = lightSourceType;
@@ -73,25 +77,16 @@ export class LightSource extends CanvasObject {
     this.distributionMean = distributionMean;
     this.distributionCovariance = distributionCovariance;
 
-    this.#header = new HeaderInspectorComponent(
-      () =>
-        this.objectName !== "" && this.objectName
-          ? this.objectName
-          : "Light source",
-      (newValue) => this.updateAndSaveObjectName(newValue),
-      this,
-    );
-
     this.#numberOfRaysComponent = new SingleFieldInspectorComponent(
       "Number of rays",
       "number",
       () => this.numberOfRays,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateLightsourceCommand(this, "numberOfRays", newValue),
+          new UpdateLightsourceCommand(this, "numberOfRays", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     this.#lightsourceTypeComponent = new SelectFieldInspectorComponent(
@@ -100,9 +95,9 @@ export class LightSource extends CanvasObject {
       () => this.lightSourceType,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateLightsourceCommand(this, "lightSourceType", newValue),
+          new UpdateLightsourceCommand(this, "lightSourceType", newValue)
         );
-      },
+      }
     );
 
     this.#distributionTypeComponent = new SelectFieldInspectorComponent(
@@ -111,9 +106,9 @@ export class LightSource extends CanvasObject {
       () => this.distributionType,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateLightsourceCommand(this, "distributionType", newValue),
+          new UpdateLightsourceCommand(this, "distributionType", newValue)
         );
-      },
+      }
     );
 
     this.#distributionMeanComponent = new SingleFieldInspectorComponent(
@@ -122,10 +117,10 @@ export class LightSource extends CanvasObject {
       () => this.distributionMean,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateLightsourceCommand(this, "distributionMean", newValue),
+          new UpdateLightsourceCommand(this, "distributionMean", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     this.#distributionCovarianceComponent = new SingleFieldInspectorComponent(
@@ -134,14 +129,10 @@ export class LightSource extends CanvasObject {
       () => this.distributionCovariance,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateLightsourceCommand(
-            this,
-            "distributionCovariance",
-            newValue,
-          ),
+          new UpdateLightsourceCommand(this, "distributionCovariance", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
   }
 
@@ -160,7 +151,7 @@ export class LightSource extends CanvasObject {
   get duplicateCommand() {
     return DuplicateLightSourceCommand;
   }
-  
+
   /**
    * Returns the command class used to delete the object
    * @returns {new (...args: any[]) => Command} the command class used to delete the object
@@ -175,7 +166,7 @@ export class LightSource extends CanvasObject {
    */
   get inspectorComponents() {
     return [
-      this.#header,
+      ...super.inspectorComponents,
       this.#numberOfRaysComponent,
       this.#lightsourceTypeComponent,
       this.#distributionTypeComponent,

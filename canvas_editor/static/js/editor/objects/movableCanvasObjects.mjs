@@ -1,12 +1,12 @@
 import { CanvasObject } from "canvasObject";
 import {
+  InspectorComponent,
   MultiFieldInspectorComponent,
   SingleFieldInspectorComponent,
 } from "inspectorComponents";
 import { Vector3 } from "three";
 
 export class movableCanvasObject extends CanvasObject {
-  #undoRedoHandler;
   #positionComponent;
   #lastPosition;
 
@@ -15,9 +15,8 @@ export class movableCanvasObject extends CanvasObject {
    * @param {string} movableObjectName the name of the movable object
    * @param {import("undoRedoHandler").UndoRedoHandler} undoRedoHandler the undo redo handler
    */
-  constructor(movableObjectName, undoRedoHandler, position) {
-    super(movableObjectName, undoRedoHandler, null, true, true);
-    this.#undoRedoHandler = undoRedoHandler;
+  constructor(movableObjectName, undoRedoHandler, position, defaultLabel) {
+    super(movableObjectName, undoRedoHandler, defaultLabel, true, true);
 
     this.#lastPosition = new Vector3(position.x, position.y, position.z);
 
@@ -26,7 +25,7 @@ export class movableCanvasObject extends CanvasObject {
       "number",
       () => this.position.x,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
+        this.undoRedoHandler.executeCommand(
           new this.updatePropertyCommand(
             this,
             "position",
@@ -42,7 +41,7 @@ export class movableCanvasObject extends CanvasObject {
       "number",
       () => this.position.y,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
+        this.undoRedoHandler.executeCommand(
           new this.updatePropertyCommand(
             this,
             "position",
@@ -58,7 +57,7 @@ export class movableCanvasObject extends CanvasObject {
       "number",
       () => this.position.z,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
+        this.undoRedoHandler.executeCommand(
           new this.updatePropertyCommand(
             this,
             "position",
@@ -76,10 +75,6 @@ export class movableCanvasObject extends CanvasObject {
     ]);
   }
 
-  get positionComponent() {
-    return this.#positionComponent;
-  }
-
   /**
    * Updates the position of the heliostat
    * @param {THREE.Vector3} position the new position
@@ -94,7 +89,7 @@ export class movableCanvasObject extends CanvasObject {
    * @param {Vector3} position - the new position of the heliostat
    */
   updateAndSaveObjectPosition(position) {
-    this.#undoRedoHandler.executeCommand(
+    this.undoRedoHandler.executeCommand(
       new this.updatePropertyCommand(this, "position", position)
     );
   }
@@ -104,5 +99,13 @@ export class movableCanvasObject extends CanvasObject {
    */
   get lastPosition() {
     return this.#lastPosition;
+  }
+
+  /**
+   * Get an array of all inspectorComponents used for this object
+   * @returns {InspectorComponent[]} array of all inspectorComponents
+   */
+  get inspectorComponents() {
+    return [...super.inspectorComponents, this.#positionComponent];
   }
 }

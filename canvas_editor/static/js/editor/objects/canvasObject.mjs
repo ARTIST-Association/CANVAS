@@ -1,4 +1,7 @@
-import { InspectorComponent } from "inspectorComponents";
+import {
+  HeaderInspectorComponent,
+  InspectorComponent,
+} from "inspectorComponents";
 import { Object3D, Vector3 } from "three";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -14,28 +17,49 @@ export class CanvasObject extends Object3D {
   #rotatableAxis;
   #isMovable;
   #isSelectable;
+  #headerComponent;
 
   /**
    * Creates a new selectable object
    * @param {string} name the name of the object
+   * @param {import("undoRedoHandler").UndoRedoHandler} undoRedoHandler the undo redo handler
+   * @param {string} defaultLabel the default label when no name is given
+   * @param {boolean} isMovable whether the object is movable
+   * @param {boolean} isSelectable whether the object is selectable
+   * @param {string[]} rotatableAxis containing all rotatable axis
    */
-  constructor(name, undoRedoHandler, rotatableAxis = [], isMovable, isSelectable) {
+  constructor(
+    name,
+    undoRedoHandler,
+    defaultLabel,
+    isMovable,
+    isSelectable,
+    rotatableAxis = []
+  ) {
     super();
     this.objectName = name;
     this.#undoRedoHandler = undoRedoHandler;
     this.#rotatableAxis = rotatableAxis;
     this.#isMovable = isMovable;
     this.#isSelectable = isSelectable;
+
+    this.#headerComponent = new HeaderInspectorComponent(
+      () =>
+        this.objectName !== "" && this.objectName
+          ? this.objectName
+          : defaultLabel,
+      (newValue) => this.updateAndSaveObjectName(newValue),
+      this
+    );
   }
 
   /**
-   * Get a list of inspector components used for this object
-   * @abstract
-   * @throws {Error}  Throws an error if the method is not implemented in subclasses.
-   * @returns {InspectorComponent[]} must be implemented in all subclasses
+   * Get the inspectorComponents used for this object
+   * The child classes should extend this method to add their own components
+   * @returns {InspectorComponent[]} array of the inspectorComponents used
    */
   get inspectorComponents() {
-    throw new Error(methodMustBeImplementedError);
+    return [this.#headerComponent];
   }
 
   /**
@@ -51,7 +75,7 @@ export class CanvasObject extends Object3D {
     }
 
     this.#undoRedoHandler.executeCommand(
-      new UpdatePropertyCommand(this, "objectName", name),
+      new UpdatePropertyCommand(this, "objectName", name)
     );
   }
 
@@ -106,12 +130,12 @@ export class CanvasObject extends Object3D {
    * @returns {void}
    */
   duplicate() {
-      const DuplicateCommand = this.duplicateCommand;
-  if (!DuplicateCommand) {
-    throw new Error("duplicateCommand not implemented");
-  }
+    const DuplicateCommand = this.duplicateCommand;
+    if (!DuplicateCommand) {
+      throw new Error("duplicateCommand not implemented");
+    }
 
-  this.#undoRedoHandler.executeCommand(new DuplicateCommand(this));
+    this.#undoRedoHandler.executeCommand(new DuplicateCommand(this));
   }
 
   /**
@@ -129,11 +153,11 @@ export class CanvasObject extends Object3D {
    */
   delete() {
     const DeleteCommand = this.deleteCommand;
-  if (!DeleteCommand) {
-    throw new Error("deleteCommand not implemented");
-  }
+    if (!DeleteCommand) {
+      throw new Error("deleteCommand not implemented");
+    }
 
-  this.#undoRedoHandler.executeCommand(new DeleteCommand(this));
+    this.#undoRedoHandler.executeCommand(new DeleteCommand(this));
   }
 
   /**
@@ -188,6 +212,14 @@ export class CanvasObject extends Object3D {
    */
   get lastRotation() {
     throw new Error(methodMustBeImplementedError);
+  }
+
+  /**
+   * Returns the undoRedoHandler used for this object
+   * @returns {import("undoRedoHandler").UndoRedoHandler} the undoRedoHandler
+   */
+  get undoRedoHandler() {
+    return this.#undoRedoHandler;
   }
 }
 

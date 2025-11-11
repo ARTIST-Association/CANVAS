@@ -2,7 +2,6 @@ import { loadGltf } from "canvasObject";
 import { DeleteReceiverCommand } from "deleteCommands";
 import { DuplicateReceiverCommand } from "duplicateCommands";
 import {
-  HeaderInspectorComponent,
   SingleFieldInspectorComponent,
   MultiFieldInspectorComponent,
   SelectFieldInspectorComponent,
@@ -61,7 +60,6 @@ export class Receiver extends movableCanvasObject {
   #top;
   #base;
 
-  #headerComponent;
   #normalVectorComponent;
   #towerTypeComponent;
   #curvatureComponent;
@@ -95,7 +93,7 @@ export class Receiver extends movableCanvasObject {
     curvatureU,
     apiID = null
   ) {
-    super(receiverName, UndoRedoHandler.getInstance(), position);
+    super(receiverName, UndoRedoHandler.getInstance(), position, "Receiver");
     // place the 3D object
     this.#base = new ReceiverBase();
     this.add(this.#base);
@@ -114,16 +112,6 @@ export class Receiver extends movableCanvasObject {
     this.resolutionU = resolutionU;
     this.curvatureE = curvatureE;
     this.curvatureU = curvatureU;
-
-    // create components for the inspector
-    this.#headerComponent = new HeaderInspectorComponent(
-      () =>
-        this.objectName !== "" && this.objectName
-          ? this.objectName
-          : "Receiver",
-      (name) => this.updateAndSaveObjectName(name),
-      this
-    );
 
     const nNormalVector = new SingleFieldInspectorComponent(
       "N",
@@ -324,8 +312,7 @@ export class Receiver extends movableCanvasObject {
    */
   get inspectorComponents() {
     return [
-      this.#headerComponent,
-      super.positionComponent,
+      ...super.inspectorComponents,
       this.#normalVectorComponent,
       this.#towerTypeComponent,
       this.#curvatureComponent,

@@ -1,11 +1,7 @@
 import { loadGltf } from "canvasObject";
 import { DeleteHeliostatCommand } from "deleteCommands";
 import { DuplicateHeliostatCommand } from "duplicateCommands";
-import {
-  HeaderInspectorComponent,
-  InspectorComponent,
-} from "inspectorComponents";
-import { Vector3 } from "three";
+import { InspectorComponent } from "inspectorComponents";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { UpdateHeliostatCommand } from "updateCommands";
 import * as THREE from "three";
@@ -21,7 +17,6 @@ export class Heliostat extends movableCanvasObject {
    * @type {number}
    */
   apiID;
-  #headerComponent;
   /**
    * @type { string[] }
    */
@@ -33,20 +28,10 @@ export class Heliostat extends movableCanvasObject {
    * @param {number} [apiID] The id for api usage
    */
   constructor(heliostatName, position, apiID = null) {
-    super(heliostatName, UndoRedoHandler.getInstance(), position);
+    super(heliostatName, UndoRedoHandler.getInstance(), position, "Heliostat");
     loadGltf("/static/models/heliostat.glb", this, true);
     this.position.copy(position);
     this.apiID = apiID;
-
-    // create components for inspector
-    this.#headerComponent = new HeaderInspectorComponent(
-      () =>
-        this.objectName !== "" && this.objectName
-          ? this.objectName
-          : "Heliostat",
-      (name) => this.updateAndSaveObjectName(name),
-      this
-    );
   }
 
   /**
@@ -78,6 +63,6 @@ export class Heliostat extends movableCanvasObject {
    * @returns {InspectorComponent[]} array of inspectorComponents
    */
   get inspectorComponents() {
-    return [this.#headerComponent, super.positionComponent];
+    return [...super.inspectorComponents];
   }
 }
