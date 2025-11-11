@@ -1,7 +1,4 @@
-import {
-  HeaderInspectorComponent,
-  InspectorComponent,
-} from "inspectorComponents";
+import { HeaderInspectorComponent, InspectorComponent } from "inspectorComponents";
 import { Object3D, Vector3 } from "three";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -33,14 +30,7 @@ export class CanvasObject extends Object3D {
    * @param {boolean} isSelectable whether the object is selectable
    * @param {string[]} rotatableAxis containing all rotatable axis
    */
-  constructor(
-    name,
-    undoRedoHandler,
-    defaultLabel,
-    isMovable,
-    isSelectable,
-    rotatableAxis = []
-  ) {
+  constructor(name, undoRedoHandler, defaultLabel, isMovable, isSelectable, rotatableAxis = []) {
     super();
     this.objectName = name;
     this.#undoRedoHandler = undoRedoHandler;
@@ -49,12 +39,9 @@ export class CanvasObject extends Object3D {
     this.#isSelectable = isSelectable;
 
     this.#headerComponent = new HeaderInspectorComponent(
-      () =>
-        this.objectName !== "" && this.objectName
-          ? this.objectName
-          : defaultLabel,
+      () => (this.objectName !== "" && this.objectName ? this.objectName : defaultLabel),
       (newValue) => this.updateAndSaveObjectName(newValue),
-      this
+      this,
     );
   }
 
@@ -70,9 +57,7 @@ export class CanvasObject extends Object3D {
       throw new Error(updateNameCommandNotImplementedError);
     }
 
-    this.#undoRedoHandler.executeCommand(
-      new UpdatePropertyCommand(this, "objectName", name)
-    );
+    this.#undoRedoHandler.executeCommand(new UpdatePropertyCommand(this, "objectName", name));
   }
 
   /**

@@ -1,9 +1,5 @@
 import { CanvasObject } from "canvasObject";
-import {
-  InspectorComponent,
-  MultiFieldInspectorComponent,
-  SingleFieldInspectorComponent,
-} from "inspectorComponents";
+import { InspectorComponent, MultiFieldInspectorComponent, SingleFieldInspectorComponent } from "inspectorComponents";
 import { Vector3 } from "three";
 
 /**
@@ -33,14 +29,10 @@ export class movableCanvasObject extends CanvasObject {
       () => this.position.x,
       (newValue) => {
         this.undoRedoHandler.executeCommand(
-          new this.updatePropertyCommand(
-            this,
-            "position",
-            new Vector3(newValue, this.position.y, this.position.z)
-          )
+          new this.updatePropertyCommand(this, "position", new Vector3(newValue, this.position.y, this.position.z)),
         );
       },
-      -Infinity
+      -Infinity,
     );
 
     const uCoordinate = new SingleFieldInspectorComponent(
@@ -49,14 +41,10 @@ export class movableCanvasObject extends CanvasObject {
       () => this.position.y,
       (newValue) => {
         this.undoRedoHandler.executeCommand(
-          new this.updatePropertyCommand(
-            this,
-            "position",
-            new Vector3(this.position.x, newValue, this.position.z)
-          )
+          new this.updatePropertyCommand(this, "position", new Vector3(this.position.x, newValue, this.position.z)),
         );
       },
-      0
+      0,
     );
 
     const eCoordinate = new SingleFieldInspectorComponent(
@@ -65,21 +53,13 @@ export class movableCanvasObject extends CanvasObject {
       () => this.position.z,
       (newValue) => {
         this.undoRedoHandler.executeCommand(
-          new this.updatePropertyCommand(
-            this,
-            "position",
-            new Vector3(this.position.x, this.position.y, newValue)
-          )
+          new this.updatePropertyCommand(this, "position", new Vector3(this.position.x, this.position.y, newValue)),
         );
       },
-      -Infinity
+      -Infinity,
     );
 
-    this.#positionComponent = new MultiFieldInspectorComponent("Position", [
-      nCoordinate,
-      uCoordinate,
-      eCoordinate,
-    ]);
+    this.#positionComponent = new MultiFieldInspectorComponent("Position", [nCoordinate, uCoordinate, eCoordinate]);
   }
 
   /**
@@ -96,9 +76,7 @@ export class movableCanvasObject extends CanvasObject {
    * @param {Vector3} position - the new position of the heliostat
    */
   updateAndSaveObjectPosition(position) {
-    this.undoRedoHandler.executeCommand(
-      new this.updatePropertyCommand(this, "position", position)
-    );
+    this.undoRedoHandler.executeCommand(new this.updatePropertyCommand(this, "position", position));
   }
   /**
    * Get the current position of the object

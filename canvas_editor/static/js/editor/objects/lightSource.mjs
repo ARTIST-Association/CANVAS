@@ -57,7 +57,7 @@ export class LightSource extends CanvasObject {
     distributionType,
     distributionMean,
     distributionCovariance,
-    apiID = null
+    apiID = null,
   ) {
     super(lightSourceName, UndoRedoHandler.getInstance(), "Light Source", false, false);
     this.apiID = apiID;
@@ -74,7 +74,7 @@ export class LightSource extends CanvasObject {
       (newValue) => {
         this.#undoRedoHandler.executeCommand(new UpdateLightsourceCommand(this, "numberOfRays", newValue));
       },
-      -Infinity
+      -Infinity,
     );
 
     this.#lightsourceTypeComponent = new SelectFieldInspectorComponent(
@@ -83,7 +83,7 @@ export class LightSource extends CanvasObject {
       () => this.lightSourceType,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(new UpdateLightsourceCommand(this, "lightSourceType", newValue));
-      }
+      },
     );
 
     this.#distributionTypeComponent = new SelectFieldInspectorComponent(
@@ -92,7 +92,7 @@ export class LightSource extends CanvasObject {
       () => this.distributionType,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(new UpdateLightsourceCommand(this, "distributionType", newValue));
-      }
+      },
     );
 
     this.#distributionMeanComponent = new SingleFieldInspectorComponent(
@@ -102,7 +102,7 @@ export class LightSource extends CanvasObject {
       (newValue) => {
         this.#undoRedoHandler.executeCommand(new UpdateLightsourceCommand(this, "distributionMean", newValue));
       },
-      -Infinity
+      -Infinity,
     );
 
     this.#distributionCovarianceComponent = new SingleFieldInspectorComponent(
@@ -112,7 +112,7 @@ export class LightSource extends CanvasObject {
       (newValue) => {
         this.#undoRedoHandler.executeCommand(new UpdateLightsourceCommand(this, "distributionCovariance", newValue));
       },
-      -Infinity
+      -Infinity,
     );
   }
 
