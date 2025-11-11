@@ -16,9 +16,7 @@ class RegisterForm(forms.Form):
     last_name = forms.CharField(label="Last name")
     email = forms.EmailField(label="Email")
     password = forms.CharField(label="password", widget=forms.PasswordInput)
-    password_confirmation = forms.CharField(
-        label="Confirm password", widget=forms.PasswordInput
-    )
+    password_confirmation = forms.CharField(label="Confirm password", widget=forms.PasswordInput)
 
     def clean_email(self) -> str:
         """Check if the email already exists."""
@@ -42,9 +40,7 @@ class RegisterForm(forms.Form):
             self.add_error("password", message_dict.password_uppercase_criterion_text)
         if not any(char.islower() for char in password):
             self.add_error("password", message_dict.password_lowercase_criterion_text)
-        if not any(
-            char in message_dict.password_special_characters for char in password
-        ):
+        if not any(char in message_dict.password_special_characters for char in password):
             self.add_error(
                 "password",
                 message_dict.password_special_char_criterion_text,

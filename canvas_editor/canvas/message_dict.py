@@ -6,24 +6,16 @@ password_length_criterion_text = "Password must be at least 8 characters long."
 password_digit_criterion_text = "Password must contain at least one digit."
 """Message for requiring at least one digit in the password."""
 
-password_uppercase_criterion_text = (
-    "Password must contain at least one uppercase letter."
-)
+password_uppercase_criterion_text = "Password must contain at least one uppercase letter."
 """Message for requiring at least one uppercase letter in the password."""
 
-password_lowercase_criterion_text = (
-    "Password must contain at least one lowercase letter."
-)
+password_lowercase_criterion_text = "Password must contain at least one lowercase letter."
 """Message for requiring at least one lowercase letter in the password."""
 
-password_match_criterion_text = (
-    "The passwords you entered do not match. Please try again."
-)
+password_match_criterion_text = "The passwords you entered do not match. Please try again."
 """Message shown when password entries do not match."""
 
-password_special_char_criterion_text = (
-    "Password must contain at least one special character (!@#$%^&*()-_+=<>?/)."
-)
+password_special_char_criterion_text = "Password must contain at least one special character (!@#$%^&*()-_+=<>?/)."
 """Message for requiring at least one special character in the password."""
 
 password_special_characters = "!@#$%^&*()-_+=<>?/"

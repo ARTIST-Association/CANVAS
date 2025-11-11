@@ -26,11 +26,7 @@ export default defineConfig([
       "jsdoc/require-description": [
         "warn",
         {
-          contexts: [
-            "FunctionDeclaration",
-            "MethodDefinition",
-            "ClassDeclaration",
-          ],
+          contexts: ["FunctionDeclaration", "MethodDefinition", "ClassDeclaration"],
         },
       ],
     },

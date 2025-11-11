@@ -152,9 +152,7 @@ class UpdateAccountTest(TestCase):
         self.assertEqual(self.user.last_name, TEST_LAST_NAME)
         self.assertEqual(self.user.email, TEST_EMAIL)
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(
-            any(message_dict.email_already_in_use_text in str(msg) for msg in messages)
-        )
+        self.assertTrue(any(message_dict.email_already_in_use_text in str(msg) for msg in messages))
 
     def test_post_from_projects_page(self):
         """
@@ -276,9 +274,7 @@ class UpdateAccountTest(TestCase):
         self.profile.save()
 
         first_picture_path = f"users/{self.user.id}/old_profile_picture"
-        self.assertTrue(
-            self.profile.profile_picture.name.startswith(first_picture_path)
-        )
+        self.assertTrue(self.profile.profile_picture.name.startswith(first_picture_path))
 
         # Second profile picture upload
         image2 = Image.new("RGB", (100, 100), color="red")
@@ -303,9 +299,7 @@ class UpdateAccountTest(TestCase):
 
         # Verify the new image was saved
         first_picture_path = f"users/{self.user.id}/new_profile_picture"
-        self.assertTrue(
-            self.profile.profile_picture.name.startswith(first_picture_path)
-        )
+        self.assertTrue(self.profile.profile_picture.name.startswith(first_picture_path))
         # Verify the old image was deleted
         self.assertFalse(os.path.exists(first_picture_path))
 
@@ -344,9 +338,7 @@ class UpdateAccountTest(TestCase):
         self.profile.refresh_from_db()
 
         # Verify profile picture is default picture
-        self.assertEqual(
-            self.profile.profile_picture.name, path_dict.default_profile_pic
-        )
+        self.assertEqual(self.profile.profile_picture.name, path_dict.default_profile_pic)
 
         # Verify the old image was deleted
         self.assertFalse(os.path.exists(expected_path))

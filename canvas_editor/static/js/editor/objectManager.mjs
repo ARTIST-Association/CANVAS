@@ -1,11 +1,7 @@
 import { Picker } from "picker";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { Vector3 } from "three";
-import {
-  CreateReceiverCommand,
-  CreateHeliostatCommand,
-  CreateLightSourceCommand,
-} from "createCommands";
+import { CreateReceiverCommand, CreateHeliostatCommand, CreateLightSourceCommand } from "createCommands";
 import { Heliostat } from "heliostat";
 import { LightSource } from "lightSource";
 import { Receiver } from "receiver";
@@ -50,18 +46,7 @@ export class ObjectManager {
    * Method to create a receiver
    */
   createReceiver() {
-    const receiver = new Receiver(
-      "Receiver",
-      new Vector3(0, 50, 0),
-      new Vector3(0, 0, 0),
-      "round",
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-    );
+    const receiver = new Receiver("Receiver", new Vector3(0, 50, 0), new Vector3(0, 0, 0), "round", 0, 0, 0, 0, 0, 0);
     this.#undoRedoHandler.executeCommand(new CreateReceiverCommand(receiver));
 
     this.#picker.setSelection([receiver]);
@@ -71,17 +56,8 @@ export class ObjectManager {
    * Method to create a light source
    */
   createLightSource() {
-    const lightSource = new LightSource(
-      "Lightsource",
-      1,
-      "sun",
-      "normal",
-      1,
-      1,
-    );
-    this.#undoRedoHandler.executeCommand(
-      new CreateLightSourceCommand(lightSource),
-    );
+    const lightSource = new LightSource("Lightsource", 1, "sun", "normal", 1, 1);
+    this.#undoRedoHandler.executeCommand(new CreateLightSourceCommand(lightSource));
     this.#picker.setSelection([lightSource]);
   }
 

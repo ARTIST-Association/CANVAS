@@ -71,27 +71,19 @@ class HDF5Manager:
         scenario_path = HDF5Manager._prepare_paths(user, project)
 
         # Include the power plant configuration.
-        power_plant_config = PowerPlantConfig(
-            power_plant_position=torch.tensor([0.0, 0.0, 0.0], device=device)
-        )
+        power_plant_config = PowerPlantConfig(power_plant_position=torch.tensor([0.0, 0.0, 0.0], device=device))
 
         # Include the target area configuration.
-        target_area_list_config = HDF5Manager._create_target_area_config(
-            project=project, device=device
-        )
+        target_area_list_config = HDF5Manager._create_target_area_config(project=project, device=device)
 
         # Include the light source configuration.
-        light_source_list_config = HDF5Manager._create_light_source_config(
-            project=project, device=device
-        )
+        light_source_list_config = HDF5Manager._create_light_source_config(project=project, device=device)
 
         # Include the prototype configuration.
         prototype_config = HDF5Manager._create_prototype_config(device=device)
 
         # Include the heliostat prototype config.
-        heliostats_list_config = HDF5Manager._create_heliostat_config(
-            project=project, device=device
-        )
+        heliostats_list_config = HDF5Manager._create_heliostat_config(project=project, device=device)
 
         # Initialize the scenario generator with the provided configurations.
         scenario_generator = H5ScenarioGenerator(
@@ -120,14 +112,10 @@ class HDF5Manager:
         os.makedirs(scenario_dir, exist_ok=True)
 
         # The following parameter is the name of the scenario.
-        scenario_path = pathlib.Path(
-            f"{scenario_dir}/{user.id}_{project.name}{SCENARIO_FILE_SUFFIX}"
-        )
+        scenario_path = pathlib.Path(f"{scenario_dir}/{user.id}_{project.name}{SCENARIO_FILE_SUFFIX}")
         # This checks to make sure the path you defined is valid and a scenario HDF5 can be saved there.
         if not pathlib.Path(scenario_path).parent.is_dir():
-            raise FileNotFoundError(
-                folder_not_found_text.format(pathlib.Path(scenario_path).parent)
-            )
+            raise FileNotFoundError(folder_not_found_text.format(pathlib.Path(scenario_path).parent))
 
         return scenario_path
 
@@ -146,17 +134,13 @@ class HDF5Manager:
             canting,
             surface_points_with_facets_list,
             surface_normals_with_facets_list,
-        ) = stral_scenario_parser.extract_stral_deflectometry_data(
-            stral_file_path=stral_file_path, device=device
-        )
+        ) = stral_scenario_parser.extract_stral_deflectometry_data(stral_file_path=stral_file_path, device=device)
 
         # Generate surface configuration from STRAL data.
         surface_generator = SurfaceGenerator(device=device)
 
         # Please leave the optimizable parameters empty, they will automatically be added for the surface fit.
-        nurbs_fit_optimizer = torch.optim.Adam(
-            [torch.empty(1, requires_grad=True)], lr=1e-3
-        )
+        nurbs_fit_optimizer = torch.optim.Adam([torch.empty(1, requires_grad=True)], lr=1e-3)
         nurbs_fit_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             nurbs_fit_optimizer,
             **{
@@ -186,18 +170,14 @@ class HDF5Manager:
         #     canting=canting,
         #     device=device,
         # )
-        surface_prototype_config = SurfacePrototypeConfig(
-            facet_list=surface_config.facet_list
-        )
+        surface_prototype_config = SurfacePrototypeConfig(facet_list=surface_config.facet_list)
         return surface_prototype_config
 
     @staticmethod
     def _create_prototype_config(device: torch.device) -> PrototypeConfig:
         """Build the prototype configuration for the project."""
         # Build the surface prototype from the STRAL file.
-        surface_prototype_config = HDF5Manager._create_surface_prototype_from_stral(
-            device=device
-        )
+        surface_prototype_config = HDF5Manager._create_surface_prototype_from_stral(device=device)
 
         # Include the kinematic prototype configuration.
         kinematic_prototype_config = KinematicPrototypeConfig(
@@ -225,9 +205,7 @@ class HDF5Manager:
         actuator_prototype_list = [actuator1_prototype, actuator2_prototype]
 
         # Include the actuator prototype config.
-        actuator_prototype_config = ActuatorPrototypeConfig(
-            actuator_list=actuator_prototype_list
-        )
+        actuator_prototype_config = ActuatorPrototypeConfig(actuator_list=actuator_prototype_list)
 
         # Include the final prototype config.
         prototype_config = PrototypeConfig(
@@ -291,9 +269,7 @@ class HDF5Manager:
             light_source_list.append(light_source_config)
 
         # Include the configuration for the list of light sources.
-        light_source_list_config = LightSourceListConfig(
-            light_source_list=light_source_list
-        )
+        light_source_list_config = LightSourceListConfig(light_source_list=light_source_list)
         return light_source_list_config
 
     @staticmethod
@@ -344,17 +320,11 @@ class HDF5Manager:
         """
         with h5py.File(project_file, "r") as hdf5_file:
             # create the heliostats from the hdf5 file
-            HDF5Manager._create_heliostats_from_hdf5_file(
-                h5f=hdf5_file, new_project=new_project
-            )
+            HDF5Manager._create_heliostats_from_hdf5_file(h5f=hdf5_file, new_project=new_project)
             # creates the light sources from the hdf5 file
-            HDF5Manager._create_light_sources_from_hdf5_file(
-                h5f=hdf5_file, new_project=new_project
-            )
+            HDF5Manager._create_light_sources_from_hdf5_file(h5f=hdf5_file, new_project=new_project)
             # creates the receivers from the hdf5 file
-            HDF5Manager._create_receivers_from_hdf5_file(
-                h5f=hdf5_file, new_project=new_project
-            )
+            HDF5Manager._create_receivers_from_hdf5_file(h5f=hdf5_file, new_project=new_project)
 
     @staticmethod
     def _create_heliostats_from_hdf5_file(h5f: h5py.File, new_project: Project):
@@ -384,20 +354,12 @@ class HDF5Manager:
         if light_sources_group is not None:
             for light_source_object in light_sources_group:
                 light_source = light_sources_group[light_source_object]
-                number_of_rays = light_source[
-                    config_dictionary.light_source_number_of_rays
-                ]
+                number_of_rays = light_source[config_dictionary.light_source_number_of_rays]
                 light_source_type = light_source[config_dictionary.light_source_type]
 
-                distribution_params = light_source[
-                    config_dictionary.light_source_distribution_parameters
-                ]
-                covariance = distribution_params[
-                    config_dictionary.light_source_covariance
-                ]
-                distribution_type = distribution_params[
-                    config_dictionary.light_source_distribution_type
-                ]
+                distribution_params = light_source[config_dictionary.light_source_distribution_parameters]
+                covariance = distribution_params[config_dictionary.light_source_covariance]
+                distribution_type = distribution_params[config_dictionary.light_source_distribution_type]
                 mean = distribution_params[config_dictionary.light_source_mean]
 
                 LightSource.objects.create(
