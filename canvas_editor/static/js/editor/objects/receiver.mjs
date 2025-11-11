@@ -62,13 +62,11 @@ export class Receiver extends movableCanvasObject {
   #base;
 
   #headerComponent;
-  #positionComponent;
   #normalVectorComponent;
   #towerTypeComponent;
   #curvatureComponent;
   #planeComponent;
   #resolutionComponent;
-  #lastPosition;
 
   /**
    * Creates a Receiver object
@@ -95,9 +93,9 @@ export class Receiver extends movableCanvasObject {
     resolutionU,
     curvatureE,
     curvatureU,
-    apiID = null,
+    apiID = null
   ) {
-    super(receiverName, UndoRedoHandler.getInstance());
+    super(receiverName, UndoRedoHandler.getInstance(), position);
     // place the 3D object
     this.#base = new ReceiverBase();
     this.add(this.#base);
@@ -116,7 +114,6 @@ export class Receiver extends movableCanvasObject {
     this.resolutionU = resolutionU;
     this.curvatureE = curvatureE;
     this.curvatureU = curvatureU;
-    this.#lastPosition = new Vector3(position.x, position.y, position.z);
 
     // create components for the inspector
     this.#headerComponent = new HeaderInspectorComponent(
@@ -125,62 +122,8 @@ export class Receiver extends movableCanvasObject {
           ? this.objectName
           : "Receiver",
       (name) => this.updateAndSaveObjectName(name),
-      this,
+      this
     );
-
-    const nCoordinate = new SingleFieldInspectorComponent(
-      "N",
-      "number",
-      () => this.lastPosition.x,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(
-            this,
-            "position",
-            new Vector3(newValue, this.position.y, this.position.z),
-          ),
-        );
-      },
-      -Infinity,
-    );
-
-    const uCoordinate = new SingleFieldInspectorComponent(
-      "U",
-      "number",
-      () => this.lastPosition.y,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(
-            this,
-            "position",
-            new Vector3(this.position.x, newValue, this.position.z),
-          ),
-        );
-      },
-      0,
-    );
-
-    const eCoordinate = new SingleFieldInspectorComponent(
-      "E",
-      "number",
-      () => this.lastPosition.z,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(
-            this,
-            "position",
-            new Vector3(this.position.x, this.position.y, newValue),
-          ),
-        );
-      },
-      -Infinity,
-    );
-
-    this.#positionComponent = new MultiFieldInspectorComponent("Position", [
-      nCoordinate,
-      uCoordinate,
-      eCoordinate,
-    ]);
 
     const nNormalVector = new SingleFieldInspectorComponent(
       "N",
@@ -191,11 +134,11 @@ export class Receiver extends movableCanvasObject {
           new UpdateReceiverCommand(
             this,
             "normalVector",
-            new Vector3(newValue, this.normalVector.y, this.normalVector.z),
-          ),
+            new Vector3(newValue, this.normalVector.y, this.normalVector.z)
+          )
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     const uNormalVector = new SingleFieldInspectorComponent(
@@ -207,11 +150,11 @@ export class Receiver extends movableCanvasObject {
           new UpdateReceiverCommand(
             this,
             "normalVector",
-            new Vector3(this.normalVector.x, newValue, this.normalVector.z),
-          ),
+            new Vector3(this.normalVector.x, newValue, this.normalVector.z)
+          )
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     const eNormalVector = new SingleFieldInspectorComponent(
@@ -223,16 +166,16 @@ export class Receiver extends movableCanvasObject {
           new UpdateReceiverCommand(
             this,
             "normalVector",
-            new Vector3(this.normalVector.x, this.normalVector.y, newValue),
-          ),
+            new Vector3(this.normalVector.x, this.normalVector.y, newValue)
+          )
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     this.#normalVectorComponent = new MultiFieldInspectorComponent(
       "Normal Vector",
-      [nNormalVector, uNormalVector, eNormalVector],
+      [nNormalVector, uNormalVector, eNormalVector]
     );
 
     this.#towerTypeComponent = new SelectFieldInspectorComponent(
@@ -241,9 +184,9 @@ export class Receiver extends movableCanvasObject {
       () => this.towerType,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "towerType", newValue),
+          new UpdateReceiverCommand(this, "towerType", newValue)
         );
-      },
+      }
     );
 
     const eCurvature = new SingleFieldInspectorComponent(
@@ -252,10 +195,10 @@ export class Receiver extends movableCanvasObject {
       () => this.curvatureE,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "curvatureE", newValue),
+          new UpdateReceiverCommand(this, "curvatureE", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     const uCurvature = new SingleFieldInspectorComponent(
@@ -264,10 +207,10 @@ export class Receiver extends movableCanvasObject {
       () => this.curvatureU,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "curvatureU", newValue),
+          new UpdateReceiverCommand(this, "curvatureU", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     this.#curvatureComponent = new MultiFieldInspectorComponent("Curvature", [
@@ -281,10 +224,10 @@ export class Receiver extends movableCanvasObject {
       () => this.planeE,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "planeE", newValue),
+          new UpdateReceiverCommand(this, "planeE", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     const uPlane = new SingleFieldInspectorComponent(
@@ -293,10 +236,10 @@ export class Receiver extends movableCanvasObject {
       () => this.planeU,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "planeU", newValue),
+          new UpdateReceiverCommand(this, "planeU", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     this.#planeComponent = new MultiFieldInspectorComponent("Plane", [
@@ -310,10 +253,10 @@ export class Receiver extends movableCanvasObject {
       () => this.resolutionE,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "resolutionE", newValue),
+          new UpdateReceiverCommand(this, "resolutionE", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     const uResolution = new SingleFieldInspectorComponent(
@@ -322,10 +265,10 @@ export class Receiver extends movableCanvasObject {
       () => this.resolutionU,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "resolutionU", newValue),
+          new UpdateReceiverCommand(this, "resolutionU", newValue)
         );
       },
-      -Infinity,
+      -Infinity
     );
 
     this.#resolutionComponent = new MultiFieldInspectorComponent("Resolution", [
@@ -343,22 +286,11 @@ export class Receiver extends movableCanvasObject {
   }
 
   /**
-   * Updates the position of the receiver
-   * @param {Vector3} position - the new position of the receiver
-   */
-  updateAndSaveObjectPosition(position) {
-    this.#undoRedoHandler.executeCommand(
-      new UpdateReceiverCommand(this, "position", position),
-    );
-  }
-
-  /**
    * Updates the receiver’s position by adjusting both the base and the top, ensuring that the base remains on the ground.
    * @param {THREE.Vector3} position the new position of the receiver
    */
   updatePosition(position) {
-    this.position.copy(position);
-    this.#lastPosition = new Vector3(position.x, position.y, position.z);
+    super.updatePosition(position);
     this.#base.position.y = -position.y;
   }
 
@@ -387,21 +319,13 @@ export class Receiver extends movableCanvasObject {
   }
 
   /**
-   * Get the current position of the object
-   * @returns {THREE.Vector3} the current position
-   */
-  get lastPosition() {
-    return this.#lastPosition;
-  }
-
-  /**
    * Get the inspectorComponents used for this object
    * @returns {InspectorComponent[]} array of the inspectorComponents used
    */
   get inspectorComponents() {
     return [
       this.#headerComponent,
-      this.#positionComponent,
+      super.positionComponent,
       this.#normalVectorComponent,
       this.#towerTypeComponent,
       this.#curvatureComponent,
