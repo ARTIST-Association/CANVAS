@@ -1,4 +1,4 @@
-import { CanvasObject, loadGltf } from "canvasObject";
+import { loadGltf } from "canvasObject";
 import { DeleteReceiverCommand } from "deleteCommands";
 import { DuplicateReceiverCommand } from "duplicateCommands";
 import {
@@ -14,11 +14,12 @@ import { UpdateReceiverCommand } from "updateCommands";
 import * as THREE from "three";
 import { towerBasePath, towerTopPath } from "path_dict";
 import { Command } from "command";
+import { movableCanvasObject } from "movableCanvasObjects";
 
 /**
  * Class that represents the receiver object
  */
-export class Receiver extends CanvasObject {
+export class Receiver extends movableCanvasObject {
   /**
    * The apiID used for this receiver
    */
@@ -96,7 +97,7 @@ export class Receiver extends CanvasObject {
     curvatureU,
     apiID = null,
   ) {
-    super(receiverName, UndoRedoHandler.getInstance(), null, true, true);
+    super(receiverName, UndoRedoHandler.getInstance());
     // place the 3D object
     this.#base = new ReceiverBase();
     this.add(this.#base);

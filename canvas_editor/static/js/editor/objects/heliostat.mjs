@@ -1,4 +1,4 @@
-import { CanvasObject, loadGltf } from "canvasObject";
+import { loadGltf } from "canvasObject";
 import { DeleteHeliostatCommand } from "deleteCommands";
 import { DuplicateHeliostatCommand } from "duplicateCommands";
 import {
@@ -12,11 +12,12 @@ import { UndoRedoHandler } from "undoRedoHandler";
 import { UpdateHeliostatCommand } from "updateCommands";
 import * as THREE from "three";
 import { Command } from "command";
+import { movableCanvasObject } from "movableCanvasObjects";
 
 /**
  * Class that represents the Heliostat object
  */
-export class Heliostat extends CanvasObject {
+export class Heliostat extends movableCanvasObject {
   /**
    * The api id used for this heliostat.
    * @type {number}
@@ -37,7 +38,7 @@ export class Heliostat extends CanvasObject {
    * @param {number} [apiID] The id for api usage
    */
   constructor(heliostatName, position, apiID = null) {
-    super(heliostatName, UndoRedoHandler.getInstance(), null, true, true);
+    super(heliostatName, UndoRedoHandler.getInstance());
     loadGltf("/static/models/heliostat.glb", this, true);
     this.position.copy(position);
     this.#lastPosition = new Vector3(position.x, position.y, position.z);
