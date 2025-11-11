@@ -45,9 +45,7 @@ class PasswordForgottenView(FormView):
         text_message = strip_tags(html_message)
 
         to_email = user.email
-        email = EmailMultiAlternatives(
-            subject, text_message, settings.EMAIL_FROM, [to_email]
-        )
+        email = EmailMultiAlternatives(subject, text_message, settings.EMAIL_FROM, [to_email])
         email.attach_alternative(html_message, "text/html")
         email.send()
 

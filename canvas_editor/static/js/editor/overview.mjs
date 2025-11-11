@@ -75,10 +75,7 @@ export class OverviewHandler {
 
     // handle F2 to rename
     document.addEventListener("keyup", (event) => {
-      if (
-        event.key == "F2" &&
-        this.#overviewButton.classList.contains("active")
-      ) {
+      if (event.key == "F2" && this.#overviewButton.classList.contains("active")) {
         if (this.#selectedObjects.length !== 1) {
           alert("Exactly one object must selected to rename it");
         } else {
@@ -106,23 +103,17 @@ export class OverviewHandler {
     // render the objects
     objects.heliostatList.forEach((heliostat) => {
       const selected = selectedObjects.includes(heliostat);
-      this.#heliostatList.appendChild(
-        this.#createHeliostatEntry(heliostat, selected),
-      );
+      this.#heliostatList.appendChild(this.#createHeliostatEntry(heliostat, selected));
     });
 
     objects.receiverList.forEach((receiver) => {
       const selected = selectedObjects.includes(receiver);
-      this.#receiverList.appendChild(
-        this.#createReceiverEntry(receiver, selected),
-      );
+      this.#receiverList.appendChild(this.#createReceiverEntry(receiver, selected));
     });
 
     objects.lightsourceList.forEach((lightsource) => {
       const selected = selectedObjects.includes(lightsource);
-      this.#lightsourceList.appendChild(
-        this.#createLightsourceEntry(lightsource, selected),
-      );
+      this.#lightsourceList.appendChild(this.#createLightsourceEntry(lightsource, selected));
     });
 
     if (this.#heliostatList.children.length == 0) {
@@ -167,11 +158,7 @@ export class OverviewHandler {
     );
 
     const icon = document.createElement("i");
-    icon.classList.add(
-      "bi-arrow-up-right-square",
-      "d-flex",
-      "align-items-center",
-    );
+    icon.classList.add("bi-arrow-up-right-square", "d-flex", "align-items-center");
     heliostatEntry.appendChild(icon);
 
     const text = document.createElement("div");
@@ -228,10 +215,7 @@ export class OverviewHandler {
     text.classList.add("w-100", "d-flex", "align-items-center");
     text.style.whiteSpace = "normal";
     text.style.wordBreak = "break-word";
-    text.innerText =
-      object.objectName !== "" && object.objectName
-        ? object.objectName
-        : "Receiver";
+    text.innerText = object.objectName !== "" && object.objectName ? object.objectName : "Receiver";
     receiverEntry.appendChild(text);
 
     const button = document.createElement("button");
@@ -281,10 +265,7 @@ export class OverviewHandler {
     text.classList.add("w-100", "d-flex", "align-items-center");
     text.style.whiteSpace = "normal";
     text.style.wordBreak = "break-word";
-    text.innerText =
-      object.objectName !== "" && object.objectName
-        ? object.objectName
-        : "Light source";
+    text.innerText = object.objectName !== "" && object.objectName ? object.objectName : "Light source";
     lightsourceEntry.appendChild(text);
 
     const button = document.createElement("button");
@@ -311,29 +292,24 @@ export class OverviewHandler {
    * Handles user input in the overview panel.
    */
   #handleUserInput() {
-    document
-      .getElementById("accordionOverview")
-      .addEventListener("click", (event) => {
-        const target = event.target.closest(".overviewElem");
-        const object = this.#htmlToObject.get(target);
+    document.getElementById("accordionOverview").addEventListener("click", (event) => {
+      const target = event.target.closest(".overviewElem");
+      const object = this.#htmlToObject.get(target);
 
-        if (target && object) {
-          if (event.ctrlKey) {
-            if (this.#selectedObjects.includes(object)) {
-              this.#selectedObjects.splice(
-                this.#selectedObjects.indexOf(object),
-                1,
-              );
-            } else {
-              this.#selectedObjects.push(object);
-            }
+      if (target && object) {
+        if (event.ctrlKey) {
+          if (this.#selectedObjects.includes(object)) {
+            this.#selectedObjects.splice(this.#selectedObjects.indexOf(object), 1);
           } else {
-            this.#selectedObjects = [object];
+            this.#selectedObjects.push(object);
           }
-
-          this.#picker.setSelection(this.#selectedObjects);
+        } else {
+          this.#selectedObjects = [object];
         }
-      });
+
+        this.#picker.setSelection(this.#selectedObjects);
+      }
+    });
   }
 
   /**
@@ -382,10 +358,7 @@ export class OverviewHandler {
     });
 
     inputField.addEventListener("change", () => {
-      if (
-        inputField.value !== object.objectName &&
-        inputField.value.length < 200
-      ) {
+      if (inputField.value !== object.objectName && inputField.value.length < 200) {
         object.updateAndSaveObjectName(inputField.value);
       }
     });

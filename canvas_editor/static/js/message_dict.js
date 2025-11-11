@@ -6,11 +6,9 @@
 export function abstractClassError(cls) {
   return `Cannot instantiate abstract class ${cls.name} directly`;
 }
-export const methodMustBeImplementedError =
-  "This method must be implemented in all subclasses";
+export const methodMustBeImplementedError = "This method must be implemented in all subclasses";
 export const invalidCompassStyleError = "Invalid compass style specified";
-export const projectIdRequiredError =
-  "When executing get instance for the first time the project id is needed";
+export const projectIdRequiredError = "When executing get instance for the first time the project id is needed";
 export const errorUploadingFile = "Error uploading file:";
 export const updateNameCommandNotImplementedError =
   "updateNameCommand not implemented";

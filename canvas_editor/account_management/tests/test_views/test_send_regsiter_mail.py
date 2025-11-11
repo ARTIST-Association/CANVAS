@@ -50,15 +50,11 @@ class SendRegisterMailTest(TestCase):
         assert len(mail.outbox) == 1  # Check if one email was sent
         email = mail.outbox[0]
 
-        assert (
-            email.subject == message_dict.registration_confirmation_subject
-        )  # Verify email subject
+        assert email.subject == message_dict.registration_confirmation_subject  # Verify email subject
         assert email.to == [TEST_EMAIL]  # Verify recipient
 
         uid = urlsafe_base64_encode(str(user.id).encode())
         token = default_token_generator.make_token(user)
         expected_url_part = f"confirm_deletion/{uid}/{token}/"
 
-        assert (
-            expected_url_part in email.body
-        )  # Ensure the confirmation URL is in the email body
+        assert expected_url_part in email.body  # Ensure the confirmation URL is in the email body

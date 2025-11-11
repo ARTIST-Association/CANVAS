@@ -56,9 +56,7 @@ class Heliostat(models.Model):
 class Receiver(models.Model):
     """Represents a receiver in the database, contains all the necessary fields to configure a receiver."""
 
-    project = models.ForeignKey(
-        Project, related_name="receivers", on_delete=models.CASCADE
-    )
+    project = models.ForeignKey(Project, related_name="receivers", on_delete=models.CASCADE)
     name = models.CharField(max_length=200, blank=True, default="Receiver")
     position_x = models.FloatField(default=0)
     position_y = models.FloatField(default=50)
@@ -87,9 +85,7 @@ class Receiver(models.Model):
 class LightSource(models.Model):
     """Represents a light source in the database, contains all the necessary fields to configure a light source."""
 
-    project = models.ForeignKey(
-        Project, related_name="light_sources", on_delete=models.CASCADE
-    )
+    project = models.ForeignKey(Project, related_name="light_sources", on_delete=models.CASCADE)
     name = models.CharField(max_length=200, blank=True, default="Light source")
 
     # The default values of the light source match the ones used in the tutorial of ARTIST
@@ -108,9 +104,7 @@ class LightSource(models.Model):
 class Settings(models.Model):
     """Represents the settings in the database, contains all the necessary fields to configure the settings for a project."""
 
-    project = models.OneToOneField(
-        Project, related_name="settings", on_delete=models.CASCADE
-    )
+    project = models.OneToOneField(Project, related_name="settings", on_delete=models.CASCADE)
 
     # Graphic settings
     shadows = models.BooleanField(default=True)

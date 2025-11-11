@@ -39,9 +39,7 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
   async execute() {
     await this.#editor.addHeliostat(this.#heliostatCopy);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#heliostatCopy));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#heliostatCopy));
   }
 
   /**
@@ -50,9 +48,7 @@ export class DuplicateHeliostatCommand extends SingleObjectCommand {
   undo() {
     this.#editor.deleteHeliostat(this.#heliostatCopy);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#heliostatCopy));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#heliostatCopy));
   }
 }
 
@@ -96,9 +92,7 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
   async execute() {
     await this.#editor.addReceiver(this.#receiverCopy);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#receiverCopy));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#receiverCopy));
   }
 
   /**
@@ -107,9 +101,7 @@ export class DuplicateReceiverCommand extends SingleObjectCommand {
   undo() {
     this.#editor.deleteReceiver(this.#receiverCopy);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#receiverCopy));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#receiverCopy));
   }
 }
 
@@ -146,9 +138,7 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
   async execute() {
     await this.#editor.addLightsource(this.#lightsourceCopy);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#lightsourceCopy));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#lightsourceCopy));
   }
 
   /**
@@ -157,8 +147,6 @@ export class DuplicateLightSourceCommand extends SingleObjectCommand {
   undo() {
     this.#editor.deleteLightsource(this.#lightsourceCopy);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#lightsourceCopy));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#lightsourceCopy));
   }
 }

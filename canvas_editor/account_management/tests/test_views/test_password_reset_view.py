@@ -48,9 +48,7 @@ class PasswordResetViewTest(ParameterizedViewTestMixin, TestCase):
         )
         self.uid = urlsafe_base64_encode(str(self.user.id).encode())
         self.token = default_token_generator.make_token(self.user)
-        self.password_reset_url = reverse(
-            view_name_dict.account_password_reset_view, args=[self.uid, self.token]
-        )
+        self.password_reset_url = reverse(view_name_dict.account_password_reset_view, args=[self.uid, self.token])
 
     def test_get(self):
         """
@@ -113,9 +111,7 @@ class PasswordResetViewTest(ParameterizedViewTestMixin, TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, reverse(view_name_dict.account_invalid_link_view)
-        )
+        self.assertRedirects(response, reverse(view_name_dict.account_invalid_link_view))
 
     def test_post_invalid_uid(self):
         """
@@ -131,6 +127,4 @@ class PasswordResetViewTest(ParameterizedViewTestMixin, TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, reverse(view_name_dict.account_invalid_link_view)
-        )
+        self.assertRedirects(response, reverse(view_name_dict.account_invalid_link_view))
