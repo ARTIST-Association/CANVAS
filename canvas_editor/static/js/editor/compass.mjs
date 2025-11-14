@@ -41,14 +41,7 @@ class CompassAxisArrow extends Object3D {
       this.direction = new Vector3(0, 0, 1);
     }
 
-    this.arrow = new ArrowHelper(
-      this.direction,
-      new Vector3(0, 0, 0),
-      1,
-      color,
-      0.3,
-      0.3,
-    );
+    this.arrow = new ArrowHelper(this.direction, new Vector3(0, 0, 0), 1, color, 0.3, 0.3);
     this.add(this.arrow);
 
     this.label = this.getTextSprite(color, label);
@@ -107,11 +100,7 @@ class CompassAxisCircle extends Object3D {
     this.axisId = axisId;
 
     // the axis is a box of width 0.8 (and height/depth 0.05), starting at (0,0,0)
-    const axisGeometry = new BoxGeometry(0.8, axisWidth, axisWidth).translate(
-      0.4,
-      0,
-      0,
-    );
+    const axisGeometry = new BoxGeometry(0.8, axisWidth, axisWidth).translate(0.4, 0, 0);
     this.axis = new Mesh(axisGeometry, this.getAxisMaterial(color));
 
     if (this.axisId == "y") {

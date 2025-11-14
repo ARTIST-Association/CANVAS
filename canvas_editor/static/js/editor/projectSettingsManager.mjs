@@ -34,9 +34,7 @@ export class ProjectSettingsManager {
   async initialize() {
     await this.#loadPresets();
 
-    this.#environmentSettingsEntry = document.getElementById(
-      "environment-settings",
-    );
+    this.#environmentSettingsEntry = document.getElementById("environment-settings");
 
     this.#graphicsSettingsEntry = document.getElementById("graphic-settings");
 
@@ -97,14 +95,10 @@ export class ProjectSettingsManager {
     ];
 
     graphicsSettings.forEach(({ label, key, enabled, apply }) => {
-      const checkbox = this.#createCheckbox(
-        label,
-        enabled,
-        (/** @type {boolean} */ isChecked) => {
-          apply(isChecked);
-          this.#saveAndLoadHandler.updateSettings(key, enabled);
-        },
-      );
+      const checkbox = this.#createCheckbox(label, enabled, (/** @type {boolean} */ isChecked) => {
+        apply(isChecked);
+        this.#saveAndLoadHandler.updateSettings(key, enabled);
+      });
       this.#graphicsSettingsEntry.appendChild(checkbox);
     });
   }

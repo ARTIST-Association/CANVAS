@@ -23,9 +23,7 @@ class EditorView(LoginRequiredMixin, TemplateView):
         project.save()
 
         create_new_project_form = ProjectForm()
-        all_projects = Project.objects.filter(owner=request.user).order_by(
-            "-last_edited"
-        )
+        all_projects = Project.objects.filter(owner=request.user).order_by("-last_edited")
 
         context.update(
             {

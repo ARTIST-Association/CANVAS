@@ -18,9 +18,7 @@ class UserProfile(models.Model):
     This model extends the default Django User model by adding a profile picture.
     """
 
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="userprofile"
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="userprofile")
     profile_picture = models.ImageField(
         upload_to=user_directory_path,
         blank=True,

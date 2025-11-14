@@ -51,9 +51,7 @@ class ProjectPageTest(TestCase):
     def setUp(self):
         """Set up a test user, log in, and create a test project for use in all tests."""
         self.client = Client()
-        self.user = User.objects.create_user(
-            username=TEST_USERNAME, password=SECURE_PASSWORD
-        )
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=SECURE_PASSWORD)
         self.project = Project.objects.create(
             name=PROJECT_NAME_PROJECT_PAGE_TEST,
             description=PROJECT_DESCRIPTION_PROJECT_PAGE_TEST,
@@ -66,21 +64,11 @@ class ProjectPageTest(TestCase):
 
         # urls
         self.projects_url = reverse(project_projects_view)
-        self.update_project_url = reverse(
-            project_update_project_view, args=[self.project.name]
-        )
-        self.toogle_favor_project_url = reverse(
-            project_toggle_favor_project_view, args=[self.project.name]
-        )
-        self.delete_project_url = reverse(
-            project_delete_project_view, args=[self.project.name]
-        )
-        self.duplicate_project_url = reverse(
-            project_duplicate_project_view, args=[self.project.name]
-        )
-        self.share_project_url = reverse(
-            project_share_project_view, args=[self.project.name]
-        )
+        self.update_project_url = reverse(project_update_project_view, args=[self.project.name])
+        self.toogle_favor_project_url = reverse(project_toggle_favor_project_view, args=[self.project.name])
+        self.delete_project_url = reverse(project_delete_project_view, args=[self.project.name])
+        self.duplicate_project_url = reverse(project_duplicate_project_view, args=[self.project.name])
+        self.share_project_url = reverse(project_share_project_view, args=[self.project.name])
         self.shared_projects_url = reverse(
             project_shared_projects_view,
             args=[
@@ -135,16 +123,12 @@ class ProjectPageTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Project.objects.count(), 1)
         self.assertEqual(Project.objects.last().name, PROJECT_NAME_PROJECT_PAGE_TEST)
-        self.assertEqual(
-            Project.objects.last().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST
-        )
+        self.assertEqual(Project.objects.last().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST)
         self.assertEqual(Project.objects.last().owner, self.user)
 
     def test_projects_post_with_file(self):
         """Test creating a new project via POST request with a file."""
-        file_path = (
-            pathlib.Path(settings.BASE_DIR) / hdf5_management_test_scenario_template
-        )
+        file_path = pathlib.Path(settings.BASE_DIR) / hdf5_management_test_scenario_template
         with open(file_path, "rb") as file:
             response = self.client.post(
                 self.projects_url,
@@ -159,16 +143,12 @@ class ProjectPageTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Project.objects.count(), 2)
         self.assertEqual(Project.objects.last().name, PROJECT_NAME_PROJECT_PAGE_TEST_2)
-        self.assertEqual(
-            Project.objects.last().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST_2
-        )
+        self.assertEqual(Project.objects.last().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST_2)
         self.assertEqual(Project.objects.last().owner, self.user)
 
     def test_projects_post_with_file_name_duplicate(self):
         """Test creating a new project via POST request with a file and a duplicate name."""
-        file_path = (
-            pathlib.Path(settings.BASE_DIR) / hdf5_management_test_scenario_template
-        )
+        file_path = pathlib.Path(settings.BASE_DIR) / hdf5_management_test_scenario_template
         with open(file_path, "rb") as file:
             response = self.client.post(
                 self.projects_url,
@@ -186,9 +166,7 @@ class ProjectPageTest(TestCase):
 
     def test_projects_post_with_file_space_in_name(self):
         """Test creating a new project via POST request with a file and spaces in the name."""
-        file_path = (
-            pathlib.Path(settings.BASE_DIR) / hdf5_management_test_scenario_template
-        )
+        file_path = pathlib.Path(settings.BASE_DIR) / hdf5_management_test_scenario_template
         with open(file_path, "rb") as file:
             response = self.client.post(
                 self.projects_url,
@@ -203,9 +181,7 @@ class ProjectPageTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Project.objects.count(), 2)
         self.assertEqual(Project.objects.last().name, PROJECT_NAME_PROJECT_PAGE_TEST_2)
-        self.assertEqual(
-            Project.objects.last().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST
-        )
+        self.assertEqual(Project.objects.last().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST)
         self.assertEqual(Project.objects.last().owner, self.user)
         self.assertEqual(
             Project.objects.last().heliostats.count(), 3
@@ -213,9 +189,7 @@ class ProjectPageTest(TestCase):
         self.assertEqual(
             Project.objects.last().heliostats.all()[0].position_x, -3
         )  # Position x of heliostat 0 in the testScenario.h5 file
-        self.assertEqual(
-            Project.objects.last().receivers.count(), 1
-        )  # Number of receivers in the testScenario.h5 file
+        self.assertEqual(Project.objects.last().receivers.count(), 1)  # Number of receivers in the testScenario.h5 file
         self.assertEqual(
             Project.objects.last().receivers.all()[0].position_y, 50
         )  # Position y of receiver 0 in the testScenario.h5 file
@@ -290,9 +264,7 @@ class ProjectPageTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Project.objects.first().name, UPDATED_PROJECT_NAME)
-        self.assertEqual(
-            Project.objects.first().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST
-        )
+        self.assertEqual(Project.objects.first().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST)
         self.assertEqual(Project.objects.count(), 1)
 
     def test_update_project_post_name_duplicate(self):
@@ -313,9 +285,7 @@ class ProjectPageTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Project.objects.last().name, PROJECT_NAME_PROJECT_PAGE_TEST_2)
-        self.assertEqual(
-            Project.objects.first().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST
-        )
+        self.assertEqual(Project.objects.first().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST)
         self.assertEqual(Project.objects.count(), 2)
 
     def test_update_project_get(self):
@@ -350,22 +320,14 @@ class ProjectPageTest(TestCase):
         self.assertEqual(Project.objects.last().name, self.project.name + COPY_SUFFIX)
         self.assertEqual(Project.objects.last().description, self.project.description)
         self.assertNotEqual(Project.objects.last().pk, self.project.pk)
-        self.assertEqual(
-            Project.objects.last().heliostats.count(), self.project.heliostats.count()
-        )
-        self.assertEqual(
-            Project.objects.last().heliostats.all()[0].project, Project.objects.last()
-        )
+        self.assertEqual(Project.objects.last().heliostats.count(), self.project.heliostats.count())
+        self.assertEqual(Project.objects.last().heliostats.all()[0].project, Project.objects.last())
         self.assertEqual(
             Project.objects.last().heliostats.all()[0].position_x,
             self.project.heliostats.all()[0].position_x,
         )
-        self.assertEqual(
-            Project.objects.last().receivers.count(), self.project.receivers.count()
-        )
-        self.assertEqual(
-            Project.objects.last().receivers.all()[0].project, Project.objects.last()
-        )
+        self.assertEqual(Project.objects.last().receivers.count(), self.project.receivers.count())
+        self.assertEqual(Project.objects.last().receivers.all()[0].project, Project.objects.last())
         self.assertEqual(
             Project.objects.last().light_sources.count(),
             self.project.light_sources.count(),
@@ -380,10 +342,7 @@ class ProjectPageTest(TestCase):
         response = self.client.post(self.share_project_url)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(
-            (
-                Project.objects.get(owner=self.user, name=self.project.name).last_shared
-                - timezone.now()
-            ).total_seconds()
+            (Project.objects.get(owner=self.user, name=self.project.name).last_shared - timezone.now()).total_seconds()
             <= 3
         )
 
@@ -422,22 +381,14 @@ class ProjectPageTest(TestCase):
         self.assertEqual(Project.objects.last().name, self.project.name + SHARED_SUFFIX)
         self.assertEqual(Project.objects.last().description, self.project.description)
         self.assertNotEqual(Project.objects.last().pk, self.project.pk)
-        self.assertEqual(
-            Project.objects.last().heliostats.count(), self.project.heliostats.count()
-        )
-        self.assertEqual(
-            Project.objects.last().heliostats.all()[0].project, Project.objects.last()
-        )
+        self.assertEqual(Project.objects.last().heliostats.count(), self.project.heliostats.count())
+        self.assertEqual(Project.objects.last().heliostats.all()[0].project, Project.objects.last())
         self.assertEqual(
             Project.objects.last().heliostats.all()[0].position_x,
             self.project.heliostats.all()[0].position_x,
         )
-        self.assertEqual(
-            Project.objects.last().receivers.count(), self.project.receivers.count()
-        )
-        self.assertEqual(
-            Project.objects.last().receivers.all()[0].project, Project.objects.last()
-        )
+        self.assertEqual(Project.objects.last().receivers.count(), self.project.receivers.count())
+        self.assertEqual(Project.objects.last().receivers.all()[0].project, Project.objects.last())
         self.assertEqual(
             Project.objects.last().light_sources.count(),
             self.project.light_sources.count(),

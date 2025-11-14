@@ -26,10 +26,7 @@ class SharedProjectView(LoginRequiredMixin, View):
 
         project = get_object_or_404(Project, owner=user, name=project_name)
 
-        if (
-            project.last_shared is None
-            or (timezone.now() - project.last_shared).days > 3
-        ):
+        if project.last_shared is None or (timezone.now() - project.last_shared).days > 3:
             raise Http404
 
         return render(
@@ -50,18 +47,11 @@ class SharedProjectView(LoginRequiredMixin, View):
 
         project = get_object_or_404(Project, owner=user, name=project_name)
 
-        if (
-            project.last_shared is None
-            or (timezone.now() - project.last_shared).days > 3
-        ):
+        if project.last_shared is None or (timezone.now() - project.last_shared).days > 3:
             raise Http404
 
         # copy the associated project to the user
-        fks_to_copy = (
-            list(project.heliostats.all())
-            + list(project.receivers.all())
-            + list(project.light_sources.all())
-        )
+        fks_to_copy = list(project.heliostats.all()) + list(project.receivers.all()) + list(project.light_sources.all())
         settings = project.settings
         project.pk = None
         project.favorite = False

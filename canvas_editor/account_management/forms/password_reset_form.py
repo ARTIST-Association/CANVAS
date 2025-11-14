@@ -12,9 +12,7 @@ class PasswordResetForm(forms.Form):
     """
 
     new_password = forms.CharField(label="New password", widget=forms.PasswordInput)
-    password_confirmation = forms.CharField(
-        label="Confirm new password", widget=forms.PasswordInput
-    )
+    password_confirmation = forms.CharField(label="Confirm new password", widget=forms.PasswordInput)
 
     def clean_new_password(self) -> str:
         """Validate that the new password passes the security criteria."""
@@ -25,16 +23,10 @@ class PasswordResetForm(forms.Form):
         if not any(char.isdigit() for char in new_password):
             self.add_error("new_password", message_dict.password_digit_criterion_text)
         if not any(char.isupper() for char in new_password):
-            self.add_error(
-                "new_password", message_dict.password_uppercase_criterion_text
-            )
+            self.add_error("new_password", message_dict.password_uppercase_criterion_text)
         if not any(char.islower() for char in new_password):
-            self.add_error(
-                "new_password", message_dict.password_lowercase_criterion_text
-            )
-        if not any(
-            char in message_dict.password_special_characters for char in new_password
-        ):
+            self.add_error("new_password", message_dict.password_lowercase_criterion_text)
+        if not any(char in message_dict.password_special_characters for char in new_password):
             self.add_error(
                 "new_password",
                 message_dict.password_special_char_criterion_text,

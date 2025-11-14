@@ -13,9 +13,7 @@ class DuplicateProjectView(LoginRequiredMixin, View):
         project = Project.objects.get(owner=request.user, name=project_name)
         if project.owner == request.user:
             fks_to_copy = (
-                list(project.heliostats.all())
-                + list(project.receivers.all())
-                + list(project.light_sources.all())
+                list(project.heliostats.all()) + list(project.receivers.all()) + list(project.light_sources.all())
             )
             settings = project.settings
             project.pk = None

@@ -23,12 +23,8 @@ class PreviewViewTest(TestCase):
 
     def setUp(self):
         """Set up a test user, log in, and create a test project for use in all tests."""
-        self.upload = reverse(
-            editor_upload_view, kwargs={PROJECT_NAME_FIELD: TEST_PROJECT_NAME}
-        )
-        user = User.objects.create_user(
-            username=TEST_USERNAME, password=SECURE_PASSWORD
-        )
+        self.upload = reverse(editor_upload_view, kwargs={PROJECT_NAME_FIELD: TEST_PROJECT_NAME})
+        user = User.objects.create_user(username=TEST_USERNAME, password=SECURE_PASSWORD)
         self.client = Client()
         self.client.login(username=TEST_USERNAME, password=SECURE_PASSWORD)
 
