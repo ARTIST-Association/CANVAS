@@ -3,7 +3,7 @@ import { ViewHelper } from "compass";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { SaveAndLoadHandler } from "saveAndLoadHandler";
 import { Navbar } from "navbar";
-import { OverviewHandler } from "overviewHandler";
+import { OverviewHandler } from "overview";
 import { Picker } from "picker";
 import { ProjectSettingsManager } from "projectSettingsManager";
 import { ObjectManager } from "objectManager";
