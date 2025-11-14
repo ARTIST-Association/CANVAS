@@ -74,18 +74,10 @@ export class ProjectOverviewManager {
 
     favoriteSwitch.addEventListener("change", () => {
       document.querySelectorAll(".project").forEach((project) => {
-        if (favoriteSwitch.checked) {
-          if (project.dataset.isFavorite == "true") {
-            project.classList.add("d-block");
-            project.classList.remove("d-none");
-          } else {
-            project.classList.add("d-none");
-            project.classList.remove("d-block");
-          }
-        } else {
-          project.classList.add("d-block");
-          project.classList.remove("d-none");
-        }
+        const shouldShow = !favoriteSwitch.checked || project.dataset.isFavorite === "true";
+
+        project.classList.toggle("d-block", shouldShow);
+        project.classList.toggle("d-none", !shouldShow);
       });
     });
   }
