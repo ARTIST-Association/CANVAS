@@ -67,9 +67,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    models.CharField(
-                        blank=True, default="Light source", max_length=200
-                    ),
+                    models.CharField(blank=True, default="Light source", max_length=200),
                 ),
                 ("number_of_rays", models.IntegerField(default=100)),
                 ("light_source_type", models.CharField(default="sun", max_length=300)),

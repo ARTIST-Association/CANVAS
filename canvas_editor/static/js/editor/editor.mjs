@@ -20,14 +20,7 @@ import { Receiver } from "receiver";
 import { Terrain } from "terrain";
 import { Heliostat } from "heliostat";
 import { projectIdRequiredError } from "message_dict";
-import {
-  skyboxNxPath,
-  skyboxNyPath,
-  skyboxNzPath,
-  skyboxPxPath,
-  skyboxPyPath,
-  skyboxPzPath,
-} from "path_dict";
+import { skyboxNxPath, skyboxNyPath, skyboxNzPath, skyboxPxPath, skyboxPyPath, skyboxPzPath } from "path_dict";
 
 /**
  * Represents the main editor class.
@@ -92,19 +85,11 @@ export class Editor {
 
     // initiate needed classes
     this.#undoRedoHandler = UndoRedoHandler.getInstance();
-    this.#picker = new Picker(
-      this.#camera,
-      this.#transformControls,
-      this.#selectionBox,
-      this.#selectableGroup,
-    );
+    this.#picker = new Picker(this.#camera, this.#transformControls, this.#selectionBox, this.#selectableGroup);
     this.#overview = new OverviewHandler(this.#picker);
     this.#projectSettingManager = new ProjectSettingsManager();
     this.#projectSettingManager.initialize();
-    this.#objectManager = new ObjectManager(
-      this.#picker,
-      this.#undoRedoHandler,
-    );
+    this.#objectManager = new ObjectManager(this.#picker, this.#undoRedoHandler);
     this.#navbar = new Navbar(this.#objectManager);
     this.#quickSelector = new QuickSelector(this.#objectManager);
     this.#jobInterface = new JobInterface(projectId);
@@ -177,12 +162,7 @@ export class Editor {
 
     this.#scene = new THREE.Scene();
 
-    this.#camera = new THREE.PerspectiveCamera(
-      75,
-      this.#canvas.clientWidth / this.#canvas.clientHeight,
-      0.1,
-      2000,
-    );
+    this.#camera = new THREE.PerspectiveCamera(75, this.#canvas.clientWidth / this.#canvas.clientHeight, 0.1, 2000);
     this.#camera.position.set(130, 50, 0);
 
     this.#renderer = new THREE.WebGLRenderer({
@@ -230,21 +210,13 @@ export class Editor {
     this.#directionalLight.shadow.camera.far = 2000;
 
     // Helpers
-    this.#compass = new ViewHelper(
-      this.#camera,
-      this.#renderer.domElement,
-      200,
-      "circles",
-    );
+    this.#compass = new ViewHelper(this.#camera, this.#renderer.domElement, 200, "circles");
 
     this.#selectionBox = new THREE.BoxHelper();
     this.#scene.add(this.#selectionBox);
 
     // controls
-    this.#transformControls = new TransformControls(
-      this.#camera,
-      this.#renderer.domElement,
-    );
+    this.#transformControls = new TransformControls(this.#camera, this.#renderer.domElement);
     this.#transformControls.setColors(
       new THREE.Color("#ff7f9a"),
       new THREE.Color("#c2ee00"),
@@ -298,11 +270,7 @@ export class Editor {
     heliostatList.forEach((heliostat) => {
       const tmp = new Heliostat(
         heliostat.name,
-        new THREE.Vector3(
-          heliostat.position_x,
-          heliostat.position_y,
-          heliostat.position_z,
-        ),
+        new THREE.Vector3(heliostat.position_x, heliostat.position_y, heliostat.position_z),
         heliostat.id,
       );
       this.#selectableGroup.add(tmp);
@@ -312,16 +280,8 @@ export class Editor {
     receiverList.forEach((receiver) => {
       const tmp = new Receiver(
         receiver.name,
-        new THREE.Vector3(
-          receiver.position_x,
-          receiver.position_y,
-          receiver.position_z,
-        ),
-        new THREE.Vector3(
-          receiver.normal_x,
-          receiver.normal_y,
-          receiver.normal_z,
-        ),
+        new THREE.Vector3(receiver.position_x, receiver.position_y, receiver.position_z),
+        new THREE.Vector3(receiver.normal_x, receiver.normal_y, receiver.normal_z),
         receiver.towerType,
         receiver.plane_e,
         receiver.plane_u,
@@ -388,9 +348,7 @@ export class Editor {
   async addHeliostat(heliostat) {
     this.#selectableGroup.add(heliostat);
     this.#heliostatList.push(heliostat);
-    heliostat.apiID = (
-      await this.#saveAndLoadHandler.createHeliostat(heliostat)
-    )["id"];
+    heliostat.apiID = (await this.#saveAndLoadHandler.createHeliostat(heliostat))["id"];
   }
 
   /**
@@ -400,9 +358,7 @@ export class Editor {
   async addReceiver(receiver) {
     this.#selectableGroup.add(receiver);
     this.#receiverList.push(receiver);
-    receiver.apiID = (await this.#saveAndLoadHandler.createReceiver(receiver))[
-      "id"
-    ];
+    receiver.apiID = (await this.#saveAndLoadHandler.createReceiver(receiver))["id"];
   }
 
   /**
@@ -412,9 +368,7 @@ export class Editor {
   async addLightsource(lightsource) {
     this.#selectableGroup.add(lightsource);
     this.#lightsourceList.push(lightsource);
-    lightsource.apiID = (
-      await this.#saveAndLoadHandler.createLightSource(lightsource)
-    )["id"];
+    lightsource.apiID = (await this.#saveAndLoadHandler.createLightSource(lightsource))["id"];
   }
 
   /**

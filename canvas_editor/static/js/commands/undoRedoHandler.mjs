@@ -98,17 +98,11 @@ export class UndoRedoHandler {
    */
   #initializeKeyBindings() {
     document.addEventListener("keydown", (event) => {
-      if (
-        (event.ctrlKey || event.metaKey) &&
-        event.key.toLowerCase() === "z" &&
-        !event.shiftKey
-      ) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z" && !event.shiftKey) {
         event.preventDefault();
         this.undo();
       } else if (
-        ((event.ctrlKey || event.metaKey) &&
-          event.shiftKey &&
-          event.key.toLowerCase() === "z") ||
+        ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === "z") ||
         ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y")
       ) {
         event.preventDefault();

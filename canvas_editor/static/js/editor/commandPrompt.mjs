@@ -63,11 +63,9 @@ export class CommandPrompt {
       }
     });
 
-    document
-      .getElementById("commandPromptToggle")
-      .addEventListener("click", () => {
-        this.#openCommandPrompt();
-      });
+    document.getElementById("commandPromptToggle").addEventListener("click", () => {
+      this.#openCommandPrompt();
+    });
 
     // handle command navigation and execution
     document.addEventListener("keydown", (event) => {
@@ -75,14 +73,12 @@ export class CommandPrompt {
         if (event.key === "ArrowUp") {
           event.preventDefault();
           this.#selectedIndex =
-            (this.#selectedIndex - 1 + this.#commandListElem.children.length) %
-            this.#commandListElem.children.length;
+            (this.#selectedIndex - 1 + this.#commandListElem.children.length) % this.#commandListElem.children.length;
           this.selectCommand();
         }
         if (event.key === "ArrowDown") {
           event.preventDefault();
-          this.#selectedIndex =
-            (this.#selectedIndex + 1) % this.#commandListElem.children.length;
+          this.#selectedIndex = (this.#selectedIndex + 1) % this.#commandListElem.children.length;
           this.selectCommand();
         }
 
@@ -121,9 +117,7 @@ export class CommandPrompt {
       new OpenProjectPromptCommand(this),
     ];
 
-    this.#commandList.sort((command1, command2) =>
-      command1.commandName.localeCompare(command2.commandName),
-    );
+    this.#commandList.sort((command1, command2) => command1.commandName.localeCompare(command2.commandName));
   }
 
   /**
@@ -226,8 +220,7 @@ export class CommandPrompt {
       });
 
       this.#currentlyAvailableCommands.sort(
-        (command1, command2) =>
-          command1.occurrenceLength - command2.occurrenceLength,
+        (command1, command2) => command1.occurrenceLength - command2.occurrenceLength,
       );
     }
 

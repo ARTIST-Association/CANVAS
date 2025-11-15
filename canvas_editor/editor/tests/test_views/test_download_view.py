@@ -26,9 +26,7 @@ class DownloadViewTest(TestCase):
             editor_download_view,
             kwargs={PROJECT_NAME_FIELD: TEST_PROJECT_NAME},
         )
-        user = User.objects.create_user(
-            username=TEST_USERNAME, password=SECURE_PASSWORD
-        )
+        user = User.objects.create_user(username=TEST_USERNAME, password=SECURE_PASSWORD)
         self.client = Client()
         self.client.login(username=TEST_USERNAME, password=SECURE_PASSWORD)
 
@@ -84,9 +82,7 @@ class DownloadViewTest(TestCase):
             self.assertIsNotNone(light_sources)
 
             for heliostat in heliostats:
-                self.assertEqual(
-                    42, heliostats[heliostat][config_dictionary.heliostat_position][0]
-                )
+                self.assertEqual(42, heliostats[heliostat][config_dictionary.heliostat_position][0])
 
             for receiver in receivers:
                 self.assertEqual(42, receivers[receiver]["normal_vector"][0])

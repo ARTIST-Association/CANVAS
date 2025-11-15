@@ -41,9 +41,7 @@ export class CreateHeliostatCommand extends SingleObjectCommand {
   async execute() {
     await this.#editor.addHeliostat(this.#heliostat);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#heliostat));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#heliostat));
   }
 
   /**
@@ -52,9 +50,7 @@ export class CreateHeliostatCommand extends SingleObjectCommand {
   async undo() {
     await this.#editor.deleteHeliostat(this.#heliostat);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#heliostat));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#heliostat));
   }
 }
 
@@ -80,9 +76,7 @@ export class CreateReceiverCommand extends SingleObjectCommand {
   async execute() {
     await this.#editor.addReceiver(this.#receiver);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#receiver));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#receiver));
   }
 
   /**
@@ -91,9 +85,7 @@ export class CreateReceiverCommand extends SingleObjectCommand {
   async undo() {
     await this.#editor.deleteReceiver(this.#receiver);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#receiver));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#receiver));
   }
 }
 
@@ -119,9 +111,7 @@ export class CreateLightSourceCommand extends SingleObjectCommand {
   async execute() {
     await this.#editor.addLightsource(this.#lightsource);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#lightsource));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#lightsource));
   }
 
   /**
@@ -130,8 +120,6 @@ export class CreateLightSourceCommand extends SingleObjectCommand {
   async undo() {
     await this.#editor.deleteLightsource(this.#lightsource);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#lightsource));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#lightsource));
   }
 }

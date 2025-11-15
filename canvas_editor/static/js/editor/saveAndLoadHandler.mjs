@@ -56,8 +56,7 @@ export class SaveAndLoadHandler {
    * @returns {Promise<JSON>} JSON representation of the new heliostat.
    */
   async createHeliostat(heliostat) {
-    const url =
-      this.#baseAPIUrl + "projects/" + this.#projectID + "/heliostats/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/heliostats/";
 
     const body = {
       name: heliostat.objectName,
@@ -75,8 +74,7 @@ export class SaveAndLoadHandler {
    * @returns {Promise<JSON>} JSON representation of the new receiver.
    */
   async createReceiver(receiver) {
-    const url =
-      this.#baseAPIUrl + "projects/" + this.#projectID + "/receivers/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/receivers/";
 
     const body = {
       name: receiver.objectName,
@@ -103,8 +101,7 @@ export class SaveAndLoadHandler {
    * @returns {Promise<JSON>} JSON representation of the new light source.
    */
   async createLightSource(lightSource) {
-    const url =
-      this.#baseAPIUrl + "projects/" + this.#projectID + "/light_sources/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/light_sources/";
 
     const body = {
       name: lightSource.objectName,
@@ -129,13 +126,7 @@ export class SaveAndLoadHandler {
       return;
     }
 
-    const url =
-      this.#baseAPIUrl +
-      "projects/" +
-      this.#projectID +
-      "/heliostats/" +
-      heliostat.apiID +
-      "/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/heliostats/" + heliostat.apiID + "/";
 
     return this.#makeApiCall(url, "DELETE");
   }
@@ -151,13 +142,7 @@ export class SaveAndLoadHandler {
       return;
     }
 
-    const url =
-      this.#baseAPIUrl +
-      "projects/" +
-      this.#projectID +
-      "/receivers/" +
-      receiver.apiID +
-      "/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/receivers/" + receiver.apiID + "/";
 
     return this.#makeApiCall(url, "DELETE");
   }
@@ -173,13 +158,7 @@ export class SaveAndLoadHandler {
       return;
     }
 
-    const url =
-      this.#baseAPIUrl +
-      "projects/" +
-      this.#projectID +
-      "/light_sources/" +
-      lightSource.apiID +
-      "/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/light_sources/" + lightSource.apiID + "/";
 
     return this.#makeApiCall(url, "DELETE");
   }
@@ -195,13 +174,7 @@ export class SaveAndLoadHandler {
       return;
     }
 
-    const url =
-      this.#baseAPIUrl +
-      "projects/" +
-      this.#projectID +
-      "/heliostats/" +
-      heliostat.apiID +
-      "/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/heliostats/" + heliostat.apiID + "/";
 
     const body = {
       id: heliostat.apiID,
@@ -224,13 +197,7 @@ export class SaveAndLoadHandler {
       return;
     }
 
-    const url =
-      this.#baseAPIUrl +
-      "projects/" +
-      this.#projectID +
-      "/receivers/" +
-      receiver.apiID +
-      "/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/receivers/" + receiver.apiID + "/";
 
     const body = {
       id: receiver.apiID,
@@ -263,13 +230,7 @@ export class SaveAndLoadHandler {
       return;
     }
 
-    const url =
-      this.#baseAPIUrl +
-      "projects/" +
-      this.#projectID +
-      "/light_sources/" +
-      lightSource.apiID +
-      "/";
+    const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/light_sources/" + lightSource.apiID + "/";
 
     const body = {
       id: lightSource.apiID,

@@ -251,26 +251,13 @@ export class Picker {
       if (
         this.#transformControls.mode === "translate" &&
         this.#selectedObject.isMovable &&
-        !this.#transformControls.object.position.equals(
-          this.#selectedObject.lastPosition,
-        )
+        !this.#transformControls.object.position.equals(this.#selectedObject.lastPosition)
       ) {
-        this.#selectedObject.updateAndSaveObjectPosition(
-          this.#transformControls.object.position.clone(),
-        );
+        this.#selectedObject.updateAndSaveObjectPosition(this.#transformControls.object.position.clone());
         this.#itemSelectedEvent();
-      } else if (
-        this.#transformControls.mode === "rotate" &&
-        this.#selectedObject.rotatableAxis
-      ) {
-        if (
-          !this.#transformControls.object.quaternion.equals(
-            this.#selectedObject.lastRotation,
-          )
-        ) {
-          this.#selectedObject.updateAndSaveObjectRotation(
-            this.#transformControls.object.quaternion.clone(),
-          );
+      } else if (this.#transformControls.mode === "rotate" && this.#selectedObject.rotatableAxis) {
+        if (!this.#transformControls.object.quaternion.equals(this.#selectedObject.lastRotation)) {
+          this.#selectedObject.updateAndSaveObjectRotation(this.#transformControls.object.quaternion.clone());
           this.#itemSelectedEvent();
         }
       }
@@ -283,9 +270,7 @@ export class Picker {
    */
   #onClick(event) {
     // Get normalized mouse position
-    this.#mouse = this.#mouseposition(
-      new THREE.Vector2(event.clientX, event.clientY),
-    );
+    this.#mouse = this.#mouseposition(new THREE.Vector2(event.clientX, event.clientY));
 
     // Raycast to find the clicked object
     this.#selectedObject = this.#select(this.#mouse, this.#camera);
@@ -305,20 +290,14 @@ export class Picker {
   #select(mouse, camera) {
     // Raycast from the camera through the mouse position
     this.#raycaster.setFromCamera(mouse, camera);
-    const intersects = this.#raycaster.intersectObjects(
-      this.#selectableGroup.children,
-      true,
-    );
+    const intersects = this.#raycaster.intersectObjects(this.#selectableGroup.children, true);
 
     // Finds whole SelectableObject from the intersected objects
     if (intersects.length > 0) {
       for (const hit of intersects) {
         if (hit.object.type === "Mesh") {
           // Move up the hierarchy until we find a SelectableObject
-          while (
-            hit.object.parent &&
-            !(hit.object.parent instanceof CanvasObject)
-          ) {
+          while (hit.object.parent && !(hit.object.parent instanceof CanvasObject)) {
             hit.object = hit.object.parent;
           }
 
@@ -448,9 +427,7 @@ export class Picker {
       }
       // If the object is a receiver set the base position to the ground
       if (this.#transformControls.object instanceof Receiver) {
-        this.#transformControls.object.setBaseHeight(
-          groundLevel - this.#transformControls.object.position.y,
-        );
+        this.#transformControls.object.setBaseHeight(groundLevel - this.#transformControls.object.position.y);
       }
     });
   }

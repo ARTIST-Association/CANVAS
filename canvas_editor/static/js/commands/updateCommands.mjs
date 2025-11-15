@@ -66,9 +66,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     this.#newParameter = newParameter;
 
     this.#oldParameter =
-      this.#attribute == "position"
-        ? this.#heliostat.lastPosition
-        : this.#heliostat[this.#attribute];
+      this.#attribute == "position" ? this.#heliostat.lastPosition : this.#heliostat[this.#attribute];
     this.#saveAndLoadHandler = SaveAndLoadHandler.getInstance();
   }
 
@@ -83,9 +81,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     }
     await this.#saveAndLoadHandler.updateHeliostat(this.#heliostat);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemUpdatedEvent(this.#heliostat));
+    document.getElementById("canvas").dispatchEvent(new ItemUpdatedEvent(this.#heliostat));
   }
 
   /**
@@ -99,9 +95,7 @@ export class UpdateHeliostatCommand extends SingleObjectCommand {
     }
     await this.#saveAndLoadHandler.updateHeliostat(this.#heliostat);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemUpdatedEvent(this.#heliostat));
+    document.getElementById("canvas").dispatchEvent(new ItemUpdatedEvent(this.#heliostat));
   }
 }
 
@@ -161,10 +155,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
       throw new TypeError(`${attribute} doesn't exist on ${Receiver}`);
     }
     this.#newParameter = newParameter;
-    this.#oldParameter =
-      this.#attribute == "position"
-        ? this.#receiver.lastPosition
-        : this.#receiver[this.#attribute];
+    this.#oldParameter = this.#attribute == "position" ? this.#receiver.lastPosition : this.#receiver[this.#attribute];
     this.#saveAndLoadHandler = SaveAndLoadHandler.getInstance();
   }
 
@@ -186,9 +177,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
 
     this.#saveAndLoadHandler.updateReceiver(this.#receiver);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemUpdatedEvent(this.#receiver));
+    document.getElementById("canvas").dispatchEvent(new ItemUpdatedEvent(this.#receiver));
   }
 
   /**
@@ -209,9 +198,7 @@ export class UpdateReceiverCommand extends SingleObjectCommand {
 
     this.#saveAndLoadHandler.updateReceiver(this.#receiver);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemUpdatedEvent(this.#receiver));
+    document.getElementById("canvas").dispatchEvent(new ItemUpdatedEvent(this.#receiver));
   }
 }
 
@@ -278,9 +265,7 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
 
     this.#saveAndLoadHandler.updateLightsource(this.#lightsource);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemUpdatedEvent(this.#lightsource));
+    document.getElementById("canvas").dispatchEvent(new ItemUpdatedEvent(this.#lightsource));
   }
 
   /**
@@ -291,8 +276,6 @@ export class UpdateLightsourceCommand extends SingleObjectCommand {
 
     this.#saveAndLoadHandler.updateLightsource(this.#lightsource);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemUpdatedEvent(this.#lightsource));
+    document.getElementById("canvas").dispatchEvent(new ItemUpdatedEvent(this.#lightsource));
   }
 }

@@ -146,7 +146,7 @@ By participating, you can help improve the project and make it even better :rais
    As the remote branch is already linked
 
 
-8. **Rebase Onto Current Main:** Rebase your feature branch onto the current main branch of the original repo. 
+8. **Rebase Onto Current Main:** Rebase your feature branch onto the current main branch of the original repo.
    This will include any changes that might have been pushed into the main in the meantime and resolve possible conflicts.
    To sync your fork with the original upstream repo, check out [this page](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
    or follow the steps below. Note that before you can sync your fork with an upstream repo, you must configure a remote that points to the upstream repository in Git.

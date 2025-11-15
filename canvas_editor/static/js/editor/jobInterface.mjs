@@ -28,14 +28,12 @@ export class JobInterface {
     /**
      * Update when opening
      */
-    document
-      .getElementById("jobInterface")
-      .addEventListener("shown.bs.modal", () => {
-        if (this.#jobList.length == 0) {
-          this.#jobInterfaceBody.innerHTML = "You currently have no jobs.";
-        }
-        this.#jobList.forEach((job) => job.fetchStatus());
-      });
+    document.getElementById("jobInterface").addEventListener("shown.bs.modal", () => {
+      if (this.#jobList.length == 0) {
+        this.#jobInterfaceBody.innerHTML = "You currently have no jobs.";
+      }
+      this.#jobList.forEach((job) => job.fetchStatus());
+    });
 
     /**
      * Update job status every 5 seconds when modal is open
@@ -71,9 +69,7 @@ export class JobInterface {
         }
         this.#jobList.push(newJob);
         this.#jobInterfaceBody.prepend(newJob);
-        document
-          .getElementById("hasActiveJobsIndicator")
-          .classList.remove("d-none");
+        document.getElementById("hasActiveJobsIndicator").classList.remove("d-none");
       })
       .catch((error) => {
         console.error("Error creating new job:", error);
@@ -114,9 +110,7 @@ export class JobInterface {
           const newJob = new Job(this, job, this.#projectID);
           this.#jobList.push(newJob);
           this.#jobInterfaceBody.appendChild(newJob);
-          document
-            .getElementById("hasActiveJobsIndicator")
-            .classList.remove("d-none");
+          document.getElementById("hasActiveJobsIndicator").classList.remove("d-none");
         });
       })
       .catch((error) => {
@@ -158,14 +152,7 @@ export class Job extends HTMLElement {
    * Creates the HTML structure for the job element.
    */
   #createJobElement() {
-    this.classList.add(
-      "rounded-3",
-      "bg-body-secondary",
-      "d-flex",
-      "p-2",
-      "gap-2",
-      "align-items-center",
-    );
+    this.classList.add("rounded-3", "bg-body-secondary", "d-flex", "p-2", "gap-2", "align-items-center");
 
     const jobName = document.createElement("div");
     jobName.classList.add("fw-bolder", "text-nowrap");
@@ -183,10 +170,7 @@ export class Job extends HTMLElement {
     this.#progressElem.classList.add("progress-bar");
     this.#progressElem.style.width = this.#progress * 100 + "%";
     this.#progressElem.setAttribute("role", "progressbar");
-    this.#progressElem.setAttribute(
-      "aria-valuenow",
-      (this.#progress * 100).toString(),
-    );
+    this.#progressElem.setAttribute("aria-valuenow", (this.#progress * 100).toString());
     this.#progressElem.setAttribute("aria-valuemin", "0");
     this.#progressElem.setAttribute("aria-valuemax", "100");
 
@@ -194,12 +178,7 @@ export class Job extends HTMLElement {
     this.appendChild(progressBar);
 
     this.#resultButton = document.createElement("a");
-    this.#resultButton.classList.add(
-      "btn",
-      "btn-primary",
-      "text-nowrap",
-      "rouned-3",
-    );
+    this.#resultButton.classList.add("btn", "btn-primary", "text-nowrap", "rouned-3");
     this.#resultButton.innerHTML = "View Result";
     this.#resultButton.classList.add("d-none");
     this.appendChild(this.#resultButton);
@@ -222,10 +201,7 @@ export class Job extends HTMLElement {
         .then((res) => res.json())
         .then((data) => {
           this.#statusElem.innerHTML = "Status: " + data["status"];
-          this.#progressElem.setAttribute(
-            "aria-valuenow",
-            (data["progress"] * 100).toString(),
-          );
+          this.#progressElem.setAttribute("aria-valuenow", (data["progress"] * 100).toString());
           this.#progressElem.style.width = data["progress"] * 100 + "%";
           if (data["progress"] >= 1) {
             this.#resultButton.classList.toggle("d-none");

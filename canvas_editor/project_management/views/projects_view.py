@@ -29,9 +29,7 @@ class ProjectsView(LoginRequiredMixin, ListView):
         return urlsafe_base64_encode(str(project_name).encode())
 
     @staticmethod
-    def _create_project(
-        user: User, project_name: str, project_description: str, project_file
-    ):
+    def _create_project(user: User, project_name: str, project_description: str, project_file):
         new_project = Project(
             name=project_name,
             description=project_description,
@@ -48,9 +46,7 @@ class ProjectsView(LoginRequiredMixin, ListView):
 
         Sorts them by date, and adds the necessary attributes for sharing.
         """
-        queryset = Project.objects.filter(owner=self.request.user).order_by(
-            "-last_edited"
-        )
+        queryset = Project.objects.filter(owner=self.request.user).order_by("-last_edited")
         for project in queryset:
             project.uid = self._generate_uid(self.request)
             project.token = self._generate_token(project.name)
@@ -68,16 +64,12 @@ class ProjectsView(LoginRequiredMixin, ListView):
         form = ProjectForm(request.POST, request.FILES)
 
         # Check if form is valid before proceeding
-        if form.is_valid() and is_name_unique(
-            request.user, form.cleaned_data["name"].strip().replace(" ", "_")
-        ):
+        if form.is_valid() and is_name_unique(request.user, form.cleaned_data["name"].strip().replace(" ", "_")):
             project_name = form.cleaned_data["name"].strip().replace(" ", "_")
             project_file = request.FILES.get("file")
             project_description = form.cleaned_data.get("description", "").strip()
 
-            self._create_project(
-                request.user, project_name, project_description, project_file
-            )
+            self._create_project(request.user, project_name, project_description, project_file)
 
             return redirect("editor", project_name=project_name)
 

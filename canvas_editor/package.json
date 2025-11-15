@@ -17,5 +17,8 @@
   },
   "lint-staged": {
     "*.{js,mjs}": "npx eslint --config canvas_editor/eslint.config.mjs"
+  },
+  "prettier": {
+    "printWidth": 120
   }
 }

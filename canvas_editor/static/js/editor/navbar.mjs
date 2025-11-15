@@ -133,8 +133,7 @@ export class Navbar {
       if (select.value === "mac") {
         content.innerHTML = document.getElementById("macKeybindings").innerHTML;
       } else if (select.value === "other") {
-        content.innerHTML =
-          document.getElementById("windowsKeybindings").innerHTML;
+        content.innerHTML = document.getElementById("windowsKeybindings").innerHTML;
       } else {
         content.innerHTML = "";
       }

@@ -13,9 +13,7 @@ class JobManagementView(LoginRequiredMixin, View):
     def get(self, request, project_id):
         """Get all job IDs for the specified project."""
         project = get_object_or_404(Project, owner=request.user, pk=project_id)
-        jobs = Job.objects.filter(owner=request.user, project=project).order_by(
-            "starting_time"
-        )
+        jobs = Job.objects.filter(owner=request.user, project=project).order_by("starting_time")
         job_ids = [job.pk for job in jobs]
         return JsonResponse({"jobIDs": job_ids})
 

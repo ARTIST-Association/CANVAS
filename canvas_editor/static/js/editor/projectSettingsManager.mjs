@@ -34,9 +34,7 @@ export class ProjectSettingsManager {
   async initialize() {
     await this.#getPresets();
 
-    this.#environmentSettingsEntry = document.getElementById(
-      "environment-settings",
-    );
+    this.#environmentSettingsEntry = document.getElementById("environment-settings");
 
     this.#graphicsSettingsEntry = document.getElementById("graphic-settings");
 
@@ -96,17 +94,13 @@ export class ProjectSettingsManager {
       },
     ];
 
-    for (const { label, key, enabled, apply } of graphicSettings) {
-      const checkbox = this.#createCheckbox(
-        label,
-        enabled,
-        (/** @type {boolean} */ isChecked) => {
-          apply(isChecked);
-          this.#saveAndLoadHandler.updateSettings(key, enabled);
-        },
-      );
+    graphicSettings.forEach(({ label, key, enabled, apply }) => {
+      const checkbox = this.#createCheckbox(label, enabled, (/** @type {boolean} */ isChecked) => {
+        apply(isChecked);
+        this.#saveAndLoadHandler.updateSettings(key, enabled);
+      });
       this.#graphicsSettingsEntry.appendChild(checkbox);
-    }
+    });
   }
 
   /**
@@ -117,7 +111,6 @@ export class ProjectSettingsManager {
    * @returns {HTMLDivElement} Wrapper for the checkbox
    */
   #createCheckbox(label, isChecked, onChange) {
-    //Wrapper for the checkbox
     const wrapper = document.createElement("div");
     wrapper.classList.add("form-check", "mb-2");
 

@@ -51,13 +51,7 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
    * @param {Function} saveFunc is the function to update the field value
    * @param {number} InputLimitBottom is the limit of the input field
    */
-  constructor(
-    fieldName,
-    fieldType,
-    getFieldValueFunc,
-    saveFunc,
-    InputLimitBottom,
-  ) {
+  constructor(fieldName, fieldType, getFieldValueFunc, saveFunc, InputLimitBottom) {
     super();
     this.#fieldName = fieldName;
     this.#fieldType = fieldType;
@@ -161,8 +155,7 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
     const headerButton = document.createElement("button");
     headerButton.classList.add("accordion-button", "fw-bold");
     headerButton.type = "button";
-    headerButton.dataset.bsTarget =
-      "#" + this.#title.replace(" ", "") + "Collapse";
+    headerButton.dataset.bsTarget = "#" + this.#title.replace(" ", "") + "Collapse";
     headerButton.dataset.bsToggle = "collapse";
     headerButton.innerText = this.#title;
     header.appendChild(headerButton);
@@ -184,14 +177,7 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
     accordionItem.appendChild(bodyWrapper);
 
     const body = document.createElement("div");
-    body.classList.add(
-      "d-flex",
-      "flex-column",
-      "bg-body",
-      "rounded-3",
-      "gap-2",
-      "accordion-body",
-    );
+    body.classList.add("d-flex", "flex-column", "bg-body", "rounded-3", "gap-2", "accordion-body");
     bodyWrapper.appendChild(body);
 
     this.#componentList.forEach((component) => {
@@ -298,14 +284,7 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
    * @param {Function} saveFunc the function to save the value
    * @param {number} [step] the step the slider uses
    */
-  constructor(
-    fieldName,
-    min,
-    max,
-    getFieldValueFunc,
-    saveFunc,
-    step = undefined,
-  ) {
+  constructor(fieldName, min, max, getFieldValueFunc, saveFunc, step = undefined) {
     super();
     this.#fieldName = fieldName;
     this.#min = min;
@@ -322,14 +301,7 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
    */
   render() {
     const wrapper = document.createElement("div");
-    wrapper.classList.add(
-      "d-flex",
-      "flex-column",
-      "p-2",
-      "bg-body",
-      "rounded-3",
-      "gap-2",
-    );
+    wrapper.classList.add("d-flex", "flex-column", "p-2", "bg-body", "rounded-3", "gap-2");
     if (this.#hasBorder) {
       wrapper.classList.add("border");
     }
@@ -440,13 +412,7 @@ export class HeaderInspectorComponent extends InspectorComponent {
 
     const buttonWrapper = document.createElement("div");
     const buttonBackground = document.createElement("div");
-    buttonBackground.classList.add(
-      "rounded-4",
-      "d-flex",
-      "gap-1",
-      "bg-body",
-      "px-2",
-    );
+    buttonBackground.classList.add("rounded-4", "d-flex", "gap-1", "bg-body", "px-2");
     buttonWrapper.appendChild(buttonBackground);
     wrapper.appendChild(buttonWrapper);
 
@@ -513,10 +479,7 @@ export class HeaderInspectorComponent extends InspectorComponent {
     });
 
     inputField.addEventListener("change", () => {
-      if (
-        inputField.value !== this.#getFieldValueFunc() &&
-        inputField.value.length < 200
-      ) {
+      if (inputField.value !== this.#getFieldValueFunc() && inputField.value.length < 200) {
         this.#saveFunc(inputField.value);
       }
       inputField.blur();

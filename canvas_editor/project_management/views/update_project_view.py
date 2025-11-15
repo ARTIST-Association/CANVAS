@@ -25,9 +25,7 @@ class UpdateProjectView(LoginRequiredMixin, FormView):
     def get_form_kwargs(self):
         """Add the instance to the forms key word arguments."""
         kwargs = super().get_form_kwargs()
-        kwargs["instance"] = Project.objects.get(
-            owner=self.request.user, name=self.kwargs["project_name"]
-        )
+        kwargs["instance"] = Project.objects.get(owner=self.request.user, name=self.kwargs["project_name"])
         return super().get_form_kwargs()
 
     def form_invalid(self, form):
@@ -40,9 +38,7 @@ class UpdateProjectView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         """Handle valid update project form."""
-        project = Project.objects.get(
-            owner=self.request.user, name=self.kwargs["project_name"]
-        )
+        project = Project.objects.get(owner=self.request.user, name=self.kwargs["project_name"])
         form_name = form.cleaned_data["name"].strip().replace(" ", "_")
         form_description = form.cleaned_data.get("description", "")
         if is_name_unique(self.request.user, form_name) or form_name == project.name:
