@@ -177,7 +177,7 @@ SOCIALACCOUNT_PROVIDERS = {
         },
     },
     "github": {
-        "SCOPE": ["user", "repo", "gist", "notifications"],
+        "SCOPE": ["user"],
         "AUTH_PARAMS": {
             "scope": "user:email",
         },

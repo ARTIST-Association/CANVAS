@@ -80,15 +80,16 @@
                     <div class="pt-4">
                         {% for message in messages %}
                             {% element alert level=message.tags %}
-                            {% slot message %}
-                            {{ message }}
-                        {% endslot %}
-                    {% endelement %}
-                {% endfor %}
+                                {% slot message %}
+                                    {{ message }}
+                                {% endslot %}
+                            {% endelement %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% block content %}{% endblock %}
             </div>
-        {% endif %}
-        {% block content %}{% endblock %}
+        </main>
+        <div class="position-absolute bottom-0 end-0 mb-4 me-4">{% include "userDropdown.html" %}</div>
     </div>
-</main>
-</div>
 {% endblock %}
