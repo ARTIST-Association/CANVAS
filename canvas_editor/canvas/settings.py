@@ -13,10 +13,17 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+#  ██████╗ ██████╗ ██████╗ ███████╗
+# ██╔════╝██╔═══██╗██╔══██╗██╔════╝
+# ██║     ██║   ██║██████╔╝█████╗
+# ██║     ██║   ██║██╔══██╗██╔══╝
+# ╚██████╗╚██████╔╝██║  ██║███████╗
+#  ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 HDF5_SCENARIO_DIR = BASE_DIR / "hdf5_management" / "scenarios"
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -26,13 +33,11 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get("DEBUG")) == "1"
-
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-
 
 # Application definition
 
-SITE_ID = 2
+SITE_ID = 1
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -41,46 +46,23 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "editor",
-    "autosave_api",
-    "job_interface",
-    "project_management",
-    "account_management",
+    "django.contrib.humanize",
     "rest_framework",
     "django.contrib.sites",
     "allauth",
     "allauth.account",
+    "allauth.usersessions",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
     "django_cleanup.apps.CleanupConfig",
+    "canvas",
+    "editor",
+    "user_settings",
+    "autosave_api",
+    "job_interface",
+    "project_management",
 ]
-
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": {
-            "profile",
-            "email",
-        },
-        "AUTH_PARAMS": {
-            "access_type": "online",
-        },
-        "APP": {
-            "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
-            "secret": os.environ.get("GOOGLE_CLIENT_SECRET"),
-        },
-    },
-    "github": {
-        "SCOPE": ["user", "repo", "gist", "notifications"],
-        "AUTH_PARAMS": {
-            "scope": "user:email",
-        },
-        "APP": {
-            "client_id": os.environ.get("GITHUB_CLIENT_ID"),
-            "secret": os.environ.get("GITHUB_CLIENT_SECRET"),
-        },
-    },
-}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -113,7 +95,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "canvas.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -124,6 +105,41 @@ DATABASES = {
     }
 }
 
+# Internationalization
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
+
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
+
+
+# █████╗ ██╗   ██╗████████╗██╗  ██╗███████╗███╗   ██╗████████╗██╗ ██████╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+# ██╔══██╗██║   ██║╚══██╔══╝██║  ██║██╔════╝████╗  ██║╚══██╔══╝██║██╔════╝██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║
+# ███████║██║   ██║   ██║   ███████║█████╗  ██╔██╗ ██║   ██║   ██║██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║
+# ██╔══██║██║   ██║   ██║   ██╔══██║██╔══╝  ██║╚██╗██║   ██║   ██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║
+# ██║  ██║╚██████╔╝   ██║   ██║  ██║███████╗██║ ╚████║   ██║   ██║╚██████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║
+# ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -143,46 +159,62 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-LOGIN_URL = "/"
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
-USE_I18N = True
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = "/media/"
-
 # Allauth settings
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
+# https://docs.allauth.org/en/latest/account/configuration.html
 
-LOGIN_REDIRECT_URL = "/projects/"
-LOGOUT_REDIRECT_URL = "/"
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": {
+            "profile",
+            "email",
+        },
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+        "APP": {
+            "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+            "secret": os.environ.get("GOOGLE_CLIENT_SECRET"),
+        },
+    },
+    "github": {
+        "SCOPE": ["user"],
+        "AUTH_PARAMS": {
+            "scope": "user:email",
+        },
+        "APP": {
+            "client_id": os.environ.get("GITHUB_CLIENT_ID"),
+            "secret": os.environ.get("GITHUB_CLIENT_SECRET"),
+        },
+    },
+}
+
+# Routing
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
+
+# Signup
+ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
+
+# Login
+ACCOUNT_LOGIN_METHODS = {"email"}
+
+# Email verification
+# INFO: To change the name and website displayed in the emails, you need to update the
+#       site name and URL in the Django admin page. Is handled by the migration in the canvas app.
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-# Email settings
+
+# ███████╗███╗   ███╗ █████╗ ██╗██╗
+# ██╔════╝████╗ ████║██╔══██╗██║██║
+# █████╗  ██╔████╔██║███████║██║██║
+# ██╔══╝  ██║╚██╔╝██║██╔══██║██║██║
+# ███████╗██║ ╚═╝ ██║██║  ██║██║███████╗
+# ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚══════╝
+
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.kit.edu"
 EMAIL_PORT = 587
@@ -190,3 +222,4 @@ EMAIL_USE_TLS = True
 EMAIL_FROM = "canvas-editor@scc.kit.edu"
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = "canvas-editor@scc.kit.edu"

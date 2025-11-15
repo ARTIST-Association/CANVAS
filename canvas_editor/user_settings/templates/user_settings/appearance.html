@@ -1,0 +1,10 @@
+{% extends "settingsBase.html" %}
+{% block content %}
+    <h1 class="mt-4">Change Appearance</h1>
+    <p>Change the theme of the application</p>
+    <select name="theme" class="form-select" id="theme-switcher">
+        <option value="dark">Dark mode</option>
+        <option value="light">Light mode</option>
+        <option value="auto">Adapt to system theme</option>
+    </select>
+{% endblock content %}

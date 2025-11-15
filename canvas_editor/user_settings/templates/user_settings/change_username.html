@@ -1,0 +1,11 @@
+{% extends "settingsBase.html" %}
+{% block content %}
+    <h1 class="mt-4">Change username</h1>
+    <form method="post" class="d-flex flex-column gap-2">
+        {% csrf_token %}
+        {{ form }}
+        <div>
+            <button class="btn btn-primary rounded-4 fw-bold" type="submit">Change username</button>
+        </div>
+    </form>
+{% endblock content %}
