@@ -221,7 +221,7 @@ export class Editor {
       new THREE.Color("#ff7f9a"),
       new THREE.Color("#c2ee00"),
       new THREE.Color("#73c5ff"),
-      new THREE.Color("#FFFF00")
+      new THREE.Color("#FFFF00"),
     );
     this.#scene.add(this.#transformControls.getHelper());
 
@@ -271,7 +271,7 @@ export class Editor {
       const tmp = new Heliostat(
         heliostat.name,
         new THREE.Vector3(heliostat.position_x, heliostat.position_y, heliostat.position_z),
-        heliostat.id
+        heliostat.id,
       );
       this.#selectableGroup.add(tmp);
       this.#heliostatList.push(tmp);
@@ -289,7 +289,7 @@ export class Editor {
         receiver.resolution_u,
         receiver.curvature_e,
         receiver.curvature_u,
-        receiver.id
+        receiver.id,
       );
       this.#selectableGroup.add(tmp);
       this.#receiverList.push(tmp);
@@ -303,7 +303,7 @@ export class Editor {
         lightsource.distribution_type,
         lightsource.mean,
         lightsource.covariance,
-        lightsource.id
+        lightsource.id,
       );
       this.#selectableGroup.add(tmp);
       this.#lightsourceList.push(tmp);

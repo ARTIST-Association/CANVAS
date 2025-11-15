@@ -1,9 +1,7 @@
 import { CanvasObject } from "canvasObject";
 import { Editor } from "editor";
-import { Heliostat } from "heliostat";
-import { LightSource } from "lightSource";
 import { Picker } from "picker";
-import { Receiver } from "receiver";
+import { Object3D } from "three";
 
 /**
  * Class to manage the overview panel in the editor.
@@ -45,32 +43,10 @@ export class OverviewHandler {
       this.#render();
     });
 
-    // re-render when a new item is selected
-    document.getElementById("canvas").addEventListener("itemSelected", () => {
-      if (this.#overviewButton.classList.contains("active")) {
-        this.#render();
-      }
-    });
-
-    // re-render when object is created
-    document.getElementById("canvas").addEventListener("itemCreated", () => {
-      if (this.#overviewButton.classList.contains("active")) {
-        this.#render();
-      }
-    });
-
-    // re-render when object is deleted
-    document.getElementById("canvas").addEventListener("itemDeleted", () => {
-      if (this.#overviewButton.classList.contains("active")) {
-        this.#render();
-      }
-    });
-
-    // re-render when object is updated
-    document.getElementById("canvas").addEventListener("itemUpdated", () => {
-      if (this.#overviewButton.classList.contains("active")) {
-        this.#render();
-      }
+    ["itemSelected", "itemCreated", "itemDeleted", "itemUpdated"].forEach((evt) => {
+      document.getElementById("canvas").addEventListener(evt, () => {
+        if (this.#overviewButton.classList.contains("active")) this.#render();
+      });
     });
 
     // handle F2 to rename
@@ -92,163 +68,111 @@ export class OverviewHandler {
    * Renders the overview panel.
    */
   #render() {
-    // clear the list
-    this.#heliostatList.innerText = "";
-    this.#receiverList.innerText = "";
-    this.#lightsourceList.innerText = "";
-
     const objects = this.#editor.objects;
     const selectedObjects = this.#picker.getSelectedObjects();
 
-    // render the objects
-    objects.heliostatList.forEach((heliostat) => {
-      const selected = selectedObjects.includes(heliostat);
-      this.#heliostatList.appendChild(this.#createHeliostatEntry(heliostat, selected));
+    this.#renderList(
+      this.#heliostatList,
+      objects.heliostatList,
+      selectedObjects,
+      (heliostat, selected) => this.#createHeliostatEntry(heliostat, selected),
+      "heliostats",
+    );
+
+    this.#renderList(
+      this.#receiverList,
+      objects.receiverList,
+      selectedObjects,
+      (receiver, selected) => this.#createReceiverEntry(receiver, selected),
+      "receivers",
+    );
+
+    this.#renderList(
+      this.#lightsourceList,
+      objects.lightsourceList,
+      selectedObjects,
+      (lightsource, selected) => this.#createLightsourceEntry(lightsource, selected),
+      "light sources",
+    );
+  }
+
+  /**
+   * Renders a list of objects in the given list element.
+   * @param {HTMLElement} listElement the html element to render the list in
+   * @param {CanvasObject[]} objects the objects to render in the list
+   * @param {Object3D[]} selectedObjects the objects that are currently selected
+   * @param {Function} createEntryFn function to create an entry for an object
+   * @param {string} objectTypePlural the plural name of the object type (for empty list message)
+   */
+  #renderList(listElement, objects, selectedObjects, createEntryFn, objectTypePlural) {
+    listElement.innerText = "";
+
+    objects.forEach((obj) => {
+      const selected = selectedObjects.includes(obj);
+      listElement.appendChild(createEntryFn(obj, selected));
     });
 
-    objects.receiverList.forEach((receiver) => {
-      const selected = selectedObjects.includes(receiver);
-      this.#receiverList.appendChild(this.#createReceiverEntry(receiver, selected));
-    });
-
-    objects.lightsourceList.forEach((lightsource) => {
-      const selected = selectedObjects.includes(lightsource);
-      this.#lightsourceList.appendChild(this.#createLightsourceEntry(lightsource, selected));
-    });
-
-    if (this.#heliostatList.children.length == 0) {
+    if (listElement.children.length === 0) {
       const text = document.createElement("i");
       text.classList.add("text-secondary");
-      text.innerText = "No heliostats in this scene";
-      this.#heliostatList.appendChild(text);
-    }
-
-    if (this.#receiverList.children.length == 0) {
-      const text = document.createElement("i");
-      text.classList.add("text-secondary");
-      text.innerText = "No receivers in this scene";
-      this.#receiverList.appendChild(text);
-    }
-
-    if (this.#lightsourceList.children.length == 0) {
-      const text = document.createElement("i");
-      text.classList.add("text-secondary");
-      text.innerText = "No light sources in this scene";
-      this.#lightsourceList.appendChild(text);
+      text.innerText = `No ${objectTypePlural} in this scene`;
+      listElement.appendChild(text);
     }
   }
 
   /**
-   * Creates an entry for the given heliostat
-   * @param {Heliostat} object the heliostat you want to create an entry for
-   * @param {boolean} selected if the object is selected or not
-   * @returns {HTMLElement} heliostatEntry - the html element for the heliostat
+   * Creates a heliostat overview entry
+   * @param {CanvasObject} object The heliostat object
+   * @param {boolean} selected determines if the object is selected or not
+   * @returns {HTMLElement} the created overview entry element
    */
   #createHeliostatEntry(object, selected) {
-    // create the html element to render
-    const heliostatEntry = document.createElement("div");
-    heliostatEntry.role = "button";
-    heliostatEntry.classList.add(
-      "d-flex",
-      "gap-2",
-      "p-2",
-      "rounded-2",
-      "overviewElem",
-      selected ? "bg-primary-subtle" : "bg-body-secondary",
-    );
-
-    const icon = document.createElement("i");
-    icon.classList.add("bi-arrow-up-right-square", "d-flex", "align-items-center");
-    heliostatEntry.appendChild(icon);
-
-    const text = document.createElement("div");
-    text.classList.add("w-100", "d-flex", "align-items-center");
-    text.style.whiteSpace = "normal";
-    text.style.wordBreak = "break-word";
-    text.innerText = object.objectName !== "" ? object.objectName : "Heliostat";
-    heliostatEntry.appendChild(text);
-
-    const button = document.createElement("button");
-    button.classList.add("btn", "btn-primary", "custom-btn");
-    button.style.height = "38px";
-    button.style.flexShrink = "0";
-    button.style.alignSelf = "center";
-    const buttonIcon = document.createElement("i");
-    buttonIcon.classList.add("bi", "bi-pencil-square");
-    button.appendChild(buttonIcon);
-    heliostatEntry.appendChild(button);
-
-    this.#addEditFunctionality(button, object, this.#objectType.HELIOSTAT);
-
-    heliostatEntry.dataset.apiId = object.apiID.toString();
-    heliostatEntry.dataset.type = this.#objectType.HELIOSTAT;
-
-    this.#htmlToObject.set(heliostatEntry, object);
-    this.#objectToHtml.set(object, heliostatEntry);
-    return heliostatEntry;
+    return this.#createOverviewEntry(object, selected, {
+      iconClasses: ["bi", "bi-arrow-up-right-square"],
+      defaultLabel: "Heliostat",
+      type: this.#objectType.HELIOSTAT,
+    });
   }
 
   /**
-   * Creates an entry for the given receiver
-   * @param {Receiver} object the receiver you want to create an entry for
+   *  Creates a receiver overview entry
+   * @param {CanvasObject} object The receiver object
    * @param {boolean} selected determines if the object is selected or not
-   * @returns {HTMLElement} receiverEntry - the html element for the receiver
+   * @returns {HTMLElement} the created overview entry element
    */
   #createReceiverEntry(object, selected) {
-    // create the html element to render
-    const receiverEntry = document.createElement("div");
-    receiverEntry.role = "button";
-    receiverEntry.classList.add(
-      "d-flex",
-      "gap-2",
-      "p-2",
-      "rounded-2",
-      "overviewElem",
-      selected ? "bg-primary-subtle" : "bg-body-secondary",
-    );
-
-    const icon = document.createElement("i");
-    icon.classList.add("bi", "bi-align-bottom", "d-flex", "align-items-center");
-    receiverEntry.appendChild(icon);
-
-    const text = document.createElement("div");
-    text.classList.add("w-100", "d-flex", "align-items-center");
-    text.style.whiteSpace = "normal";
-    text.style.wordBreak = "break-word";
-    text.innerText = object.objectName !== "" && object.objectName ? object.objectName : "Receiver";
-    receiverEntry.appendChild(text);
-
-    const button = document.createElement("button");
-    button.classList.add("btn", "btn-primary", "custom-btn");
-    button.style.height = "38px";
-    button.style.flexShrink = "0";
-    button.style.alignSelf = "center";
-    const buttonIcon = document.createElement("i");
-    buttonIcon.classList.add("bi", "bi-pencil-square");
-    button.appendChild(buttonIcon);
-    receiverEntry.appendChild(button);
-
-    this.#addEditFunctionality(button, object, this.#objectType.RECEIVER);
-
-    receiverEntry.dataset.apiId = object.apiID.toString();
-    receiverEntry.dataset.type = this.#objectType.RECEIVER;
-
-    this.#htmlToObject.set(receiverEntry, object);
-    this.#objectToHtml.set(object, receiverEntry);
-    return receiverEntry;
+    return this.#createOverviewEntry(object, selected, {
+      iconClasses: ["bi", "bi-align-bottom"],
+      defaultLabel: "Receiver",
+      type: this.#objectType.RECEIVER,
+    });
   }
 
   /**
-   * Creates an entry for the given light source
-   * @param {LightSource} object the light source you want to create an entry for
+   * Creates a light source overview entry
+   * @param {CanvasObject} object The light source object
    * @param {boolean} selected determines if the object is selected or not
-   * @returns {HTMLElement} lightSourceEntry - the html element for the light source
+   * @returns {HTMLElement} the created overview entry element
    */
   #createLightsourceEntry(object, selected) {
-    // create the html element to render
-    const lightsourceEntry = document.createElement("div");
-    lightsourceEntry.role = "button";
-    lightsourceEntry.classList.add(
+    return this.#createOverviewEntry(object, selected, {
+      iconClasses: ["bi", "bi-lightbulb"],
+      defaultLabel: "Light source",
+      type: this.#objectType.LIGHTSOURCE,
+    });
+  }
+
+  /**
+   * Creates a generic overview entry
+   * @param {CanvasObject} object the object you want to create an overview entry for
+   * @param {boolean} selected determines if the object is selected or not
+   * @param {object} config configuration object containing icon classes, default label, and type
+   * @returns {HTMLElement} the created overview entry element
+   */
+  #createOverviewEntry(object, selected, config) {
+    const entry = document.createElement("div");
+    entry.role = "button";
+    entry.classList.add(
       "d-flex",
       "gap-2",
       "p-2",
@@ -258,15 +182,15 @@ export class OverviewHandler {
     );
 
     const icon = document.createElement("i");
-    icon.classList.add("bi", "bi-lightbulb", "d-flex", "align-items-center");
-    lightsourceEntry.appendChild(icon);
+    icon.classList.add(...config.iconClasses, "d-flex", "align-items-center");
+    entry.appendChild(icon);
 
     const text = document.createElement("div");
     text.classList.add("w-100", "d-flex", "align-items-center");
     text.style.whiteSpace = "normal";
     text.style.wordBreak = "break-word";
-    text.innerText = object.objectName !== "" && object.objectName ? object.objectName : "Light source";
-    lightsourceEntry.appendChild(text);
+    text.innerText = object.objectName ? object.objectName : config.defaultLabel;
+    entry.appendChild(text);
 
     const button = document.createElement("button");
     button.classList.add("btn", "btn-primary", "custom-btn");
@@ -276,16 +200,17 @@ export class OverviewHandler {
     const buttonIcon = document.createElement("i");
     buttonIcon.classList.add("bi", "bi-pencil-square");
     button.appendChild(buttonIcon);
-    lightsourceEntry.appendChild(button);
+    entry.appendChild(button);
 
-    this.#addEditFunctionality(button, object, this.#objectType.LIGHTSOURCE);
+    this.#addEditFunctionality(button, object, config.type);
 
-    lightsourceEntry.dataset.apiId = object.apiID.toString();
-    lightsourceEntry.dataset.type = this.#objectType.LIGHTSOURCE;
+    entry.dataset.apiId = object.apiID.toString();
+    entry.dataset.type = config.type;
 
-    this.#htmlToObject.set(lightsourceEntry, object);
-    this.#objectToHtml.set(object, lightsourceEntry);
-    return lightsourceEntry;
+    this.#htmlToObject.set(entry, object);
+    this.#objectToHtml.set(object, entry);
+
+    return entry;
   }
 
   /**
