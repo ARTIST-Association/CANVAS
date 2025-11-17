@@ -1,23 +1,16 @@
 import { Modal } from "bootstrap";
 import { ObjectManager } from "objectManager";
+import { ExportProjectPromptCommand } from "./commands/exportProjectCommand.mjs";
+import { LogoutPromptCommand } from "./commands/logoutCommand.mjs";
 import {
-  LightModePromptCommand,
-  DarkModePromptCommand,
-  AutoModePromptCommand,
   AddHeliostatPromptCommand,
   AddReceiverPromptCommand,
   AddLightSourcePromptCommand,
-  ToggleFullscreenPromptCommand,
-  ExportProjectPromptCommand,
-  RenderProjectPromptCommand,
-  OpenSettingsPromptCommand,
-  OpenJobInterfacePromptCommand,
-  PromptCommand,
-  OpenKeybindsPromptCommand,
-  LogoutPromptCommand,
-  NewProjectPromptCommand,
-  OpenProjectPromptCommand,
-} from "promptCommands";
+} from "./commands/objectCommands.mjs";
+import { PromptCommand } from "./commands/promptCommand.mjs";
+import { ToggleFullscreenPromptCommand } from "./commands/toggleFullScreenCommand.mjs";
+import { OpenModalCommand } from "./commands/modalCommand.mjs";
+import { ThemePromptCommand } from "./commands/themeCommand.mjs";
 
 /**
  * Manages the command prompt in the editor
@@ -100,21 +93,21 @@ export class CommandPrompt {
     });
 
     this.#commandList = [
-      new LightModePromptCommand(this),
-      new DarkModePromptCommand(this),
-      new AutoModePromptCommand(this),
+      new ThemePromptCommand(this, "Use light mode", "light"),
+      new ThemePromptCommand(this, "Use dark mode", "dark"),
+      new ThemePromptCommand(this, "Adapt theme to system preference", "auto"),
       new AddHeliostatPromptCommand(this, this.#objectManager),
       new AddReceiverPromptCommand(this, this.#objectManager),
       new AddLightSourcePromptCommand(this, this.#objectManager),
       new ToggleFullscreenPromptCommand(this),
       new ExportProjectPromptCommand(this),
-      new RenderProjectPromptCommand(this),
-      new OpenSettingsPromptCommand(this),
-      new OpenJobInterfacePromptCommand(this),
-      new OpenKeybindsPromptCommand(this),
       new LogoutPromptCommand(this),
-      new NewProjectPromptCommand(this),
-      new OpenProjectPromptCommand(this),
+      new OpenModalCommand(this, "Create new job", "startJobModal"),
+      new OpenModalCommand(this, "Open settings modal", "settings"),
+      new OpenModalCommand(this, "Open job interface modal", "jobInterface"),
+      new OpenModalCommand(this, "Open keybindings page", "keyboardModal"),
+      new OpenModalCommand(this, "New project command", "createNewProject", "id_name"),
+      new OpenModalCommand(this, "Open existing project", "openProject"),
     ];
 
     this.#commandList.sort((command1, command2) => command1.commandName.localeCompare(command2.commandName));
