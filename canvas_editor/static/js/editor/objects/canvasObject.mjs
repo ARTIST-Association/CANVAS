@@ -8,7 +8,6 @@ import {
   duplicateCommandNotImplementedError,
   updateNameCommandNotImplementedError,
 } from "message_dict";
-import { Command } from "command";
 
 /**
  * Represents a Object in CANVAS
@@ -50,7 +49,6 @@ export class CanvasObject extends Object3D {
    * @param {string} name the new name
    * @returns {void}
    */
-  // eslint-disable-next-line no-unused-vars -- required for interface compatibility
   updateAndSaveObjectName(name) {
     const UpdatePropertyCommand = this.updatePropertyCommand;
     if (!UpdatePropertyCommand) {
@@ -134,7 +132,6 @@ export class CanvasObject extends Object3D {
    * Returns the command class used to update the name of the object
    * @abstract
    * @throws {Error}  Throws an error if the method is not implemented in subclasses.
-   * @returns {new (...args: any[]) => Command}
    */
   get updatePropertyCommand() {
     throw new Error(methodMustBeImplementedError);
@@ -144,7 +141,6 @@ export class CanvasObject extends Object3D {
    * Returns the command class used to duplicate the object
    * @abstract
    * @throws {Error} - Throws an error if the method is not implemented in subclasses.
-   * @returns {new (...args: any[]) => Command}
    */
   get duplicateCommand() {
     throw new Error(methodMustBeImplementedError);
@@ -154,7 +150,6 @@ export class CanvasObject extends Object3D {
    * Returns the command class used to delete the object
    * @abstract
    * @throws {Error} - Throws an error if the method is not implemented in subclasses.
-   * @returns {new (...args: any[]) => Command}
    */
   get deleteCommand() {
     throw new Error(methodMustBeImplementedError);

@@ -5,7 +5,7 @@ import { Vector3 } from "three";
 /**
  * Class that represents movable canvas objects
  * For now this includes Heliostats and Receivers
- * @extends {CanvasObject}
+ * @augments {CanvasObject}
  */
 export class movableCanvasObject extends CanvasObject {
   #positionComponent;
@@ -15,7 +15,7 @@ export class movableCanvasObject extends CanvasObject {
    * Creates a new movable object
    * @param {string} movableObjectName the name of the movable object
    * @param {import("undoRedoHandler").UndoRedoHandler} undoRedoHandler the undo redo handler
-   * @param {THREE.Vector3} position the position of the movable object
+   * @param {Vector3} position the position of the movable object
    * @param {string} defaultLabel the default label when no name is given
    */
   constructor(movableObjectName, undoRedoHandler, position, defaultLabel) {
@@ -64,7 +64,7 @@ export class movableCanvasObject extends CanvasObject {
 
   /**
    * Updates the position of the heliostat
-   * @param {THREE.Vector3} position the new position
+   * @param {Vector3} position the new position
    */
   updatePosition(position) {
     this.position.copy(position);
@@ -80,7 +80,7 @@ export class movableCanvasObject extends CanvasObject {
   }
   /**
    * Get the current position of the object
-   * @returns {THREE.Vector3} the position of the object
+   * @returns {Vector3} the position of the object
    */
   get lastPosition() {
     return this.#lastPosition;
