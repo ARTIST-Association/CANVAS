@@ -5,12 +5,19 @@ import { CommandPrompt } from "../commandPrompt.mjs";
  * Parent class of all prompt commands
  */
 export class PromptCommand extends HTMLElement {
-  #commandName;
-  #occurrenceLength = null;
   /**
-   * @type {number[]}
+   * The score of how good the current input of the command prompt matches the command
+   * @type {number}
    */
-  #selectedChars = null;
+  matchScore = 0;
+
+  #commandName;
+
+  /**
+   * An array containing all the indices of the chars that should be highlighted
+   * @type {number[] | null}
+   */
+  #selectedCharsIndices = null;
   #commandElem;
   #commandPrompt;
 
@@ -60,33 +67,20 @@ export class PromptCommand extends HTMLElement {
   }
 
   /**
-   * Returns the length of the occurrence that got selected by the searching algorithm.
-   * @returns {number|null} the length of the occurrence or null if no occurrence got selected
-   */
-  get occurrenceLength() {
-    return this.#occurrenceLength;
-  }
-
-  /**
-   * Sets the length of the occurrence that got selected by the searching algorithm.
-   * @param {number|null} length the length of the occurrence or null if no occurrence got selected
-   */
-  set occurrenceLength(length) {
-    this.#occurrenceLength = length;
-  }
-
-  /**
-   * Returns an array of all indexes of characters that got selected by the searching algorithm.
-   * Use for highlighting them.
+   * Set the indices for the chars that should be highlighted for the search functionality
+   * Also sets the match score based on the given chars
    * @param {number[]} chars is an array of char indexes you want to be selected
    */
-  set selectedChars(chars) {
-    this.#selectedChars = chars;
-    if (this.#selectedChars !== null) {
-      if (this.#selectedChars.length > 1) {
-        this.#occurrenceLength = this.#selectedChars[this.#selectedChars.length - 1] - this.#selectedChars[0];
+  set selectedCharsIndices(chars) {
+    this.#selectedCharsIndices = chars;
+    if (this.#selectedCharsIndices != null) {
+      if (this.#selectedCharsIndices.length == 0) {
+        this.matchScore = 0;
+      } else if (this.#selectedCharsIndices.length == 1) {
+        this.matchScore = 1;
       } else {
-        this.#occurrenceLength = 0;
+        this.matchScore =
+          this.#selectedCharsIndices[this.#selectedCharsIndices.length - 1] - this.#selectedCharsIndices[0];
       }
     }
   }
@@ -95,10 +89,10 @@ export class PromptCommand extends HTMLElement {
    * Makes all the characters specified by 'selectedChars' bold.
    */
   formatCommandName() {
-    if (this.#selectedChars) {
+    if (this.#selectedCharsIndices) {
       let formattedName = "";
       let lastIndex = 0;
-      this.#selectedChars.forEach((index) => {
+      this.#selectedCharsIndices.forEach((index) => {
         formattedName += this.#commandName.slice(lastIndex, index);
         formattedName += `<b>${this.#commandName[index]}</b>`;
         lastIndex = index + 1;
@@ -132,3 +126,4 @@ export class PromptCommand extends HTMLElement {
     throw new Error(methodMustBeImplementedError);
   }
 }
+customElements.define("prompt-command", PromptCommand);

@@ -9,8 +9,8 @@ import {
 } from "./commands/objectCommands.mjs";
 import { PromptCommand } from "./commands/promptCommand.mjs";
 import { ToggleFullscreenPromptCommand } from "./commands/toggleFullScreenCommand.mjs";
-import { OpenModalCommand } from "./commands/modalCommand.mjs";
 import { ThemePromptCommand } from "./commands/themeCommand.mjs";
+import { OpenModalCommand } from "./commands/openModalCommand.mjs";
 
 /**
  * Manages the command prompt in the editor
@@ -93,9 +93,9 @@ export class CommandPrompt {
     });
 
     this.#commandList = [
-      new ThemePromptCommand(this, "Use light mode", "light"),
-      new ThemePromptCommand(this, "Use dark mode", "dark"),
-      new ThemePromptCommand(this, "Adapt theme to system preference", "auto"),
+      new ThemePromptCommand(this, "Use theme: light", "light"),
+      new ThemePromptCommand(this, "Use theme: dark", "dark"),
+      new ThemePromptCommand(this, "Use theme: adapt to system preferences", "auto"),
       new AddHeliostatPromptCommand(this, this.#objectManager),
       new AddReceiverPromptCommand(this, this.#objectManager),
       new AddLightSourcePromptCommand(this, this.#objectManager),
@@ -103,10 +103,10 @@ export class CommandPrompt {
       new ExportProjectPromptCommand(this),
       new LogoutPromptCommand(this),
       new OpenModalCommand(this, "Create new job", "startJobModal"),
-      new OpenModalCommand(this, "Open settings modal", "settings"),
+      new OpenModalCommand(this, "Open settings", "settings"),
       new OpenModalCommand(this, "Open job interface modal", "jobInterface"),
-      new OpenModalCommand(this, "Open keybindings page", "keyboardModal"),
-      new OpenModalCommand(this, "New project command", "createNewProject", "id_name"),
+      new OpenModalCommand(this, "Open keybindings modal", "keyboardModal"),
+      new OpenModalCommand(this, "Create new project", "createNewProject", "id_name"),
       new OpenModalCommand(this, "Open existing project", "openProject"),
     ];
 
@@ -145,8 +145,8 @@ export class CommandPrompt {
       this.#commandInput.focus();
       this.#currentlyAvailableCommands = this.#commandList;
       this.#currentlyAvailableCommands.forEach((command) => {
-        command.occurrenceLength = null;
-        command.selectedChars = null;
+        command.matchScore = 0;
+        command.selectedCharsIndices = null;
         this.#commandListElem.appendChild(command);
         command.formatCommandName();
       });
@@ -192,8 +192,8 @@ export class CommandPrompt {
 
     // reset the values for each command
     this.#commandList.forEach((command) => {
-      command.occurrenceLength = null;
-      command.selectedChars = null;
+      command.matchScore = 0;
+      command.selectedCharsIndices = null;
     });
 
     // when no input is given -> render all commands
@@ -202,19 +202,17 @@ export class CommandPrompt {
     } else {
       // calculate the new available commands
       this.#commandList.forEach((command) => {
-        command.selectedChars = this.#calculateFirstOccurringInterval(
+        command.selectedCharsIndices = this.#calculateFirstOccurringInterval(
           this.#commandInput.value.toLowerCase(),
           command.commandName.toLowerCase(),
         );
 
-        if (command.occurrenceLength !== null) {
+        if (command.matchScore !== 0) {
           this.#currentlyAvailableCommands.push(command);
         }
       });
 
-      this.#currentlyAvailableCommands.sort(
-        (command1, command2) => command1.occurrenceLength - command2.occurrenceLength,
-      );
+      this.#currentlyAvailableCommands.sort((command1, command2) => command1.matchScore - command2.matchScore);
     }
 
     // render new available commands

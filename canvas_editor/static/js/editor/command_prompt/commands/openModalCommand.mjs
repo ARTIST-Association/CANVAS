@@ -19,7 +19,6 @@ export class OpenModalCommand extends PromptCommand {
     super(name, commandPrompt);
     this.#modalId = modalId;
     this.#focusElementId = focusElementId;
-    console.log(this.#focusElementId);
   }
 
   /**

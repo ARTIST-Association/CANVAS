@@ -50,20 +50,8 @@ export class ThemePromptCommand extends PromptCommand {
       return;
     }
 
-    switch (theme) {
-      case "light":
-        //@ts-ignore
-        themeSelect.value = "light";
-        break;
-      case "dark":
-        //@ts-ignore
-        themeSelect.value = "dark";
-        break;
-      default:
-        //@ts-ignore
-        themeSelect.value = "auto";
-        break;
-    }
+    //@ts-ignore
+    themeSelect.value = theme;
   }
 }
 customElements.define("theme-prompt-command", ThemePromptCommand);
