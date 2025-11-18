@@ -79,8 +79,7 @@ export class PromptCommand extends HTMLElement {
       } else if (this.#selectedCharsIndices.length == 1) {
         this.matchScore = 1;
       } else {
-        this.matchScore =
-          this.#selectedCharsIndices[this.#selectedCharsIndices.length - 1] - this.#selectedCharsIndices[0];
+        this.matchScore = this.#selectedCharsIndices.at(-1) - this.#selectedCharsIndices[0];
       }
     }
   }

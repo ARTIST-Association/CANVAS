@@ -35,10 +35,9 @@ export class ThemePromptCommand extends PromptCommand {
 
     // update the theme
     if (theme === "auto") {
-      document.documentElement.setAttribute(
-        "data-bs-theme",
-        window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
-      );
+      document.documentElement.dataset.bsTheme = globalThis.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     } else {
       document.documentElement.setAttribute("data-bs-theme", theme);
     }
@@ -49,7 +48,6 @@ export class ThemePromptCommand extends PromptCommand {
     if (!themeSelect) {
       return;
     }
-
     //@ts-ignore
     themeSelect.value = theme;
   }

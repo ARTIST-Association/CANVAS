@@ -22,9 +22,9 @@ export class ExportProjectPromptCommand extends PromptCommand {
     let modal = new Modal(document.getElementById("loadingModal"));
     modal.show();
 
-    const projectName = window.location.pathname.split("/")[2];
+    const projectName = globalThis.location.pathname.split("/")[2];
 
-    fetch(window.location + "/download", {
+    fetch(globalThis.location + "/download", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -44,7 +44,7 @@ export class ExportProjectPromptCommand extends PromptCommand {
 
         // After download, close modal and redirect
         modal.hide();
-        window.location.reload();
+        globalThis.location.reload();
       })
       .catch((error) => {
         console.error("Error:", error);

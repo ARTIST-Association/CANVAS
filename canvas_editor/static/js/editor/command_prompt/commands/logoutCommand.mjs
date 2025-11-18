@@ -18,14 +18,14 @@ export class LogoutPromptCommand extends PromptCommand {
    * Executes the logout command.
    */
   execute() {
-    fetch(window.location.origin + "/logout/", {
+    fetch(globalThis.location.origin + "/logout/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": SaveAndLoadHandler.getCookie("csrftoken"),
       },
     }).then(() => {
-      window.location.href = window.location.origin;
+      globalThis.location.href = globalThis.location.origin;
     });
   }
 }

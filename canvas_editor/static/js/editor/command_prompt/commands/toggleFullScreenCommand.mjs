@@ -17,7 +17,7 @@ export class ToggleFullscreenPromptCommand extends PromptCommand {
    * Executes the toggle fullscreen command.
    */
   execute() {
-    if (navigator.userAgent.indexOf("Safari") > -1) {
+    if (navigator.userAgent.includes("Safari")) {
       if (document.webkitFullscreenElement === null) {
         document.documentElement.webkitRequestFullscreen();
       } else if (document.webkitExitFullscreen) {
