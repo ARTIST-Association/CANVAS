@@ -1,4 +1,4 @@
-import { loadGltf } from "canvasObject";
+import { CanvasObject, loadGltf } from "canvasObject";
 import { DeleteHeliostatCommand } from "deleteCommands";
 import { DuplicateHeliostatCommand } from "duplicateCommands";
 import { InspectorComponent } from "inspectorComponents";
@@ -11,15 +11,17 @@ import { movableCanvasObject } from "movableCanvasObjects";
 /**
  * Class that represents the Heliostat object
  */
-export class Heliostat extends movableCanvasObject {
+export class Heliostat extends CanvasObject {
   /**
    * The api id used for this heliostat.
    * @type {number}
    */
   apiID;
+
   /**
-   * @type { string[] }
+   * @type {movableCanvasObject}
    */
+  #movement;
 
   /**
    * Creates a Heliostat object
@@ -28,10 +30,16 @@ export class Heliostat extends movableCanvasObject {
    * @param {number} [apiID] The id for api usage
    */
   constructor(heliostatName, position, apiID = null) {
-    super(heliostatName, UndoRedoHandler.getInstance(), position, "Heliostat");
+    super(heliostatName, UndoRedoHandler.getInstance(), "Heliostat", true, true, null);
     loadGltf("/static/models/heliostat.glb", this, true);
     this.position.copy(position);
     this.apiID = apiID;
+
+    /**
+     * @type {movableCanvasObject}
+     */
+    this.#movement = new movableCanvasObject(this, position, UpdateHeliostatCommand);
+    this.updatePosition(position);
   }
 
   /**
@@ -59,13 +67,34 @@ export class Heliostat extends movableCanvasObject {
   }
 
   /**
-   * Get an array of all inspectorComponents for this object
-   * The inspectorComponents from the parent class are also included
-   * Header component is already included from CanvasObject class
-   * and position components from movableCanvasObject class
+   * Call the movableCanvasObject to update the position
+   * @param {THREE.Vector3} position the new position of the heliostat
+   */
+  updatePosition(position) {
+    this.#movement.updatePosition(position);
+  }
+  /**
+   * Call the movableCanvasObject to update and save the position
+   * @param {THREE.Vector3} position the new position of the heliostat
+   */
+  updateAndSaveObjectPosition(position) {
+    this.#movement.updateAndSaveObjectPosition(position);
+  }
+
+  /**
+   * Get the last Positon of the object from the movableCanvasObject
+   * @returns {THREE.Vector3} the last position of the object
+   */
+  get lastPosition() {
+    return this.#movement.lastPosition;
+  }
+  /**
+   * Get the inspectorComponents used for this object
+   * The inspector components are included by the canvas objects
+   * The position inspector components are included by the movableCanvasObject
    * @returns {InspectorComponent[]} array of inspectorComponents
    */
   get inspectorComponents() {
-    return [...super.inspectorComponents];
+    return [...super.inspectorComponents, ...this.#movement.inspectorComponents];
   }
 }

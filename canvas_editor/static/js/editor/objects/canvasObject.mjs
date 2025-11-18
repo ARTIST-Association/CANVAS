@@ -8,6 +8,7 @@ import {
   duplicateCommandNotImplementedError,
   updateNameCommandNotImplementedError,
 } from "message_dict";
+import { Command } from "command";
 
 /**
  * Represents a Object in CANVAS
@@ -132,6 +133,7 @@ export class CanvasObject extends Object3D {
    * Returns the command class used to update the name of the object
    * @abstract
    * @throws {Error}  Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command} the command class used to update the name
    */
   get updatePropertyCommand() {
     throw new Error(methodMustBeImplementedError);
@@ -141,6 +143,7 @@ export class CanvasObject extends Object3D {
    * Returns the command class used to duplicate the object
    * @abstract
    * @throws {Error} - Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command} the command class used to duplicate the object
    */
   get duplicateCommand() {
     throw new Error(methodMustBeImplementedError);
@@ -150,6 +153,7 @@ export class CanvasObject extends Object3D {
    * Returns the command class used to delete the object
    * @abstract
    * @throws {Error} - Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command} the command class used to delete the object
    */
   get deleteCommand() {
     throw new Error(methodMustBeImplementedError);

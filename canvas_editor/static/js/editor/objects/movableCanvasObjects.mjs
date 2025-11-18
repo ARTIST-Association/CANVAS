@@ -1,35 +1,43 @@
 import { CanvasObject } from "canvasObject";
+import { Command } from "command";
 import { InspectorComponent, MultiFieldInspectorComponent, SingleFieldInspectorComponent } from "inspectorComponents";
 import { Vector3 } from "three";
 
 /**
  * Class that represents movable canvas objects
  * For now this includes Heliostats and Receivers
- * @augments {CanvasObject}
  */
-export class movableCanvasObject extends CanvasObject {
+export class movableCanvasObject {
+  #target;
   #positionComponent;
   #lastPosition;
+  /**
+   * @type {new (...args: any[]) => Command}
+   */
+  #updatePropertyCommand;
 
   /**
-   * Creates a new movable object
-   * @param {string} movableObjectName the name of the movable object
-   * @param {import("undoRedoHandler").UndoRedoHandler} undoRedoHandler the undo redo handler
-   * @param {Vector3} position the position of the movable object
-   * @param {string} defaultLabel the default label when no name is given
+   * The constructor of the movable canvas object
+   * @param {CanvasObject} target the target object
+   * @param {Vector3} position the initial position
+   * @param {new (...args: any[]) => Command} updatePropertyCommand the command class used to update the position
    */
-  constructor(movableObjectName, undoRedoHandler, position, defaultLabel) {
-    super(movableObjectName, undoRedoHandler, defaultLabel, true, true);
-
+  constructor(target, position, updatePropertyCommand) {
+    this.#target = target;
     this.#lastPosition = new Vector3(position.x, position.y, position.z);
+    this.#updatePropertyCommand = updatePropertyCommand;
 
     const nCoordinate = new SingleFieldInspectorComponent(
       "N",
       "number",
-      () => this.position.x,
+      () => this.#target.position.x,
       (newValue) => {
-        this.undoRedoHandler.executeCommand(
-          new this.updatePropertyCommand(this, "position", new Vector3(newValue, this.position.y, this.position.z)),
+        this.#target.undoRedoHandler.executeCommand(
+          new this.#updatePropertyCommand(
+            this.#target,
+            "position",
+            new Vector3(newValue, this.#target.position.y, this.#target.position.z),
+          ),
         );
       },
       -Infinity,
@@ -38,10 +46,14 @@ export class movableCanvasObject extends CanvasObject {
     const uCoordinate = new SingleFieldInspectorComponent(
       "U",
       "number",
-      () => this.position.y,
+      () => this.#target.position.y,
       (newValue) => {
-        this.undoRedoHandler.executeCommand(
-          new this.updatePropertyCommand(this, "position", new Vector3(this.position.x, newValue, this.position.z)),
+        this.#target.undoRedoHandler.executeCommand(
+          new this.#updatePropertyCommand(
+            this.#target,
+            "position",
+            new Vector3(this.#target.position.x, newValue, this.#target.position.z),
+          ),
         );
       },
       0,
@@ -50,10 +62,14 @@ export class movableCanvasObject extends CanvasObject {
     const eCoordinate = new SingleFieldInspectorComponent(
       "E",
       "number",
-      () => this.position.z,
+      () => this.#target.position.z,
       (newValue) => {
-        this.undoRedoHandler.executeCommand(
-          new this.updatePropertyCommand(this, "position", new Vector3(this.position.x, this.position.y, newValue)),
+        this.#target.undoRedoHandler.executeCommand(
+          new this.#updatePropertyCommand(
+            this.#target,
+            "position",
+            new Vector3(this.#target.position.x, this.#target.position.y, newValue),
+          ),
         );
       },
       -Infinity,
@@ -67,7 +83,7 @@ export class movableCanvasObject extends CanvasObject {
    * @param {Vector3} position the new position
    */
   updatePosition(position) {
-    this.position.copy(position);
+    this.#target.position.copy(position);
     this.#lastPosition = new Vector3(position.x, position.y, position.z);
   }
 
@@ -76,7 +92,7 @@ export class movableCanvasObject extends CanvasObject {
    * @param {Vector3} position - the new position of the heliostat
    */
   updateAndSaveObjectPosition(position) {
-    this.undoRedoHandler.executeCommand(new this.updatePropertyCommand(this, "position", position));
+    this.#target.undoRedoHandler.executeCommand(new this.#updatePropertyCommand(this.#target, "position", position));
   }
   /**
    * Get the current position of the object
@@ -91,6 +107,6 @@ export class movableCanvasObject extends CanvasObject {
    * @returns {InspectorComponent[]} array of all inspectorComponents
    */
   get inspectorComponents() {
-    return [...super.inspectorComponents, this.#positionComponent];
+    return [this.#positionComponent];
   }
 }

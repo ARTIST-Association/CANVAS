@@ -1,4 +1,4 @@
-import { loadGltf } from "canvasObject";
+import { CanvasObject, loadGltf } from "canvasObject";
 import { DeleteReceiverCommand } from "deleteCommands";
 import { DuplicateReceiverCommand } from "duplicateCommands";
 import {
@@ -14,11 +14,10 @@ import * as THREE from "three";
 import { towerBasePath, towerTopPath } from "path_dict";
 import { Command } from "command";
 import { movableCanvasObject } from "movableCanvasObjects";
-
 /**
  * Class that represents the receiver object
  */
-export class Receiver extends movableCanvasObject {
+export class Receiver extends CanvasObject {
   /**
    * The apiID used for this receiver
    */
@@ -57,6 +56,11 @@ export class Receiver extends movableCanvasObject {
   curvatureU;
   #undoRedoHandler = UndoRedoHandler.getInstance();
 
+  /**
+   * @type {movableCanvasObject}
+   */
+  #movement;
+
   #top;
   #base;
 
@@ -93,15 +97,13 @@ export class Receiver extends movableCanvasObject {
     curvatureU,
     apiID = null,
   ) {
-    super(receiverName, UndoRedoHandler.getInstance(), position, "Receiver");
+    super(receiverName, UndoRedoHandler.getInstance(), "Receiver", true, true, null);
     // place the 3D object
     this.#base = new ReceiverBase();
     this.add(this.#base);
 
     this.#top = new ReceiverTop();
     this.add(this.#top);
-
-    this.updatePosition(position);
 
     this.apiID = apiID;
     this.towerType = towerType;
@@ -112,6 +114,9 @@ export class Receiver extends movableCanvasObject {
     this.resolutionU = resolutionU;
     this.curvatureE = curvatureE;
     this.curvatureU = curvatureU;
+
+    this.#movement = new movableCanvasObject(this, position, UpdateReceiverCommand);
+    this.updatePosition(position);
 
     const nNormalVector = new SingleFieldInspectorComponent(
       "N",
@@ -256,7 +261,7 @@ export class Receiver extends movableCanvasObject {
    * @param {THREE.Vector3} position the new position of the receiver
    */
   updatePosition(position) {
-    super.updatePosition(position);
+    this.#movement.updatePosition(position);
     this.#base.position.y = -position.y;
   }
 
@@ -285,12 +290,30 @@ export class Receiver extends movableCanvasObject {
   }
 
   /**
+   * Call the movableCanvasObject to update and save the position
+   * @param {THREE.Vector3} position the new position of the heliostat
+   */
+  updateAndSaveObjectPosition(position) {
+    this.#movement.updateAndSaveObjectPosition(position);
+  }
+
+  /**
+   * Get the last Positon of the object from the movableCanvasObject
+   * @returns {THREE.Vector3} the last position of the object
+   */
+  get lastPosition() {
+    return this.#movement.lastPosition;
+  }
+  /**
    * Get the inspectorComponents used for this object
+   * Get the HeaderComponent from the super class canvasObject
+   * Get the InspectorComponents from the movableCanvasObject
    * @returns {InspectorComponent[]} array of the inspectorComponents used
    */
   get inspectorComponents() {
     return [
       ...super.inspectorComponents,
+      ...this.#movement.inspectorComponents,
       this.#normalVectorComponent,
       this.#towerTypeComponent,
       this.#curvatureComponent,
