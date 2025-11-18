@@ -39,7 +39,7 @@ export class ThemePromptCommand extends PromptCommand {
         ? "dark"
         : "light";
     } else {
-      document.documentElement.setAttribute("data-bs-theme", theme);
+      document.documentElement.dataset.bsTheme = theme;
     }
 
     // update the settings
