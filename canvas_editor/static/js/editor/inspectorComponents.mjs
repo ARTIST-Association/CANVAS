@@ -78,7 +78,7 @@ export class InspectorComponent {
 /**
  * A single field component consists out of a name and the corresponding input field
  */
-export class SingleFieldInspectorComponent extends InspectorComponent {
+export class InputFieldInspectorComponent extends InspectorComponent {
   #fieldName;
   #fieldType;
   #getFieldValueFunc;
