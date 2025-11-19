@@ -7,7 +7,7 @@ import { Vector3 } from "three";
  * Class that represents movable canvas objects
  * For now this includes Heliostats and Receivers
  */
-export class movableCanvasObject {
+export class MovableCanvasObject {
   #target;
   #positionComponent;
   #lastPosition;

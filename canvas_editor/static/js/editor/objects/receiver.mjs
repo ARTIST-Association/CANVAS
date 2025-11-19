@@ -13,7 +13,7 @@ import { UpdateReceiverCommand } from "updateCommands";
 import * as THREE from "three";
 import { towerBasePath, towerTopPath } from "path_dict";
 import { Command } from "command";
-import { movableCanvasObject } from "movableCanvasObjects";
+import { MovableCanvasObject } from "movableCanvasObjects";
 /**
  * Class that represents the receiver object
  */
@@ -57,7 +57,7 @@ export class Receiver extends CanvasObject {
   #undoRedoHandler = UndoRedoHandler.getInstance();
 
   /**
-   * @type {movableCanvasObject}
+   * @type {MovableCanvasObject}
    */
   #movement;
 
@@ -115,7 +115,7 @@ export class Receiver extends CanvasObject {
     this.curvatureE = curvatureE;
     this.curvatureU = curvatureU;
 
-    this.#movement = new movableCanvasObject(this, position, UpdateReceiverCommand);
+    this.#movement = new MovableCanvasObject(this, position, UpdateReceiverCommand);
     this.updatePosition(position);
 
     const nNormalVector = new SingleFieldInspectorComponent(

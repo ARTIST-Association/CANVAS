@@ -6,7 +6,7 @@ import { UndoRedoHandler } from "undoRedoHandler";
 import { UpdateHeliostatCommand } from "updateCommands";
 import * as THREE from "three";
 import { Command } from "command";
-import { movableCanvasObject } from "movableCanvasObjects";
+import { MovableCanvasObject } from "movableCanvasObjects";
 
 /**
  * Class that represents the Heliostat object
@@ -19,7 +19,7 @@ export class Heliostat extends CanvasObject {
   apiID;
 
   /**
-   * @type {movableCanvasObject}
+   * @type {MovableCanvasObject}
    */
   #movement;
 
@@ -36,9 +36,9 @@ export class Heliostat extends CanvasObject {
     this.apiID = apiID;
 
     /**
-     * @type {movableCanvasObject}
+     * @type {MovableCanvasObject}
      */
-    this.#movement = new movableCanvasObject(this, position, UpdateHeliostatCommand);
+    this.#movement = new MovableCanvasObject(this, position, UpdateHeliostatCommand);
     this.updatePosition(position);
   }
 
