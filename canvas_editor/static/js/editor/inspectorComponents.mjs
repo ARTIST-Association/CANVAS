@@ -430,23 +430,20 @@ export class HeaderInspectorComponent extends InspectorComponent {
     inputField.type = "text";
     inputField.classList.add("form-control", "rounded-1");
 
-    // Event listeners for clicking the title
-    title.addEventListener("click", () => {
+    /**
+     * Enables editing of the title field
+     */
+    const enableEditing = () => {
       title.innerText = "";
       inputField.value = this.#getFieldValueFunc();
       title.appendChild(inputField);
       inputField.focus();
       inputField.select();
-    });
+    };
 
-    // Event listeners for clicking the edit button
-    editButton.addEventListener("click", () => {
-      title.innerText = "";
-      inputField.value = this.#getFieldValueFunc();
-      title.appendChild(inputField);
-      inputField.focus();
-      inputField.select();
-    });
+    // Use the same handler for both events
+    title.addEventListener("click", enableEditing);
+    editButton.addEventListener("click", enableEditing);
 
     // duplicate button
     const duplicateButton = document.createElement("button");

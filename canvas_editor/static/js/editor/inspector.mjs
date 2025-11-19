@@ -29,16 +29,25 @@ export class Inspector {
     });
 
     canvas.addEventListener("itemDeleted", (/** @type {ItemDeletedEvent}*/ event) => {
-      if (this.#objectList.length == 1 && event.detail.item == this.#objectList[0]) {
-        this.#render();
-      }
+      this.#renderIfRelevant(event.detail.item);
     });
 
     canvas.addEventListener("itemUpdated", (/** @type {ItemUpdatedEvent} */ event) => {
-      if (this.#objectList.length == 1 && event.detail.item == this.#objectList[0]) this.#render();
+      this.#renderIfRelevant(event.detail.item);
     });
 
     this.#render();
+  }
+
+  /**
+   * Render only if exactly one object is selected and
+   * the updated/deleted item is that selected one.
+   * @param {CanvasObject} item the item that was updated/deleted
+   */
+  #renderIfRelevant(item) {
+    if (this.#objectList.length === 1 && this.#objectList[0] === item) {
+      this.#render();
+    }
   }
 
   /**
