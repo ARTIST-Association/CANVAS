@@ -34,7 +34,7 @@ export class Editor {
   #saveAndLoadHandler;
   #navbar; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
   #picker;
-  #overview; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
+  #overviewHandler; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
   #modeSelector; // eslint-disable-line no-unused-private-class-members -- for structural consistency, not used yet
   #projectSettingManager;
   #objectManager;
@@ -86,7 +86,7 @@ export class Editor {
     // initiate needed classes
     this.#undoRedoHandler = UndoRedoHandler.getInstance();
     this.#picker = new Picker(this.#camera, this.#transformControls, this.#selectionBox, this.#selectableGroup);
-    this.#overview = new OverviewHandler(this.#picker);
+    this.#overviewHandler = new OverviewHandler(this.#picker);
     this.#projectSettingManager = new ProjectSettingsManager();
     this.#projectSettingManager.initialize();
     this.#objectManager = new ObjectManager(this.#picker, this.#undoRedoHandler);
