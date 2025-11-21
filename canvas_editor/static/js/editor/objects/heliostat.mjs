@@ -3,7 +3,7 @@ import { DeleteHeliostatCommand } from "deleteCommands";
 import { DuplicateHeliostatCommand } from "duplicateCommands";
 import {
   HeaderInspectorComponent,
-  SingleFieldInspectorComponent,
+  InputFieldInspectorComponent,
   MultiFieldInspectorComponent,
   InspectorComponent,
 } from "inspectorComponents";
@@ -51,7 +51,7 @@ export class Heliostat extends CanvasObject {
       this,
     );
 
-    const nCoordinate = new SingleFieldInspectorComponent(
+    const nCoordinate = new InputFieldInspectorComponent(
       "N",
       "number",
       () => this.position.x,
@@ -63,7 +63,7 @@ export class Heliostat extends CanvasObject {
       -Infinity,
     );
 
-    const uCoordinate = new SingleFieldInspectorComponent(
+    const uCoordinate = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.position.y,
@@ -75,7 +75,7 @@ export class Heliostat extends CanvasObject {
       0,
     );
 
-    const eCoordinate = new SingleFieldInspectorComponent(
+    const eCoordinate = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.position.z,

@@ -3,7 +3,7 @@ import { DeleteLightSourceCommand } from "deleteCommands";
 import { DuplicateLightSourceCommand } from "duplicateCommands";
 import {
   HeaderInspectorComponent,
-  SingleFieldInspectorComponent,
+  InputFieldInspectorComponent,
   SelectFieldInspectorComponent,
   InspectorComponent,
 } from "inspectorComponents";
@@ -80,7 +80,7 @@ export class LightSource extends CanvasObject {
       this,
     );
 
-    this.#numberOfRaysComponent = new SingleFieldInspectorComponent(
+    this.#numberOfRaysComponent = new InputFieldInspectorComponent(
       "Number of rays",
       "number",
       () => this.numberOfRays,
@@ -108,7 +108,7 @@ export class LightSource extends CanvasObject {
       },
     );
 
-    this.#distributionMeanComponent = new SingleFieldInspectorComponent(
+    this.#distributionMeanComponent = new InputFieldInspectorComponent(
       "Mean",
       "number",
       () => this.distributionMean,
@@ -118,7 +118,7 @@ export class LightSource extends CanvasObject {
       -Infinity,
     );
 
-    this.#distributionCovarianceComponent = new SingleFieldInspectorComponent(
+    this.#distributionCovarianceComponent = new InputFieldInspectorComponent(
       "Covariance",
       "number",
       () => this.distributionCovariance,
