@@ -6,7 +6,8 @@ import { CommandPrompt } from "../commandPrompt.mjs";
  */
 export class PromptCommand extends HTMLElement {
   /**
-   * The score of how good the current input of the command prompt matches the command
+   * The score of how good the current input of the command prompt matches the command.
+   * Is used to filter and sort all of the currently available commands.
    * @type {number}
    */
   matchScore = 0;
@@ -68,18 +69,25 @@ export class PromptCommand extends HTMLElement {
 
   /**
    * Set the indices for the chars that should be highlighted for the search functionality
-   * Also sets the match score based on the given chars
    * @param {number[]} chars is an array of char indexes you want to be selected
    */
   set selectedCharsIndices(chars) {
     this.#selectedCharsIndices = chars;
-    if (this.#selectedCharsIndices != null) {
-      if (this.#selectedCharsIndices.length == 0) {
+  }
+
+  /**
+   * Calculates the new match score of this command.
+   * @param {number[] | null} indices an array containing all the indices of the selected chars
+   * by the searching algorithm.
+   */
+  calculateMatchScore(indices) {
+    if (indices != null) {
+      if (indices.length == 0) {
         this.matchScore = 0;
-      } else if (this.#selectedCharsIndices.length == 1) {
+      } else if (indices.length == 1) {
         this.matchScore = 1;
       } else {
-        this.matchScore = this.#selectedCharsIndices.at(-1) - this.#selectedCharsIndices[0];
+        this.matchScore = indices.at(-1) - indices[0];
       }
     }
   }
@@ -91,11 +99,11 @@ export class PromptCommand extends HTMLElement {
     if (this.#selectedCharsIndices) {
       let formattedName = "";
       let lastIndex = 0;
-      this.#selectedCharsIndices.forEach((index) => {
+      for (const index of this.#selectedCharsIndices) {
         formattedName += this.#commandName.slice(lastIndex, index);
         formattedName += `<b>${this.#commandName[index]}</b>`;
         lastIndex = index + 1;
-      });
+      }
       formattedName += this.#commandName.slice(lastIndex);
       this.#commandElem.innerHTML = formattedName;
     } else {

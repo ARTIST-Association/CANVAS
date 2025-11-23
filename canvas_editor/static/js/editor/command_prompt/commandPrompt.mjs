@@ -144,12 +144,12 @@ export class CommandPrompt {
       this.#commandListElem.innerHTML = "";
       this.#commandInput.focus();
       this.#currentlyAvailableCommands = this.#commandList;
-      this.#currentlyAvailableCommands.forEach((command) => {
+      for (const command of this.#currentlyAvailableCommands) {
         command.matchScore = 0;
         command.selectedCharsIndices = null;
         this.#commandListElem.appendChild(command);
         command.formatCommandName();
-      });
+      }
       this.#selectedIndex = 0;
       this.selectCommand();
     }
@@ -202,10 +202,13 @@ export class CommandPrompt {
     } else {
       // calculate the new available commands
       this.#commandList.forEach((command) => {
-        command.selectedCharsIndices = this.#calculateFirstOccurringInterval(
+        const indices = this.#calculateFirstOccurringInterval(
           this.#commandInput.value.toLowerCase(),
           command.commandName.toLowerCase(),
         );
+
+        command.selectedCharsIndices = indices;
+        command.calculateMatchScore(indices);
 
         if (command.matchScore !== 0) {
           this.#currentlyAvailableCommands.push(command);

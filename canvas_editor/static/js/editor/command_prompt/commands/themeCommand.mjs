@@ -2,7 +2,8 @@ import { CommandPrompt } from "../commandPrompt.mjs";
 import { PromptCommand } from "./promptCommand.mjs";
 
 /**
- * Parent class for all theme related prompt commands
+ * Command for switching the theme of the application.
+ * The available themes are: light, dark and adapting automatically to the system theme.
  */
 export class ThemePromptCommand extends PromptCommand {
   #theme;
