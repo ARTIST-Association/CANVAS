@@ -1,4 +1,4 @@
-import * as cookieUtils from "cookieUtils";
+import { getCookie } from "../utils/cookieUtils.mjs";
 /**
  * Handles the project overview page
  */
@@ -47,7 +47,7 @@ export class ProjectOverviewManager {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": cookieUtils.getCookie("csrftoken"),
+        "X-CSRFToken": getCookie("csrftoken"),
       },
     });
   }

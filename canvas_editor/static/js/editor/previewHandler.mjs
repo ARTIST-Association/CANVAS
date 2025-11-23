@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { errorUploadingFile } from "message_dict";
-import * as cookieUtils from "cookieUtils";
-
+import { getCookie } from "../utils/cookieUtils.mjs";
 
 /**
  * Handles the generation of project previews of the editor page
@@ -66,7 +65,7 @@ export class PreviewHandler {
       method: "POST",
       body: formData,
       headers: {
-        "X-CSRFToken": cookieUtils.getCookie("csrftoken"),
+        "X-CSRFToken": getCookie("csrftoken"),
       },
     }).catch((error) => {
       console.error(errorUploadingFile, error);

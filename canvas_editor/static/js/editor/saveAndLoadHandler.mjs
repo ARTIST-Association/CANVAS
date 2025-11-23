@@ -2,8 +2,7 @@ import { Heliostat } from "heliostat";
 import { LightSource } from "lightSource";
 import { projectIdRequiredError } from "message_dict";
 import { Receiver } from "receiver";
-import * as cookieUtils from "cookieUtils";
-
+import { getCookie } from "../utils/cookieUtils.mjs";
 
 /**
  * Provides a wrapper for the API
@@ -315,7 +314,7 @@ export class SaveAndLoadHandler {
       method: method,
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": cookieUtils.getCookie("csrftoken"),
+        "X-CSRFToken": getCookie("csrftoken"),
       },
       body: JSON.stringify(body),
     })

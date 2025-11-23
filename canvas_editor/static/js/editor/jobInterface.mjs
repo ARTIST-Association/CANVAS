@@ -1,5 +1,4 @@
-import * as cookieUtils from "cookieUtils";
-
+import { getCookie } from "../utils/cookieUtils.mjs";
 
 let apiUrl = window.location.origin;
 
@@ -61,7 +60,7 @@ export class JobInterface {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": cookieUtils.getCookie("csrftoken"),
+        "X-CSRFToken": getCookie("csrftoken"),
       },
     })
       .then((res) => res.json())
@@ -97,7 +96,7 @@ export class JobInterface {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": cookieUtils.getCookie("csrftoken"),
+        "X-CSRFToken": getCookie("csrftoken"),
       },
     }).catch((error) => {
       console.error("Error deleting job:", error);
