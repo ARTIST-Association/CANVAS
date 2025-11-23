@@ -43,8 +43,8 @@ export class OverviewHandler {
       this.#render();
     });
 
-    ["itemSelected", "itemCreated", "itemDeleted", "itemUpdated"].forEach((evt) => {
-      document.getElementById("canvas").addEventListener(evt, () => {
+    ["itemSelected", "itemCreated", "itemDeleted", "itemUpdated"].forEach((eventType) => {
+      document.getElementById("canvas").addEventListener(eventType, () => {
         if (this.#overviewButton.classList.contains("active")) this.#render();
       });
     });
