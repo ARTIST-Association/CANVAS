@@ -9,6 +9,7 @@ import {
   updateNameCommandNotImplementedError,
 } from "message_dict";
 import { Command } from "command";
+import { UndoRedoHandler } from "undoRedoHandler";
 
 /**
  * Represents a Object in CANVAS
@@ -24,16 +25,15 @@ export class CanvasObject extends Object3D {
   /**
    * Creates a new selectable object
    * @param {string} name the name of the object
-   * @param {import("undoRedoHandler").UndoRedoHandler} undoRedoHandler the undo redo handler
    * @param {string} defaultLabel the default label when no name is given
    * @param {boolean} isMovable whether the object is movable
    * @param {boolean} isSelectable whether the object is selectable
    * @param {string[]} rotatableAxis containing all rotatable axis
    */
-  constructor(name, undoRedoHandler, defaultLabel, isMovable, isSelectable, rotatableAxis = []) {
+  constructor(name, defaultLabel, isMovable, isSelectable, rotatableAxis = []) {
     super();
     this.objectName = name;
-    this.#undoRedoHandler = undoRedoHandler;
+    this.#undoRedoHandler = UndoRedoHandler.getInstance();
     this.#rotatableAxis = rotatableAxis;
     this.#isMovable = isMovable;
     this.#isSelectable = isSelectable;

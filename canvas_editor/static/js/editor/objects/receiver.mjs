@@ -97,7 +97,7 @@ export class Receiver extends CanvasObject {
     curvatureU,
     apiID = null,
   ) {
-    super(receiverName, UndoRedoHandler.getInstance(), "Receiver", true, true, null);
+    super(receiverName, "Receiver", true, true, null);
     // place the 3D object
     this.#base = new ReceiverBase();
     this.add(this.#base);
@@ -298,7 +298,7 @@ export class Receiver extends CanvasObject {
   }
 
   /**
-   * Get the last Positon of the object from the movableCanvasObject
+   * Get the last positon of the object from the movableCanvasObject
    * @returns {THREE.Vector3} the last position of the object
    */
   get lastPosition() {

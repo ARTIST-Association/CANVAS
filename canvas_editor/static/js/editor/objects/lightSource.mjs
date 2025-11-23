@@ -59,7 +59,7 @@ export class LightSource extends CanvasObject {
     distributionCovariance,
     apiID = null,
   ) {
-    super(lightSourceName, UndoRedoHandler.getInstance(), "Light Source", false, false);
+    super(lightSourceName, "Light Source", false, false);
     this.apiID = apiID;
     this.numberOfRays = numberOfRays;
     this.lightSourceType = lightSourceType;

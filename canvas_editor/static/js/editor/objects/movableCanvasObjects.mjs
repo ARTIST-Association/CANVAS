@@ -79,7 +79,9 @@ export class MovableCanvasObject {
   }
 
   /**
-   * Updates the position of the heliostat
+   * Updates the position of the object
+   *
+   * Should only be used for internal updates (like inside commands)
    * @param {Vector3} position the new position
    */
   updatePosition(position) {
@@ -88,8 +90,12 @@ export class MovableCanvasObject {
   }
 
   /**
-   * Updates the position of the heliostat
-   * @param {Vector3} position - the new position of the heliostat
+   * Updates the position of the object
+   * and saves the change using the undoRedoHandler
+   *
+   * Use this method whenever the user intentionally changes a value and the change
+   * should be undoable, saved, and reflected in the UI.
+   * @param {Vector3} position - the new position of the object
    */
   updateAndSaveObjectPosition(position) {
     this.#target.undoRedoHandler.executeCommand(new this.#updatePropertyCommand(this.#target, "position", position));
