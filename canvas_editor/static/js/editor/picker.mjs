@@ -22,13 +22,13 @@ export class Picker {
   #selectedObjects;
   #raycaster;
   /**
-   * @type {  "none" | "move" | "rotate" }
+   * @type {typeof Mode[keyof typeof Mode]}
    */
   #mode;
 
   // Additional fields
   #canvas;
-  #mouse;
+  #mousePosition;
   #mouseDownPos;
   #isDragging;
   #selectedObject;
@@ -48,9 +48,8 @@ export class Picker {
     this.#selectedObjects = [];
     this.#raycaster = new THREE.Raycaster();
     this.#mode = Mode.NONE;
-
     this.#canvas = document.getElementById("canvas");
-    this.#mouse = new THREE.Vector2();
+    this.#mousePosition = new THREE.Vector2();
     this.#mouseDownPos = { x: 0, y: 0 };
     this.#isDragging = false;
     this.#selectedObject = null;
@@ -67,7 +66,8 @@ export class Picker {
    * Set up all the event listeners needed for picking
    */
   #setUpMouseEvents() {
-    const canvasChild = this.#canvas.children[this.#canvas.children.length - 1];
+    // The last children inside the canvas element is the HTML-Canvas where ThreeJs is rendered.
+    const threeJsCanvas = this.#canvas.children[this.#canvas.children.length - 1];
 
     /** @type {[string, Function][]} */
     const mouseEventMapping = [
@@ -91,10 +91,10 @@ export class Picker {
       ],
     ];
 
-    mouseEventMapping.forEach(([eventName, handler]) => {
+    for (const [eventName, handler] of mouseEventMapping) {
       // @ts-ignore
-      canvasChild.addEventListener(eventName, handler);
-    });
+      threeJsCanvas.addEventListener(eventName, handler);
+    }
   }
 
   /**
@@ -117,10 +117,10 @@ export class Picker {
       ],
     ];
 
-    keyboardEventMapping.forEach(([eventName, handler]) => {
+    for (const [eventName, handler] of keyboardEventMapping) {
       // @ts-ignore
-      window.addEventListener(eventName, handler);
-    });
+      globalThis.addEventListener(eventName, handler);
+    }
   }
 
   /**
@@ -137,7 +137,7 @@ export class Picker {
       ) => {
         if (event.detail.item == this.#selectedObjects[0]) {
           this.#deselectAll();
-          this.#itemSelectedEvent();
+          this.#dispatchItemSelectedEvent();
         }
       },
     );
@@ -158,7 +158,7 @@ export class Picker {
 
   /**
    * Sets the mode for the picker.
-   * @param {"none" | "move" | "rotate"} mode - The mode to set.
+   * @param {typeof Mode[keyof typeof Mode]} mode - The mode to set.
    */
   setMode(mode) {
     this.#mode = mode;
@@ -185,9 +185,9 @@ export class Picker {
   /**
    * Inform the canvas that an item has been selected
    */
-  #itemSelectedEvent() {
+  #dispatchItemSelectedEvent() {
     const event = new ItemSelectedEvent(this.#selectedObjects);
-    document.getElementById("canvas").dispatchEvent(event);
+    this.#canvas.dispatchEvent(event);
   }
 
   /**
@@ -211,7 +211,7 @@ export class Picker {
       this.#updateSelectionBox();
     }
 
-    this.#itemSelectedEvent();
+    this.#dispatchItemSelectedEvent();
   }
 
   /**
@@ -232,7 +232,7 @@ export class Picker {
     if (event.buttons !== 0) {
       const x = event.clientX - this.#mouseDownPos.x;
       const y = event.clientY - this.#mouseDownPos.y;
-      if (Math.sqrt(x * x + y * y) > 5) {
+      if (Math.hypot(x, y) > 5) {
         this.#isDragging = true;
       }
     }
@@ -249,17 +249,13 @@ export class Picker {
     } else if (this.#transformControls.object) {
       // also checks if the object was moved or if the camera was adjusted
       if (
-        this.#transformControls.mode === "translate" &&
-        this.#selectedObject.isMovable &&
-        !this.#transformControls.object.position.equals(this.#selectedObject.lastPosition)
+        (this.#transformControls.mode === "translate" &&
+          this.#selectedObject.isMovable &&
+          !this.#transformControls.object.position.equals(this.#selectedObject.lastPosition)) ||
+        (this.#transformControls.mode === "rotate" && this.#selectedObject.rotatableAxis)
       ) {
-        this.#selectedObject.updateAndSaveObjectPosition(this.#transformControls.object.position.clone());
-        this.#itemSelectedEvent();
-      } else if (this.#transformControls.mode === "rotate" && this.#selectedObject.rotatableAxis) {
-        if (!this.#transformControls.object.quaternion.equals(this.#selectedObject.lastRotation)) {
-          this.#selectedObject.updateAndSaveObjectRotation(this.#transformControls.object.quaternion.clone());
-          this.#itemSelectedEvent();
-        }
+        this.#selectedObject.updateAndSaveObjectPosition(this.#selectedObject.position.clone());
+        this.#dispatchItemSelectedEvent();
       }
     }
   }
@@ -270,15 +266,15 @@ export class Picker {
    */
   #onClick(event) {
     // Get normalized mouse position
-    this.#mouse = this.#mouseposition(new THREE.Vector2(event.clientX, event.clientY));
+    this.#mousePosition = this.#convertMousePosition(new THREE.Vector2(event.clientX, event.clientY));
 
     // Raycast to find the clicked object
-    this.#selectedObject = this.#select(this.#mouse, this.#camera);
+    this.#selectedObject = this.#select(this.#mousePosition, this.#camera);
 
     // Update selection (handles ctrl-key and multi-selection)
     this.#updateSelection(event.ctrlKey);
 
-    this.#itemSelectedEvent();
+    this.#dispatchItemSelectedEvent();
   }
 
   /**
@@ -325,25 +321,19 @@ export class Picker {
    * @param {boolean} ctrlKey if the ctrl key is pressed
    */
   #updateSelection(ctrlKey) {
-    // No object was clicked
-    if (!this.#selectedObject) {
-      if (!ctrlKey) {
-        this.#deselectAll();
-      }
-      return;
+    // No object was clicked and the ctrl key wasnt pressed
+    if (!this.#selectedObject && !ctrlKey) {
+      this.#deselectAll();
     }
-    // Object was clicked
-    if (ctrlKey) {
-      // If object is already in the selection, just attach transformControls
-      if (this.#selectedObjects.includes(this.#selectedObject)) {
-        this.#finalizeSelection();
-      } else {
-        // Add it to the selection
+    // add to the selection
+    else if (ctrlKey) {
+      if (!this.#selectedObjects.includes(this.#selectedObject)) {
         this.#selectedObjects.push(this.#selectedObject);
-        this.#finalizeSelection();
       }
-    } else {
-      // deselect everything, then select the clicked object
+      this.#finalizeSelection();
+    }
+    // deselect everything, then select the clicked object
+    else {
       this.#deselectAll();
       this.#selectedObjects.push(this.#selectedObject);
       this.#finalizeSelection();
@@ -363,20 +353,20 @@ export class Picker {
    * or a multiSelectionGroup that contains all currently selected objects.
    */
   #updateTransformControls() {
-    if (this.#mode !== Mode.NONE) {
-      // reset previous available axis
-      this.#setTransformControlAxes(true, true, true);
+    if (this.#mode === Mode.NONE) return;
 
-      if (this.#selectedObjects.length === 0) {
-        this.#deselectAll();
-      } else if (this.#selectedObjects.length === 1) {
-        this.#attachSingleTransformControl();
-      } else {
-        // Implement multi-selection
-        // hide every control as they will not work properly
-        this.#transformControls.detach();
-        this.#updateSelectionBox();
-      }
+    // reset previous available axis
+    this.#setTransformControlAxes(true, true, true);
+
+    if (this.#selectedObjects.length === 0) {
+      this.#deselectAll();
+    } else if (this.#selectedObjects.length === 1) {
+      this.#attachSingleTransformControl();
+    } else {
+      // Implement multi-selection
+      // hide every control as they will not work properly
+      this.#transformControls.detach();
+      this.#updateSelectionBox();
     }
   }
 
@@ -389,21 +379,13 @@ export class Picker {
         this.#transformControls.attach(this.#selectedObjects[0]);
         this.#setTransformControlAxes(false, false, false);
         if (this.#selectedObject.rotatableAxis) {
-          this.#selectedObject.rotatableAxis.forEach((axis) => {
-            let showX = false;
-            let showY = false;
-            let showZ = false;
-            if (axis === "X") {
-              showX = true;
-            }
-            if (axis === "Y") {
-              showY = true;
-            }
-            if (axis === "Z") {
-              showZ = true;
-            }
+          for (const axis of this.#selectedObject.rotatableAxis) {
+            let showX = axis === "X";
+            let showY = axis === "Y";
+            let showZ = axis === "Z";
+
             this.#setTransformControlAxes(showX, showY, showZ);
-          });
+          }
         }
         break;
       case "translate":
@@ -426,8 +408,8 @@ export class Picker {
         this.#selectedObject.position.y = groundLevel;
       }
       // If the object is a receiver set the base position to the ground
-      if (this.#transformControls.object instanceof Receiver) {
-        this.#transformControls.object.setBaseHeight(groundLevel - this.#transformControls.object.position.y);
+      if (this.#selectedObject instanceof Receiver) {
+        this.#selectedObject.setBaseHeight(groundLevel - this.#selectedObject.position.y);
       }
     });
   }
@@ -450,14 +432,10 @@ export class Picker {
    * As multi selection is not implemented yet, it will hide the selection box in any other case.
    */
   #updateSelectionBox() {
-    if (this.#selectedObjects.length == 1) {
-      if (this.#selectedObjects[0].isSelectable) {
-        //@ts-ignore
-        this.#selectionBox.setFromObject(this.#selectedObjects[0]);
-        this.#selectionBox.visible = true;
-      } else {
-        this.#selectionBox.visible = false;
-      }
+    if (this.#selectedObjects.length == 1 && this.#selectedObjects[0].isSelectable) {
+      //@ts-ignore
+      this.#selectionBox.setFromObject(this.#selectedObjects[0]);
+      this.#selectionBox.visible = true;
     } else {
       this.#selectionBox.visible = false;
     }
@@ -468,9 +446,10 @@ export class Picker {
    * @param {THREE.Vector2} position of the mouse
    * @returns {THREE.Vector2} normalized mouse position
    */
-  #mouseposition(position) {
+  #convertMousePosition(position) {
     const rect = this.#canvas.getBoundingClientRect();
     return new THREE.Vector2(
+      // Normalize the position to [-1, 1] and flip the y-axis.
       ((position.x - rect.left) / rect.width) * 2 - 1,
       -((position.y - rect.top) / rect.height) * 2 + 1,
     );
