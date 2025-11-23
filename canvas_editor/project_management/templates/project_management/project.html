@@ -24,23 +24,17 @@
                 <div class="d-flex">
                     <!-- favorites-->
                     <div class="position-absolute end-0 top-0">
-                        {% if project.favorite %}
-                            <div class="btn btn-primary custom-btn shadow favoriteButton"
-                                 style="border-radius: 0%"
-                                 data-is-favorite="{{ project.favorite }}"
-                                 data-project-name="{{ project.name }}"
-                                 title="Mark/Unmark as favorite">
+                        <div class="btn btn-primary custom-btn shadow favoriteButton"
+                            style="border-radius: 0%"
+                            data-is-favorite="{{ project.favorite }}"
+                            data-project-name="{{ project.name }}"
+                            title="Mark/Unmark as favorite">
+                            {% if project.favorite %}
                                 <i class="bi bi-star-fill text-warning"></i>
-                            </div>
-                        {% else %}
-                            <div class="btn btn-primary custom-btn shadow favoriteButton"
-                                 style="border-radius: 0%"
-                                 data-is-favorite="{{ project.favorite }}"
-                                 data-project-name="{{ project.name }}"
-                                 title="Mark/Unmark as favorite">
+                            {% else %}
                                 <i class="bi bi-star"></i>
-                            </div>
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
