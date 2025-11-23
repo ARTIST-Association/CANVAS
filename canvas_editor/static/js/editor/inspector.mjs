@@ -1,6 +1,4 @@
 import { Picker } from "picker";
-import { ItemDeletedEvent } from "deleteCommands";
-import { ItemUpdatedEvent } from "updateCommands";
 import { CanvasObject } from "canvasObject";
 
 /**
@@ -24,30 +22,14 @@ export class Inspector {
     this.#inspectorElem = document.getElementById("inspector");
 
     const canvas = document.getElementById("canvas");
-    canvas.addEventListener("itemSelected", () => {
-      this.#render();
-    });
 
-    canvas.addEventListener("itemDeleted", (/** @type {ItemDeletedEvent}*/ event) => {
-      this.#renderIfRelevant(event.detail.item);
-    });
+    const rerenderEvents = ["itemSelected", "itemUpdated", "itemDeleted"];
 
-    canvas.addEventListener("itemUpdated", (/** @type {ItemUpdatedEvent} */ event) => {
-      this.#renderIfRelevant(event.detail.item);
+    rerenderEvents.forEach((eventName) => {
+      canvas.addEventListener(eventName, () => this.#render());
     });
 
     this.#render();
-  }
-
-  /**
-   * Render only if exactly one object is selected and
-   * the updated/deleted item is that selected one.
-   * @param {CanvasObject} item the item that was updated/deleted
-   */
-  #renderIfRelevant(item) {
-    if (this.#objectList.length === 1 && this.#objectList[0] === item) {
-      this.#render();
-    }
   }
 
   /**
