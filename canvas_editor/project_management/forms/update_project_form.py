@@ -1,3 +1,5 @@
+from re import sub
+
 from django.forms import ModelForm, ValidationError
 
 from canvas import message_dict
@@ -16,8 +18,12 @@ class UpdateProjectForm(ModelForm):
         fields = ["name", "description"]
 
     def clean_name(self):
-        """Check whether the name contains any special characters and if the new name is unique."""
-        project_name = str(self.cleaned_data.get("name")).strip().replace(" ", "_")
+        """Validate the given project name.
+
+        Because white space and special characters break the CSS selectors, special characters are prohibited and all white space is replaced with _.
+        """
+        # Replace any white space with '_'
+        project_name = sub(r"\s", "_", str(self.cleaned_data.get("name")).strip())
 
         if (project_name != self.instance.name) and not is_name_unique(
             self.instance.owner, project_name

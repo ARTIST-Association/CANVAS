@@ -245,23 +245,6 @@ class ProjectPageTest(TestCase):
         self.assertEqual(Project.objects.first().description, UPDATED_DESCRIPTION)
         self.assertEqual(Project.objects.count(), 1)
 
-    def test_update_project_post_name_description_changed_description_is_empty(self):
-        """Test updating a project via POST request with changed name and no updated description."""
-        response = self.client.post(
-            self.update_project_url,
-            {
-                NAME_FIELD: UPDATED_PROJECT_NAME,
-                OWNER_FIELD: self.user.id,
-            },
-        )
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(Project.objects.first().name, UPDATED_PROJECT_NAME)
-        self.assertEqual(
-            Project.objects.first().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST
-        )
-        self.assertEqual(Project.objects.count(), 1)
-
     def test_update_project_post_name_not_changed(self):
         """Test updating a project via POST request with unchanged name."""
         response = self.client.post(

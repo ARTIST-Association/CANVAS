@@ -1,3 +1,5 @@
+from re import sub
+
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -27,8 +29,12 @@ class CreateProjectForm(forms.ModelForm):
         fields = ["name", "description"]
 
     def clean_name(self):
-        """Check whether the name contains any special characters."""
-        project_name = str(self.cleaned_data.get("name")).strip().replace(" ", "_")
+        """Validate the given project name.
+
+        Because white space and special characters break the CSS selectors, special characters are prohibited and all white space is replaced with _.
+        """
+        # Replace any white space with '_'
+        project_name = sub(r"\s", "_", str(self.cleaned_data.get("name")).strip())
 
         if not is_name_unique(self.user, project_name):
             raise ValidationError(message_dict.project_name_must_be_unique)
