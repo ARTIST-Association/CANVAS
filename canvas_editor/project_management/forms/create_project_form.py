@@ -17,9 +17,7 @@ class CreateProjectForm(forms.ModelForm):
 
     file = forms.FileField(
         required=False,
-        widget=forms.ClearableFileInput(
-            attrs={"class": "form-control", "accept": ".h5"}
-        ),
+        widget=forms.ClearableFileInput(attrs={"class": "form-control", "accept": ".h5"}),
     )
 
     class Meta:

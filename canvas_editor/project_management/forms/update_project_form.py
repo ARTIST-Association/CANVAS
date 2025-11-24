@@ -25,18 +25,12 @@ class UpdateProjectForm(ModelForm):
         # Replace any white space with '_'
         project_name = sub(r"\s", "_", str(self.cleaned_data.get("name")).strip())
 
-        if (project_name != self.instance.name) and not is_name_unique(
-            self.instance.owner, project_name
-        ):
+        if (project_name != self.instance.name) and not is_name_unique(self.instance.owner, project_name):
             raise ValidationError(message_dict.project_name_must_be_unique)
 
         return validate_symbols(project_name)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["name"].widget.attrs.update(
-            {"class": "form-control", "id": "createProjectNameInput"}
-        )
-        self.fields["description"].widget.attrs.update(
-            {"class": "form-control", "id": "createProjectDescriptionInput"}
-        )
+        self.fields["name"].widget.attrs.update({"class": "form-control", "id": "createProjectNameInput"})
+        self.fields["description"].widget.attrs.update({"class": "form-control", "id": "createProjectDescriptionInput"})

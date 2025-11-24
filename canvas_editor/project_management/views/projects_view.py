@@ -30,9 +30,7 @@ class ProjectsView(LoginRequiredMixin, ListView):
 
         Sorts them by date, and adds the necessary attributes for sharing.
         """
-        queryset = Project.objects.filter(owner=self.request.user).order_by(
-            "-last_edited"
-        )
+        queryset = Project.objects.filter(owner=self.request.user).order_by("-last_edited")
         for project in queryset:
             project.uid = self._generate_uid(self.request)
             project.token = self._generate_token(project.name)
