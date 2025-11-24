@@ -38,7 +38,6 @@
       "inspectorClass": "{% static 'js/editor/inspector.mjs' %}",
       "previewHandler": "{% static 'js/editor/previewHandler.mjs' %}",
       "projectSettingsManager": "{% static 'js/editor/projectSettingsManager.mjs' %}",
-      "overview": "{% static 'js/editor/overview.mjs' %}",
       "createCommands": "{% static 'js/commands/createCommands.mjs' %}",
       "navBar": "{% static 'js/editor/navbar.mjs' %}",
       "jobInterface": "{% static 'js/editor/jobInterface.mjs' %}",
@@ -63,11 +62,9 @@
     <!-- loading animation -->
     {% include "editor/loadingAnimation.html" %}
     <!-- message system -->
-    {% include "editor/messageSystem.html" %}
+    {% include "messageSystem.html" %}
     <!-- HDF5 Creation Modal -->
     {% include "editor/modals/hdf5CreationModal.html" %}
-    <!--settings modal-->
-    {% include "settings.html" %}
     <!--job interface modal-->
     {% include "editor/modals/jobInterface.html" %}
     <!-- command prompt modal-->
@@ -76,8 +73,6 @@
     {% include "modals/createNewProjectModal.html" %}
     <!-- open existing project modal -->
     {% include "editor/modals/openExistingProjectModal.html" %}
-    <!-- confirm modal to download the project -->
-    {% include "editor/modals/confirmDownloadModal.html" %}
     <!-- keybindings modal -->
     {% include "editor/modals/keybindingsModal.html" %}
     <!-- about modal -->

@@ -1,0 +1,26 @@
+<!-- Base template for all allauth authentication views -->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n allauth %}
+{% block body %}
+    <div class="d-flex vh-100 align-items-center">
+        <div class="d-flex flex-column p-5 overflow-auto">
+            <div>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% element alert level=message.tags %}
+                            {% slot message %}
+                                {{ message }}
+                            {% endslot %}
+                        {% endelement %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div>
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+        <div class="flex-grow-1 vh-100 rounded-start-5"
+             style="background: url('{% static 'img/loginPlaceholder.png' %}') center/cover no-repeat" /></div>
+{% endblock body %}

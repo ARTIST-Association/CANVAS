@@ -3,64 +3,23 @@
 TEST_USERNAME = "testuser"
 TEST_PROJECT_DESCRIPTION = "Test project description"
 TEST_PROJECT_NAME = "test Project"
-TEST_EMAIL = "testuser@example.com"
 SECURE_PASSWORD = "SecurePass123!"
 
 # Field names
-DELETE_PICTURE_FIELD = "delete_picture"
-PROFILE_PIC_FIELD = "profile_picture"
-EMAIL_FIELD = "email"
-NEW_PASSWORD_FIELD = "new_password"
-PASSWORD_CONFIRMATION_FIELD = "password_confirmation"
-PASSWORD_FIELD = "password"
-OLD_PASSWORD_FIELD = "old_password"
-FIRST_NAME_FIELD = "first_name"
-LAST_NAME_FIELD = "last_name"
 EMPTY_FIELD = ""
-WHITESPACE_FIELD = " "
-DELETE_PIC_FIELD = "delete_picture"
 PROJECT_NAME_FIELD = "project_name"
 PREVIEW_FIELD = "preview"
 NAME_FIELD = "name"
 DESCRIPTION_FIELD = "description"
 OWNER_FIELD = "owner"
-POSITION_X_FIELD = "position_x"
 FILE_FIELD = "file"
 JOB_IDS_FIELD = "jobIDs"
 JOB_ID_FIELD = "jobID"
 
-# Constant
-
-# Constants for testing account management features in a Canvas project
-# Passwords
-TOO_SHORT_PASSWORD = "Save-1"
-UPDATED_PASSWORD = "NewSecurePassword123!"
-RESET_PASSWORD = "SecurePass1234!"
-NO_SPECIAL_CHAR_PASSWORD = "SecurePass123"
-COMPLETELY_WRONG_PASSWORD = "securepassword"
-NO_UPPERCASE_PASSWORD = "securepassword123!"
-NO_LOWERCASE_PASSWORD = "SECUREPASSWORD123!"
-MISMATCHED_BUT_CORRECT_PASSWORD = "NewSecurePassword123!!"
-NO_NUMERIC_PASSWORD = "SecurePassword!"
-MISMATCHED_BUT_CORRECT_PASSWORD_2 = "NewSecurePassword123!!!"
-WRONG_LOGIN_PASSWORD = "WrongPassword123!"
-
-TEST_FIRST_NAME = "test_first_name"
-TEST_LAST_NAME = "test_last_name"
-NEW_TEST_FIRST_NAME = "new_first_name"  # for update account form tests
-NEW_TEST_LAST_NAME = "new_last_name"  # for update account form tests
-WRONG_EMAIL = "test2@mail.de"
-
-IS_OPENID_USER = "is_openid_user"
-OPENID_PROVIDER_FIELD = "google"
-CHECKBOX_TRUE = "1"
-CHECKBOX_FALSE = "0"
-
-# Constants for project_management tests
+# Constants for project_managment tests
 TEST_HELIOSTAT_NAME = "Heliostat"
 TEST_LIGHT_SOURCE_NAME = "Light source"
 TEST_RECEIVER_NAME = "Receiver"
-SETTINGS_NAME = "Settings"
 UPDATED_DESCRIPTION = "Updated description"
 UPDATED_PROJECT_NAME = "Updated_project_name"
 TEST_PROJECT_DESCRIPTION_2 = "Another test project description"
@@ -125,5 +84,4 @@ LIGHT_SOURCE_COVARIANCE = 4.3681e-06
 
 STATUS = "status"
 PROGRESS = "progress"
-FINISHED = "Finished"
 RESULT = "result"

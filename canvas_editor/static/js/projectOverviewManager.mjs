@@ -7,11 +7,11 @@ export class ProjectOverviewManager {
    */
   constructor() {
     // handle all favorite buttons
-    document.querySelectorAll(".favoriteButton").forEach((button) => {
+    for (const button of document.querySelectorAll(".favoriteButton")) {
       button.addEventListener("click", () => {
         this.#toggleFavorite(button);
       });
-    });
+    }
 
     this.#handleFavoriteFilter();
   }
@@ -39,7 +39,7 @@ export class ProjectOverviewManager {
     } else {
       throw new Error(`invalid favorite state for project ${projectName}`);
     }
-    fetch(window.location + "toggle_favor/" + projectName, {
+    fetch(globalThis.location + "toggle_favor/" + projectName, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

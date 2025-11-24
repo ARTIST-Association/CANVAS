@@ -1,21 +1,5 @@
 """Contains view names for every view."""
 
-# Account management
-account_login_view = "login"
-account_register_view = "register"
-account_logout_view = "logout"
-account_update_account_view = "update_account"
-account_delete_account_view = "delete_account"
-account_password_reset_view = "password_reset"
-account_invalid_link_view = "invalid_link"
-account_confirm_deletion_view = "confirm_deletion"
-account_password_forgotten_view = "password_forgotten"
-account_get_user_info_view = "get_user_info"
-account_projects_view = "projects"
-account_invalid_token_view = "invalid_token"
-account_invalid_uid_view = "invalid_uid"
-account_test_project_view = "test_project"
-
 # Autosave api
 autosave_heliostat_detail_view = "heliostat_detail"
 autosave_heliostat_list_view = "heliostat_list"
@@ -46,3 +30,7 @@ project_duplicate_project_view = "duplicateProject"
 project_share_project_view = "shareProject"
 project_shared_projects_view = "sharedProjects"
 project_projects_view = "projects"
+
+# user settings
+change_username = "change_username"
+appearance = "appearance"

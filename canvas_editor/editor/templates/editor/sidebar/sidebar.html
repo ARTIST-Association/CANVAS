@@ -54,24 +54,45 @@
     <div id="settings" class="pb-3 pt-2">
         <hr class="m-0" />
     </div>
-    <!-- user settings-->
-    {% include "editor/sidebar/userSettings.html" %}
+    <div class="dropup d-flex justify-content-between mx-3 py-1">
+        <!-- Job interface overview toggle -->
+        <button class="btn btn-primary custom-btn text-reset fs-3 position-relative p-0 px-1 rounded-3"
+                data-bs-toggle="modal"
+                data-bs-target="#jobInterface"
+                id="jobInterfaceToggle"
+                title="Current Jobs">
+            <div id="hasActiveJobsIndicator" class="d-none">
+                <span class="position-absolute top-0 start-100 translate-middle bg-danger bg-opacity-50 rounded-circle"
+                      style="padding: 0.7rem">
+                    <span class="visually-hidden">New alerts</span>
+                </span>
+                <span class="position-absolute top-0 start-100 translate-middle bg-danger rounded-circle"
+                      style="padding: 0.3rem">
+                    <span class="visually-hidden">New alerts</span>
+                </span>
+            </div>
+            <i class="bi bi-list-ul p-1"></i>
+        </button>
+        <!-- user settings-->
+        {% include "userDropdown.html" %}
+    </div>
 </div>
-<script>{
+<script>
+  {
     // fix the size of the inspector pane to prevent overflowing (open for better solutions)
     const content = document.getElementById("content");
     const tab = document.getElementById("propertiesTab");
     const userSettings = document.getElementById("settings");
     const calculateMaxHeight = () => {
-        const tabRect = tab.getBoundingClientRect();
-        const userSettingsRect = userSettings.getBoundingClientRect();
+      const tabRect = tab.getBoundingClientRect();
+      const userSettingsRect = userSettings.getBoundingClientRect();
 
-            let maxHeight = tabRect.bottom - userSettingsRect.top;
-            maxHeight = Math.abs(maxHeight);
-            content.style.height = maxHeight + "px";
-        };
+      let maxHeight = tabRect.bottom - userSettingsRect.top;
+      maxHeight = Math.abs(maxHeight);
+      content.style.height = maxHeight + "px";
+    };
 
-        window.addEventListener("resize", calculateMaxHeight);
-        document.addEventListener("DOMContentLoaded", calculateMaxHeight);
-    }
+    window.addEventListener("resize", calculateMaxHeight);
+    document.addEventListener("DOMContentLoaded", calculateMaxHeight);
+  }
 </script>

@@ -1,0 +1,35 @@
+<!-- Display a dropdown menu with a default profile picture and the username, where a user can open the settings or log out. -->
+{% load static %}
+<div class="d-flex w-100 justify-content-end">
+    <div class="dropup d-flex justify-content-between mx-3 py-1">
+        <a class="dropdown-toggle d-flex align-items-center link-body-emphasis text-decoration-none"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            <img src="{% static "img/profile_pics/default.svg" %}"
+                 alt="Profile avatar icon"
+                 class="rounded-circle me-2"
+                 style="width: 32px;
+                        height: 32px;
+                        object-fit: cover" />
+            <strong class="me-2">{{ request.user.username }}</strong>
+        </a>
+        <ul class="dropdown-menu text-small">
+            <div class="px-3 gap-1">
+                <p class="m-0">{{ request.user.username }}</p>
+                <p class="text-secondary m-0">{{ request.user.email }}</p>
+            </div>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li>
+                <a class="dropdown-item" href="{% url 'change_username' %}">Settings</a>
+            </li>
+            <li>
+                <form action="{% url 'account_logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item">Sign out</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>

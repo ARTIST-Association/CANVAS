@@ -111,7 +111,6 @@ export class ProjectSettingsManager {
    * @returns {HTMLDivElement} Wrapper for the checkbox
    */
   #createCheckbox(label, isChecked, onChange) {
-    //Wrapper for the checkbox
     const wrapper = document.createElement("div");
     wrapper.classList.add("form-check", "mb-2");
 
