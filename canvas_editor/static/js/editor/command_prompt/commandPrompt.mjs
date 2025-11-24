@@ -1,23 +1,16 @@
 import { Modal } from "bootstrap";
 import { ObjectManager } from "objectManager";
+import { ExportProjectPromptCommand } from "./commands/exportProjectCommand.mjs";
+import { LogoutPromptCommand } from "./commands/logoutCommand.mjs";
 import {
-  LightModePromptCommand,
-  DarkModePromptCommand,
-  AutoModePromptCommand,
   AddHeliostatPromptCommand,
   AddReceiverPromptCommand,
   AddLightSourcePromptCommand,
-  ToggleFullscreenPromptCommand,
-  ExportProjectPromptCommand,
-  RenderProjectPromptCommand,
-  OpenSettingsPromptCommand,
-  OpenJobInterfacePromptCommand,
-  PromptCommand,
-  OpenKeybindsPromptCommand,
-  LogoutPromptCommand,
-  NewProjectPromptCommand,
-  OpenProjectPromptCommand,
-} from "promptCommands";
+} from "./commands/objectCommands.mjs";
+import { PromptCommand } from "./commands/promptCommand.mjs";
+import { ToggleFullscreenPromptCommand } from "./commands/toggleFullScreenCommand.mjs";
+import { ThemePromptCommand } from "./commands/themeCommand.mjs";
+import { OpenModalCommand } from "./commands/openModalCommand.mjs";
 
 /**
  * Manages the command prompt in the editor
@@ -100,21 +93,21 @@ export class CommandPrompt {
     });
 
     this.#commandList = [
-      new LightModePromptCommand(this),
-      new DarkModePromptCommand(this),
-      new AutoModePromptCommand(this),
+      new ThemePromptCommand(this, "Use theme: light", "light"),
+      new ThemePromptCommand(this, "Use theme: dark", "dark"),
+      new ThemePromptCommand(this, "Use theme: adapt to system preferences", "auto"),
       new AddHeliostatPromptCommand(this, this.#objectManager),
       new AddReceiverPromptCommand(this, this.#objectManager),
       new AddLightSourcePromptCommand(this, this.#objectManager),
       new ToggleFullscreenPromptCommand(this),
       new ExportProjectPromptCommand(this),
-      new RenderProjectPromptCommand(this),
-      new OpenSettingsPromptCommand(this),
-      new OpenJobInterfacePromptCommand(this),
-      new OpenKeybindsPromptCommand(this),
       new LogoutPromptCommand(this),
-      new NewProjectPromptCommand(this),
-      new OpenProjectPromptCommand(this),
+      new OpenModalCommand(this, "Create new job", "startJobModal"),
+      new OpenModalCommand(this, "Open settings", "settings"),
+      new OpenModalCommand(this, "Open job interface modal", "jobInterface"),
+      new OpenModalCommand(this, "Open keybindings modal", "keyboardModal"),
+      new OpenModalCommand(this, "Create new project", "createNewProject", "id_name"),
+      new OpenModalCommand(this, "Open existing project", "openProject"),
     ];
 
     this.#commandList.sort((command1, command2) => command1.commandName.localeCompare(command2.commandName));
@@ -151,12 +144,12 @@ export class CommandPrompt {
       this.#commandListElem.innerHTML = "";
       this.#commandInput.focus();
       this.#currentlyAvailableCommands = this.#commandList;
-      this.#currentlyAvailableCommands.forEach((command) => {
-        command.occurrenceLength = null;
-        command.selectedChars = null;
+      for (const command of this.#currentlyAvailableCommands) {
+        command.matchScore = 0;
+        command.selectedCharsIndices = null;
         this.#commandListElem.appendChild(command);
         command.formatCommandName();
-      });
+      }
       this.#selectedIndex = 0;
       this.selectCommand();
     }
@@ -199,8 +192,8 @@ export class CommandPrompt {
 
     // reset the values for each command
     this.#commandList.forEach((command) => {
-      command.occurrenceLength = null;
-      command.selectedChars = null;
+      command.matchScore = 0;
+      command.selectedCharsIndices = null;
     });
 
     // when no input is given -> render all commands
@@ -209,19 +202,20 @@ export class CommandPrompt {
     } else {
       // calculate the new available commands
       this.#commandList.forEach((command) => {
-        command.selectedChars = this.#calculateFirstOccurringInterval(
+        const indices = this.#calculateFirstOccurringInterval(
           this.#commandInput.value.toLowerCase(),
           command.commandName.toLowerCase(),
         );
 
-        if (command.occurrenceLength !== null) {
+        command.selectedCharsIndices = indices;
+        command.calculateMatchScore(indices);
+
+        if (command.matchScore !== 0) {
           this.#currentlyAvailableCommands.push(command);
         }
       });
 
-      this.#currentlyAvailableCommands.sort(
-        (command1, command2) => command1.occurrenceLength - command2.occurrenceLength,
-      );
+      this.#currentlyAvailableCommands.sort((command1, command2) => command1.matchScore - command2.matchScore);
     }
 
     // render new available commands

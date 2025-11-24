@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "checkJs": true,
-    "target": "ES2016",
+    "target": "es2022",
     "baseUrl": ".",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
@@ -32,8 +32,7 @@
       "createCommands": ["static/js/commands/createCommands.mjs"],
       "jobInterface": ["static/js/editor/jobInterface.mjs"],
       "navbar": ["static/js/editor/navbar.mjs"],
-      "commandPrompt": ["static/js/editor/commandPrompt.mjs"],
-      "promptCommands": ["static/js/editor/promptCommands.mjs"],
+      "commandPrompt": ["static/js/editor/command_prompt/commandPrompt.mjs"],
       "bootstrap": ["static/js/bootstrap/bootstrap.esm.js"],
       "modeSelector": ["static/js/editor/modeSelector.mjs"],
       "message_dict": ["static/js/message_dict.js"],
