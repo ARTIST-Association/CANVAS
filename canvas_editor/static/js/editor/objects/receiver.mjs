@@ -3,7 +3,7 @@ import { DeleteReceiverCommand } from "deleteCommands";
 import { DuplicateReceiverCommand } from "duplicateCommands";
 import {
   HeaderInspectorComponent,
-  SingleFieldInspectorComponent,
+  InputFieldInspectorComponent,
   MultiFieldInspectorComponent,
   SelectFieldInspectorComponent,
   InspectorComponent,
@@ -125,7 +125,7 @@ export class Receiver extends CanvasObject {
       this,
     );
 
-    const nCoordinate = new SingleFieldInspectorComponent(
+    const nCoordinate = new InputFieldInspectorComponent(
       "N",
       "number",
       () => this.lastPosition.x,
@@ -137,7 +137,7 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    const uCoordinate = new SingleFieldInspectorComponent(
+    const uCoordinate = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.lastPosition.y,
@@ -149,7 +149,7 @@ export class Receiver extends CanvasObject {
       0,
     );
 
-    const eCoordinate = new SingleFieldInspectorComponent(
+    const eCoordinate = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.lastPosition.z,
@@ -163,7 +163,7 @@ export class Receiver extends CanvasObject {
 
     this.#positionComponent = new MultiFieldInspectorComponent("Position", [nCoordinate, uCoordinate, eCoordinate]);
 
-    const nNormalVector = new SingleFieldInspectorComponent(
+    const nNormalVector = new InputFieldInspectorComponent(
       "N",
       "number",
       () => this.normalVector.x,
@@ -179,7 +179,7 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    const uNormalVector = new SingleFieldInspectorComponent(
+    const uNormalVector = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.normalVector.y,
@@ -195,7 +195,7 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    const eNormalVector = new SingleFieldInspectorComponent(
+    const eNormalVector = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.normalVector.z,
@@ -226,7 +226,7 @@ export class Receiver extends CanvasObject {
       },
     );
 
-    const eCurvature = new SingleFieldInspectorComponent(
+    const eCurvature = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.curvatureE,
@@ -236,7 +236,7 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    const uCurvature = new SingleFieldInspectorComponent(
+    const uCurvature = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.curvatureU,
@@ -248,7 +248,7 @@ export class Receiver extends CanvasObject {
 
     this.#curvatureComponent = new MultiFieldInspectorComponent("Curvature", [eCurvature, uCurvature]);
 
-    const ePlane = new SingleFieldInspectorComponent(
+    const ePlane = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.planeE,
@@ -258,7 +258,7 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    const uPlane = new SingleFieldInspectorComponent(
+    const uPlane = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.planeU,
@@ -270,7 +270,7 @@ export class Receiver extends CanvasObject {
 
     this.#planeComponent = new MultiFieldInspectorComponent("Plane", [ePlane, uPlane]);
 
-    const eResolution = new SingleFieldInspectorComponent(
+    const eResolution = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.resolutionE,
@@ -280,7 +280,7 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    const uResolution = new SingleFieldInspectorComponent(
+    const uResolution = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.resolutionU,
