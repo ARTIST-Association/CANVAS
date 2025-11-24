@@ -41,9 +41,7 @@ export class DeleteHeliostatCommand extends SingleObjectCommand {
   execute() {
     this.#editor.deleteHeliostat(this.#heliostat);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#heliostat));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#heliostat));
   }
 
   /**
@@ -52,9 +50,7 @@ export class DeleteHeliostatCommand extends SingleObjectCommand {
   undo() {
     this.#editor.addHeliostat(this.#heliostat);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#heliostat));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#heliostat));
   }
 }
 
@@ -80,9 +76,7 @@ export class DeleteReceiverCommand extends SingleObjectCommand {
   execute() {
     this.#editor.deleteReceiver(this.#receiver);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#receiver));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#receiver));
   }
 
   /**
@@ -91,9 +85,7 @@ export class DeleteReceiverCommand extends SingleObjectCommand {
   undo() {
     this.#editor.addReceiver(this.#receiver);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#receiver));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#receiver));
   }
 }
 
@@ -119,9 +111,7 @@ export class DeleteLightSourceCommand extends SingleObjectCommand {
   execute() {
     this.#editor.deleteLightsource(this.#lightsource);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemDeletedEvent(this.#lightsource));
+    document.getElementById("canvas").dispatchEvent(new ItemDeletedEvent(this.#lightsource));
   }
 
   /**
@@ -130,8 +120,6 @@ export class DeleteLightSourceCommand extends SingleObjectCommand {
   undo() {
     this.#editor.addLightsource(this.#lightsource);
 
-    document
-      .getElementById("canvas")
-      .dispatchEvent(new ItemCreatedEvent(this.#lightsource));
+    document.getElementById("canvas").dispatchEvent(new ItemCreatedEvent(this.#lightsource));
   }
 }

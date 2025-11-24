@@ -77,12 +77,8 @@ class RegisterFormTest(FormTestMixin, TestCase):
 
     def test_register_form_passwords_not_matching(self):
         """Test case for RegisterForm where passwords do not match."""
-        form = self.create_form(
-            **{PASSWORD_CONFIRMATION_FIELD: MISMATCHED_BUT_CORRECT_PASSWORD}
-        )
-        self.assert_form_error_message(
-            form, PASSWORD_FIELD, password_match_criterion_text
-        )
+        form = self.create_form(**{PASSWORD_CONFIRMATION_FIELD: MISMATCHED_BUT_CORRECT_PASSWORD})
+        self.assert_form_error_message(form, PASSWORD_FIELD, password_match_criterion_text)
 
     def test_register_form_password_too_short(self):
         """Test case for RegisterForm where password is too short."""
@@ -92,9 +88,7 @@ class RegisterFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: TOO_SHORT_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, PASSWORD_FIELD, password_length_criterion_text
-        )
+        self.assert_form_error_message(form, PASSWORD_FIELD, password_length_criterion_text)
 
     def test_register_form_password_no_uppercase(self):
         """Test case for RegisterForm where password has no uppercase letter."""
@@ -104,9 +98,7 @@ class RegisterFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: NO_UPPERCASE_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, PASSWORD_FIELD, password_uppercase_criterion_text
-        )
+        self.assert_form_error_message(form, PASSWORD_FIELD, password_uppercase_criterion_text)
 
     def test_register_form_password_no_lowercase(self):
         """Test case for RegisterForm where password has no lowercase letter."""
@@ -116,9 +108,7 @@ class RegisterFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: NO_LOWERCASE_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, PASSWORD_FIELD, password_lowercase_criterion_text
-        )
+        self.assert_form_error_message(form, PASSWORD_FIELD, password_lowercase_criterion_text)
 
     def test_register_form_password_no_number(self):
         """Test case for RegisterForm where password has no number."""
@@ -128,9 +118,7 @@ class RegisterFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: NO_NUMERIC_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, PASSWORD_FIELD, password_digit_criterion_text
-        )
+        self.assert_form_error_message(form, PASSWORD_FIELD, password_digit_criterion_text)
 
     def test_register_form_password_no_special_character(self):
         """Test case for RegisterForm where password has no special character."""
@@ -140,6 +128,4 @@ class RegisterFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: NO_SPECIAL_CHAR_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, PASSWORD_FIELD, password_special_char_criterion_text
-        )
+        self.assert_form_error_message(form, PASSWORD_FIELD, password_special_char_criterion_text)

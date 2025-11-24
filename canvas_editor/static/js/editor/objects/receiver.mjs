@@ -3,7 +3,7 @@ import { DeleteReceiverCommand } from "deleteCommands";
 import { DuplicateReceiverCommand } from "duplicateCommands";
 import {
   HeaderInspectorComponent,
-  SingleFieldInspectorComponent,
+  InputFieldInspectorComponent,
   MultiFieldInspectorComponent,
   SelectFieldInspectorComponent,
   InspectorComponent,
@@ -120,69 +120,50 @@ export class Receiver extends CanvasObject {
 
     // create components for the inspector
     this.#headerComponent = new HeaderInspectorComponent(
-      () =>
-        this.objectName !== "" && this.objectName
-          ? this.objectName
-          : "Receiver",
+      () => (this.objectName !== "" && this.objectName ? this.objectName : "Receiver"),
       (name) => this.updateAndSaveObjectName(name),
       this,
     );
 
-    const nCoordinate = new SingleFieldInspectorComponent(
+    const nCoordinate = new InputFieldInspectorComponent(
       "N",
       "number",
       () => this.lastPosition.x,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(
-            this,
-            "position",
-            new Vector3(newValue, this.position.y, this.position.z),
-          ),
+          new UpdateReceiverCommand(this, "position", new Vector3(newValue, this.position.y, this.position.z)),
         );
       },
       -Infinity,
     );
 
-    const uCoordinate = new SingleFieldInspectorComponent(
+    const uCoordinate = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.lastPosition.y,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(
-            this,
-            "position",
-            new Vector3(this.position.x, newValue, this.position.z),
-          ),
+          new UpdateReceiverCommand(this, "position", new Vector3(this.position.x, newValue, this.position.z)),
         );
       },
       0,
     );
 
-    const eCoordinate = new SingleFieldInspectorComponent(
+    const eCoordinate = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.lastPosition.z,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(
-            this,
-            "position",
-            new Vector3(this.position.x, this.position.y, newValue),
-          ),
+          new UpdateReceiverCommand(this, "position", new Vector3(this.position.x, this.position.y, newValue)),
         );
       },
       -Infinity,
     );
 
-    this.#positionComponent = new MultiFieldInspectorComponent("Position", [
-      nCoordinate,
-      uCoordinate,
-      eCoordinate,
-    ]);
+    this.#positionComponent = new MultiFieldInspectorComponent("Position", [nCoordinate, uCoordinate, eCoordinate]);
 
-    const nNormalVector = new SingleFieldInspectorComponent(
+    const nNormalVector = new InputFieldInspectorComponent(
       "N",
       "number",
       () => this.normalVector.x,
@@ -198,7 +179,7 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    const uNormalVector = new SingleFieldInspectorComponent(
+    const uNormalVector = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.normalVector.y,
@@ -214,7 +195,7 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    const eNormalVector = new SingleFieldInspectorComponent(
+    const eNormalVector = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.normalVector.z,
@@ -230,108 +211,86 @@ export class Receiver extends CanvasObject {
       -Infinity,
     );
 
-    this.#normalVectorComponent = new MultiFieldInspectorComponent(
-      "Normal Vector",
-      [nNormalVector, uNormalVector, eNormalVector],
-    );
+    this.#normalVectorComponent = new MultiFieldInspectorComponent("Normal Vector", [
+      nNormalVector,
+      uNormalVector,
+      eNormalVector,
+    ]);
 
     this.#towerTypeComponent = new SelectFieldInspectorComponent(
       "Type",
       [{ label: "planar", value: "planar" }],
       () => this.towerType,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "towerType", newValue),
-        );
+        this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "towerType", newValue));
       },
     );
 
-    const eCurvature = new SingleFieldInspectorComponent(
+    const eCurvature = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.curvatureE,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "curvatureE", newValue),
-        );
+        this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "curvatureE", newValue));
       },
       -Infinity,
     );
 
-    const uCurvature = new SingleFieldInspectorComponent(
+    const uCurvature = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.curvatureU,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "curvatureU", newValue),
-        );
+        this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "curvatureU", newValue));
       },
       -Infinity,
     );
 
-    this.#curvatureComponent = new MultiFieldInspectorComponent("Curvature", [
-      eCurvature,
-      uCurvature,
-    ]);
+    this.#curvatureComponent = new MultiFieldInspectorComponent("Curvature", [eCurvature, uCurvature]);
 
-    const ePlane = new SingleFieldInspectorComponent(
+    const ePlane = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.planeE,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "planeE", newValue),
-        );
+        this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "planeE", newValue));
       },
       -Infinity,
     );
 
-    const uPlane = new SingleFieldInspectorComponent(
+    const uPlane = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.planeU,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "planeU", newValue),
-        );
+        this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "planeU", newValue));
       },
       -Infinity,
     );
 
-    this.#planeComponent = new MultiFieldInspectorComponent("Plane", [
-      ePlane,
-      uPlane,
-    ]);
+    this.#planeComponent = new MultiFieldInspectorComponent("Plane", [ePlane, uPlane]);
 
-    const eResolution = new SingleFieldInspectorComponent(
+    const eResolution = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.resolutionE,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "resolutionE", newValue),
-        );
+        this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "resolutionE", newValue));
       },
       -Infinity,
     );
 
-    const uResolution = new SingleFieldInspectorComponent(
+    const uResolution = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.resolutionU,
       (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "resolutionU", newValue),
-        );
+        this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "resolutionU", newValue));
       },
       -Infinity,
     );
 
-    this.#resolutionComponent = new MultiFieldInspectorComponent("Resolution", [
-      eResolution,
-      uResolution,
-    ]);
+    this.#resolutionComponent = new MultiFieldInspectorComponent("Resolution", [eResolution, uResolution]);
   }
 
   /**
@@ -347,9 +306,7 @@ export class Receiver extends CanvasObject {
    * @param {Vector3} position - the new position of the receiver
    */
   updateAndSaveObjectPosition(position) {
-    this.#undoRedoHandler.executeCommand(
-      new UpdateReceiverCommand(this, "position", position),
-    );
+    this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "position", position));
   }
 
   /**
@@ -367,9 +324,7 @@ export class Receiver extends CanvasObject {
    * @param {string} name the new name
    */
   updateAndSaveObjectName(name) {
-    this.#undoRedoHandler.executeCommand(
-      new UpdateReceiverCommand(this, "objectName", name),
-    );
+    this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "objectName", name));
   }
 
   /**

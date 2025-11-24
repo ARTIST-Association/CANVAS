@@ -53,9 +53,7 @@ class APITestCase(TestCase):
     def setUp(self):
         """Set up a test user, log in, and create a test project for use in all tests."""
         self.client = APIClient()
-        self.user = User.objects.create_user(
-            username=TEST_USERNAME, password=SECURE_PASSWORD
-        )
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=SECURE_PASSWORD)
         self.client.login(username=TEST_USERNAME, password=SECURE_PASSWORD)
         self.project = Project.objects.create(name=TEST_PROJECT_NAME, owner=self.user)
 
@@ -131,9 +129,7 @@ class APITestCase(TestCase):
 
     def test_get_lightsource_detail(self):
         """Test retrieving the details of a specific light source."""
-        light_source = LightSource.objects.create(
-            name=LIGHT_SOURCE_NAME, project=self.project
-        )
+        light_source = LightSource.objects.create(name=LIGHT_SOURCE_NAME, project=self.project)
         light_source.number_of_rays = TEST_NUMBER
         light_source.light_source_type = TEST_TYPE
         light_source.distribution_type = TEST_TYPE
@@ -152,9 +148,7 @@ class APITestCase(TestCase):
     def test_update_settings(self):
         """Test updating the settings for a project."""
         settings = Settings.objects.get(project=self.project)
-        url = reverse(
-            autosave_settings_detail_view, kwargs={"project_id": self.project.id}
-        )
+        url = reverse(autosave_settings_detail_view, kwargs={"project_id": self.project.id})
         data = {"shadows": False, "fog": False}
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -169,9 +163,7 @@ class APITestCase(TestCase):
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(model_class.objects.count(), 1)
-        self.assertEqual(
-            model_class.objects.get(id=response.data["id"]).project, self.project
-        )
+        self.assertEqual(model_class.objects.get(id=response.data["id"]).project, self.project)
 
     @parameterized.expand(
         [

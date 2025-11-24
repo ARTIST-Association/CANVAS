@@ -1,6 +1,4 @@
 import { Picker } from "picker";
-import { ItemDeletedEvent } from "deleteCommands";
-import { ItemUpdatedEvent } from "updateCommands";
 import { CanvasObject } from "canvasObject";
 
 /**
@@ -24,32 +22,12 @@ export class Inspector {
     this.#inspectorElem = document.getElementById("inspector");
 
     const canvas = document.getElementById("canvas");
-    canvas.addEventListener("itemSelected", () => {
-      this.#render();
+
+    const rerenderEvents = ["itemSelected", "itemUpdated", "itemDeleted"];
+
+    rerenderEvents.forEach((eventName) => {
+      canvas.addEventListener(eventName, () => this.#render());
     });
-
-    canvas.addEventListener(
-      "itemDeleted",
-      (/** @type {ItemDeletedEvent}*/ event) => {
-        if (
-          this.#objectList.length == 1 &&
-          event.detail.item == this.#objectList[0]
-        ) {
-          this.#render();
-        }
-      },
-    );
-
-    canvas.addEventListener(
-      "itemUpdated",
-      (/** @type {ItemUpdatedEvent} */ event) => {
-        if (
-          this.#objectList.length == 1 &&
-          event.detail.item == this.#objectList[0]
-        )
-          this.#render();
-      },
-    );
 
     this.#render();
   }
@@ -64,11 +42,7 @@ export class Inspector {
     // No selection
     if (this.#objectList.length == 0) {
       const wrapper = document.createElement("div");
-      wrapper.classList.add(
-        "text-secondary",
-        "d-flex",
-        "justify-content-center",
-      );
+      wrapper.classList.add("text-secondary", "d-flex", "justify-content-center");
       wrapper.innerHTML = "Select an object by clicking on it";
       this.#inspectorElem.appendChild(wrapper);
     }
@@ -82,11 +56,7 @@ export class Inspector {
     // Multi selection
     else {
       const wrapper = document.createElement("div");
-      wrapper.classList.add(
-        "text-secondary",
-        "d-flex",
-        "justify-content-center",
-      );
+      wrapper.classList.add("text-secondary", "d-flex", "justify-content-center");
       wrapper.innerHTML = "Multi selection is not yet supported :(";
       this.#inspectorElem.appendChild(wrapper);
     }

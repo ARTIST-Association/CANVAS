@@ -19,9 +19,7 @@ class UpdateAccountView(LoginRequiredMixin, View):
     """Handle changes to the users account."""
 
     @staticmethod
-    def _update_profile_picture(
-        user: User, delete_picture: bool, new_profile_picture
-    ) -> None:
+    def _update_profile_picture(user: User, delete_picture: bool, new_profile_picture) -> None:
         """Update the user's profile picture or delete it if requested."""
         profile, _ = UserProfile.objects.get_or_create(user=user)
 
@@ -58,9 +56,7 @@ class UpdateAccountView(LoginRequiredMixin, View):
         text_message = strip_tags(html_message)
 
         to_email = user.email
-        email = EmailMultiAlternatives(
-            subject, text_message, settings.EMAIL_FROM, [to_email]
-        )
+        email = EmailMultiAlternatives(subject, text_message, settings.EMAIL_FROM, [to_email])
         email.attach_alternative(html_message, "text/html")
         email.send()
 
@@ -96,6 +92,4 @@ class UpdateAccountView(LoginRequiredMixin, View):
             for field in form:
                 for error in field.errors:
                     messages.error(request, f"Error in {field.label}: {error}")
-        return redirect(
-            request.META.get("HTTP_REFERER", view_name_dict.account_projects_view)
-        )
+        return redirect(request.META.get("HTTP_REFERER", view_name_dict.account_projects_view))

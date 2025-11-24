@@ -30,9 +30,7 @@ class EditorViewTest(TestCase):
     def setUp(self):
         """Set up a test user and a test project for use in all tests."""
         # create new user
-        user = User.objects.create_user(
-            username=TEST_USERNAME, password=SECURE_PASSWORD
-        )
+        user = User.objects.create_user(username=TEST_USERNAME, password=SECURE_PASSWORD)
         self.client = Client()
         self.client.login(username=TEST_USERNAME, password=SECURE_PASSWORD)
 
@@ -45,9 +43,7 @@ class EditorViewTest(TestCase):
 
     def test_get_method(self):
         """Test the GET method of the editor view."""
-        self.editor = reverse(
-            editor_view, kwargs={PROJECT_NAME_FIELD: TEST_PROJECT_NAME}
-        )
+        self.editor = reverse(editor_view, kwargs={PROJECT_NAME_FIELD: TEST_PROJECT_NAME})
         response = self.client.get(self.editor)
 
         self.assertEqual(response.status_code, 200)
@@ -56,8 +52,6 @@ class EditorViewTest(TestCase):
     def test_get_method_logged_out(self):
         """Test that accessing the editor view when logged out redirects to login page."""
         self.client.logout()
-        self.editor = reverse(
-            editor_view, kwargs={PROJECT_NAME_FIELD: TEST_PROJECT_NAME}
-        )
+        self.editor = reverse(editor_view, kwargs={PROJECT_NAME_FIELD: TEST_PROJECT_NAME})
         response = self.client.get(self.editor)
         self.assertEqual(response.status_code, 302)

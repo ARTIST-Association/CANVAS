@@ -48,9 +48,7 @@ class ModelTests(TestCase):
 
     def setUp(self):
         """Set up a test user and create a test project for use in all tests."""
-        self.user = User.objects.create_user(
-            username=TEST_USERNAME, password=SECURE_PASSWORD
-        )
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=SECURE_PASSWORD)
         self.project = Project.objects.create(
             name=TEST_PROJECT_NAME,
             description=TEST_PROJECT_DESCRIPTION,
@@ -67,9 +65,7 @@ class ModelTests(TestCase):
         self.assertEqual(project2.description, "")
         self.assertEqual(self.project.owner, self.user)
         self.assertEqual(self.project.favorite, False)
-        self.assertTrue(
-            (self.project.last_edited - timezone.now()).total_seconds() <= 3
-        )
+        self.assertTrue((self.project.last_edited - timezone.now()).total_seconds() <= 3)
         self.assertEqual(self.project.last_shared, None)
         self.assertFalse(self.project.preview)
         try:

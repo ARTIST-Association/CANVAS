@@ -3,7 +3,7 @@ import { DeleteHeliostatCommand } from "deleteCommands";
 import { DuplicateHeliostatCommand } from "duplicateCommands";
 import {
   HeaderInspectorComponent,
-  SingleFieldInspectorComponent,
+  InputFieldInspectorComponent,
   MultiFieldInspectorComponent,
   InspectorComponent,
 } from "inspectorComponents";
@@ -46,67 +46,48 @@ export class Heliostat extends CanvasObject {
 
     // create components for inspector
     this.#headerComponent = new HeaderInspectorComponent(
-      () =>
-        this.objectName !== "" && this.objectName
-          ? this.objectName
-          : "Heliostat",
+      () => (this.objectName !== "" && this.objectName ? this.objectName : "Heliostat"),
       (name) => this.updateAndSaveObjectName(name),
       this,
     );
 
-    const nCoordinate = new SingleFieldInspectorComponent(
+    const nCoordinate = new InputFieldInspectorComponent(
       "N",
       "number",
       () => this.position.x,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateHeliostatCommand(
-            this,
-            "position",
-            new Vector3(newValue, this.position.y, this.position.z),
-          ),
+          new UpdateHeliostatCommand(this, "position", new Vector3(newValue, this.position.y, this.position.z)),
         );
       },
       -Infinity,
     );
 
-    const uCoordinate = new SingleFieldInspectorComponent(
+    const uCoordinate = new InputFieldInspectorComponent(
       "U",
       "number",
       () => this.position.y,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateHeliostatCommand(
-            this,
-            "position",
-            new Vector3(this.position.x, newValue, this.position.z),
-          ),
+          new UpdateHeliostatCommand(this, "position", new Vector3(this.position.x, newValue, this.position.z)),
         );
       },
       0,
     );
 
-    const eCoordinate = new SingleFieldInspectorComponent(
+    const eCoordinate = new InputFieldInspectorComponent(
       "E",
       "number",
       () => this.position.z,
       (newValue) => {
         this.#undoRedoHandler.executeCommand(
-          new UpdateHeliostatCommand(
-            this,
-            "position",
-            new Vector3(this.position.x, this.position.y, newValue),
-          ),
+          new UpdateHeliostatCommand(this, "position", new Vector3(this.position.x, this.position.y, newValue)),
         );
       },
       -Infinity,
     );
 
-    this.#positionComponent = new MultiFieldInspectorComponent("Position", [
-      nCoordinate,
-      uCoordinate,
-      eCoordinate,
-    ]);
+    this.#positionComponent = new MultiFieldInspectorComponent("Position", [nCoordinate, uCoordinate, eCoordinate]);
   }
 
   /**
@@ -123,9 +104,7 @@ export class Heliostat extends CanvasObject {
    * @param {string} name the new name for the object
    */
   updateAndSaveObjectName(name) {
-    this.#undoRedoHandler.executeCommand(
-      new UpdateHeliostatCommand(this, "objectName", name),
-    );
+    this.#undoRedoHandler.executeCommand(new UpdateHeliostatCommand(this, "objectName", name));
   }
 
   /**
@@ -147,9 +126,7 @@ export class Heliostat extends CanvasObject {
    * @param {Vector3} position - the new position of the heliostat
    */
   updateAndSaveObjectPosition(position) {
-    this.#undoRedoHandler.executeCommand(
-      new UpdateHeliostatCommand(this, "position", position),
-    );
+    this.#undoRedoHandler.executeCommand(new UpdateHeliostatCommand(this, "position", position));
   }
 
   /**
