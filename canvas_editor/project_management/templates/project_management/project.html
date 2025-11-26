@@ -24,23 +24,17 @@
                 <div class="d-flex">
                     <!-- favorites-->
                     <div class="position-absolute end-0 top-0">
-                        {% if project.favorite %}
-                            <div class="btn btn-primary custom-btn shadow favoriteButton"
-                                 style="border-radius: 0%"
-                                 data-is-favorite="{{ project.favorite }}"
-                                 data-project-name="{{ project.name }}"
-                                 title="Mark/Unmark as favorite">
+                        <div class="btn btn-primary custom-btn shadow favoriteButton"
+                             style="border-radius: 0%"
+                             data-is-favorite="{{ project.favorite }}"
+                             data-project-name="{{ project.name }}"
+                             title="Mark/Unmark as favorite">
+                            {% if project.favorite %}
                                 <i class="bi bi-star-fill text-warning"></i>
-                            </div>
-                        {% else %}
-                            <div class="btn btn-primary custom-btn shadow favoriteButton"
-                                 style="border-radius: 0%"
-                                 data-is-favorite="{{ project.favorite }}"
-                                 data-project-name="{{ project.name }}"
-                                 title="Mark/Unmark as favorite">
+                            {% else %}
                                 <i class="bi bi-star"></i>
-                            </div>
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -60,7 +54,7 @@
                                 <a role="button"
                                    href="{% url 'editor' project_name=project.name %}"
                                    class="btn btn-primary">Open</a>
-                                <!-- Edit Button -->
+                                <!-- Update Button -->
                                 <button type="button"
                                         class="btn btn-primary custom-btn shadow"
                                         data-bs-toggle="modal"
@@ -68,8 +62,8 @@
                                         title="Edit project name or description">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
-                                <!--create project modal-->
-                                {% include "project_management/modals/editProjectModal.html" %}
+                                <!--update  project modal-->
+                                {% include "project_management/modals/updateProjectModal.html" %}
                                 <!-- Duplicate Button -->
                                 <form action="{% url 'duplicateProject' project_name=project.name %}"
                                       method="post">

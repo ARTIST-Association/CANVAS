@@ -18,7 +18,7 @@
     <script type="module"> import * as bootstrap from "bootstrap" </script>
     {% if projects %}
         <script type="module">
-        import { ProjectOverviewManager } from "{% static 'js/editor/projectOverviewManager.mjs' %}";
+        import { ProjectOverviewManager } from "{% static 'js/projectOverviewManager.mjs' %}";
         const manager = new ProjectOverviewManager();
         </script>
     {% endif %}

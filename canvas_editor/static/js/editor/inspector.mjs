@@ -1,6 +1,4 @@
 import { Picker } from "picker";
-import { ItemDeletedEvent } from "deleteCommands";
-import { ItemUpdatedEvent } from "updateCommands";
 import { CanvasObject } from "canvasObject";
 
 /**
@@ -24,18 +22,11 @@ export class Inspector {
     this.#inspectorElem = document.getElementById("inspector");
 
     const canvas = document.getElementById("canvas");
-    canvas.addEventListener("itemSelected", () => {
-      this.#render();
-    });
 
-    canvas.addEventListener("itemDeleted", (/** @type {ItemDeletedEvent}*/ event) => {
-      if (this.#objectList.length == 1 && event.detail.item == this.#objectList[0]) {
-        this.#render();
-      }
-    });
+    const rerenderEvents = ["itemSelected", "itemUpdated", "itemDeleted"];
 
-    canvas.addEventListener("itemUpdated", (/** @type {ItemUpdatedEvent} */ event) => {
-      if (this.#objectList.length == 1 && event.detail.item == this.#objectList[0]) this.#render();
+    rerenderEvents.forEach((eventName) => {
+      canvas.addEventListener(eventName, () => this.#render());
     });
 
     this.#render();
