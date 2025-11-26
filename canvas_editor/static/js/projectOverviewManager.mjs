@@ -1,3 +1,4 @@
+import { getCookie } from "../utils/cookieUtils.mjs";
 /**
  * Handles the project overview page
  */
@@ -43,7 +44,7 @@ export class ProjectOverviewManager {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": this.#getCookie("csrftoken"),
+        "X-CSRFToken": getCookie("csrftoken"),
       },
     });
   }
@@ -80,29 +81,5 @@ export class ProjectOverviewManager {
         project.classList.toggle("d-none", !shouldShow);
       });
     });
-  }
-
-  /**
-   * Gets the cookie specified by the name
-   * @param {string} name The name of the cookie you want to get.
-   * @returns {string|null} the cookie or null if it couldn't be found.
-   */
-  #getCookie(name) {
-    if (!document.cookie) {
-      return null;
-    }
-
-    // document.cookie is a key=value list separated by ';'
-    const xsrfCookies = document.cookie
-      .split(";")
-      .map((c) => c.trim())
-      //filter the right cookie name
-      .filter((c) => c.startsWith(name + "="));
-
-    if (xsrfCookies.length === 0) {
-      return null;
-    }
-    // return the decoded value of the first cookie found
-    return decodeURIComponent(xsrfCookies[0].split("=")[1]);
   }
 }
