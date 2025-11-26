@@ -42,9 +42,7 @@ class PasswordForgottenViewTest(ParameterizedViewTestMixin, TestCase):
             first_name=TEST_FIRST_NAME,
             last_name=TEST_LAST_NAME,
         )
-        self.password_forgotten_url = reverse(
-            view_name_dict.account_password_forgotten_view
-        )
+        self.password_forgotten_url = reverse(view_name_dict.account_password_forgotten_view)
 
     def test_get(self):
         """

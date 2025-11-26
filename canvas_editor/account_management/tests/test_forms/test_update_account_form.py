@@ -98,9 +98,7 @@ class UpdateAccountFormTest(FormTestMixin, TestCase):
 
     def test_update_account_form_openid_account(self):
         """Test case for UpdateAccountForm with OpenID account."""
-        self.social_account = SocialAccount.objects.create(
-            user=self.user, provider=OPENID_PROVIDER_FIELD
-        )
+        self.social_account = SocialAccount.objects.create(user=self.user, provider=OPENID_PROVIDER_FIELD)
         form = self.create_form_with_instance()
         self.assertTrue(form.is_valid())
         self.assertEqual(form.clean_email(), self.user.email)
@@ -130,9 +128,7 @@ class UpdateAccountFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: TOO_SHORT_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, NEW_PASSWORD_FIELD, password_length_criterion_text
-        )
+        self.assert_form_error_message(form, NEW_PASSWORD_FIELD, password_length_criterion_text)
 
     def test_update_account_form_password_no_uppercase(self):
         """Test case for UpdateAccountForm where password has no uppercase letter."""
@@ -143,9 +139,7 @@ class UpdateAccountFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: NO_UPPERCASE_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, NEW_PASSWORD_FIELD, password_uppercase_criterion_text
-        )
+        self.assert_form_error_message(form, NEW_PASSWORD_FIELD, password_uppercase_criterion_text)
 
     def test_update_account_form_password_no_lowercase(self):
         """Test case for UpdateAccountForm where password has no lowercase letter."""
@@ -158,9 +152,7 @@ class UpdateAccountFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: NO_LOWERCASE_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, NEW_PASSWORD_FIELD, password_lowercase_criterion_text
-        )
+        self.assert_form_error_message(form, NEW_PASSWORD_FIELD, password_lowercase_criterion_text)
 
     def test_update_account_form_password_no_number(self):
         """Test case for UpdateAccountForm where password has no number."""
@@ -173,9 +165,7 @@ class UpdateAccountFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: NO_NUMERIC_PASSWORD,
             }
         )
-        self.assert_form_error_message(
-            form, NEW_PASSWORD_FIELD, password_digit_criterion_text
-        )
+        self.assert_form_error_message(form, NEW_PASSWORD_FIELD, password_digit_criterion_text)
 
     def test_update_account_form_password_no_special_character(self):
         """Test case for UpdateAccountForm where password has no special character."""
@@ -188,9 +178,7 @@ class UpdateAccountFormTest(FormTestMixin, TestCase):
                 PASSWORD_CONFIRMATION_FIELD: NO_SPECIAL_CHAR_PASSWORD,
             },
         )
-        self.assert_form_error_message(
-            form, NEW_PASSWORD_FIELD, password_special_char_criterion_text
-        )
+        self.assert_form_error_message(form, NEW_PASSWORD_FIELD, password_special_char_criterion_text)
 
     def test_update_account_form_wrong_password(self):
         """Test case for UpdateAccountForm with wrong password."""
@@ -201,9 +189,7 @@ class UpdateAccountFormTest(FormTestMixin, TestCase):
                 NEW_PASSWORD_FIELD: UPDATED_PASSWORD,
             },
         )
-        self.assert_form_error_message(
-            form, OLD_PASSWORD_FIELD, incorrect_password_text
-        )
+        self.assert_form_error_message(form, OLD_PASSWORD_FIELD, incorrect_password_text)
 
     def test_update_account_form_no_old_password(self):
         """Test case for UpdateAccountForm with no old password."""
@@ -213,9 +199,7 @@ class UpdateAccountFormTest(FormTestMixin, TestCase):
                 EMAIL_FIELD: TEST_EMAIL,
             },
         )
-        self.assert_form_error_message(
-            form, OLD_PASSWORD_FIELD, current_password_prompt
-        )
+        self.assert_form_error_message(form, OLD_PASSWORD_FIELD, current_password_prompt)
 
     def test_update_account_form_no_new_password(self):
         """Test case for UpdateAccountForm with no new password."""

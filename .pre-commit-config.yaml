@@ -1,20 +1,22 @@
 fail_fast: false
+ci:
+    skip: [lint-staged]
 repos:
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.16.1 # Use the sha / tag you want to point at
+    rev: v1.18.2 # Use the sha / tag you want to point at
     hooks:
       - id: mypy
         additional_dependencies:
           [types-pytz, types-python-dateutil, types-requests, types-waitress]
         exclude: "/migrations/"
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.0
+    rev: v0.14.6
     hooks:
       - id: ruff
         args: [--fix]
@@ -35,3 +37,9 @@ repos:
         language: "system"
         pass_filenames: false
         require_serial: true
+  - repo: https://github.com/djlint/djLint
+    rev: v1.36.4
+    hooks:
+      - id: djlint-reformat-django
+      # For now, we are using only the djLint formatter. To additionally turn on the linter uncomment the line below.
+      # - id: djlint-django

@@ -21,15 +21,9 @@ class UpdateAccountForm(forms.ModelForm):
     last_name = forms.CharField(label="Last name", required=False)
     email = forms.EmailField(label="Email", required=False)
 
-    old_password = forms.CharField(
-        widget=forms.PasswordInput, required=False, label="old_password"
-    )
-    new_password = forms.CharField(
-        widget=forms.PasswordInput, required=False, label="new_password"
-    )
-    password_confirmation = forms.CharField(
-        widget=forms.PasswordInput, required=False, label="password_confirmation"
-    )
+    old_password = forms.CharField(widget=forms.PasswordInput, required=False, label="old_password")
+    new_password = forms.CharField(widget=forms.PasswordInput, required=False, label="new_password")
+    password_confirmation = forms.CharField(widget=forms.PasswordInput, required=False, label="password_confirmation")
 
     profile_picture = forms.ImageField(required=False, label="profile_picture")
 
@@ -61,13 +55,9 @@ class UpdateAccountForm(forms.ModelForm):
 
         if new_password:
             if len(new_password) < 8:
-                self.add_error(
-                    "new_password", message_dict.password_length_criterion_text
-                )
+                self.add_error("new_password", message_dict.password_length_criterion_text)
             if not any(char.isdigit() for char in new_password):
-                self.add_error(
-                    "new_password", message_dict.password_digit_criterion_text
-                )
+                self.add_error("new_password", message_dict.password_digit_criterion_text)
             if not any(char.isupper() for char in new_password):
                 self.add_error(
                     "new_password",
@@ -78,10 +68,7 @@ class UpdateAccountForm(forms.ModelForm):
                     "new_password",
                     message_dict.password_lowercase_criterion_text,
                 )
-            if not any(
-                char in message_dict.password_special_characters
-                for char in new_password
-            ):
+            if not any(char in message_dict.password_special_characters for char in new_password):
                 self.add_error(
                     "new_password",
                     message_dict.password_special_char_criterion_text,

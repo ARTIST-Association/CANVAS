@@ -36,9 +36,7 @@ class UserProfileModelTest(TestCase):
 
     def test_user_profile_picture_upload_path(self):
         """Test that the upload of profile pictures works."""
-        file = SimpleUploadedFile(
-            "test.jpg", b"file_content", content_type="image/jpeg"
-        )
+        file = SimpleUploadedFile("test.jpg", b"file_content", content_type="image/jpeg")
         self.profile.profile_picture = file
         self.profile.save()
         expected_prefix = f"users/{self.user.id}/test"

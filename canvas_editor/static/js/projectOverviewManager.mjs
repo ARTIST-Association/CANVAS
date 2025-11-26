@@ -29,10 +29,7 @@ export class ProjectOverviewManager {
       favoriteButton.dataset.isFavorite = "False";
       const projectElement = favoriteButton.closest(".project");
       projectElement.dataset.isFavorite = "False";
-      favoriteButton.children[0].classList.remove(
-        "bi-star-fill",
-        "text-warning",
-      );
+      favoriteButton.children[0].classList.remove("bi-star-fill", "text-warning");
       favoriteButton.children[0].classList.add("bi-star");
     } else if (isFavorite == "False") {
       favoriteButton.dataset.isFavorite = "True";
@@ -57,12 +54,7 @@ export class ProjectOverviewManager {
    */
   #handleFavoriteFilter() {
     const favoriteSwitchWrapper = document.createElement("div");
-    favoriteSwitchWrapper.classList.add(
-      "form-check",
-      "form-switch",
-      "position-relative",
-      "mx-auto",
-    );
+    favoriteSwitchWrapper.classList.add("form-check", "form-switch", "position-relative", "mx-auto");
     const favoriteSwitch = document.createElement("input");
     favoriteSwitch.classList.add("form-check-input");
     favoriteSwitch.type = "checkbox";
@@ -79,25 +71,14 @@ export class ProjectOverviewManager {
 
     document
       .getElementById("projectList")
-      .insertBefore(
-        favoriteSwitchWrapper,
-        document.getElementById("projectList").children[0],
-      );
+      .insertBefore(favoriteSwitchWrapper, document.getElementById("projectList").children[0]);
 
     favoriteSwitch.addEventListener("change", () => {
       document.querySelectorAll(".project").forEach((project) => {
-        if (favoriteSwitch.checked) {
-          if (project.dataset.isFavorite == "true") {
-            project.classList.add("d-block");
-            project.classList.remove("d-none");
-          } else {
-            project.classList.add("d-none");
-            project.classList.remove("d-block");
-          }
-        } else {
-          project.classList.add("d-block");
-          project.classList.remove("d-none");
-        }
+        const shouldShow = !favoriteSwitch.checked || project.dataset.isFavorite === "true";
+
+        project.classList.toggle("d-block", shouldShow);
+        project.classList.toggle("d-none", !shouldShow);
       });
     });
   }

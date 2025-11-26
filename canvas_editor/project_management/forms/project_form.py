@@ -11,9 +11,7 @@ class ProjectForm(forms.Form):
         max_length=100,
         validators=[validate_symbols],
     )
-    description = forms.CharField(
-        max_length=500, required=False, widget=forms.TextInput()
-    )
+    description = forms.CharField(max_length=500, required=False, widget=forms.TextInput())
 
     def clean_file(self):
         """Validate the uploaded file."""
@@ -35,9 +33,7 @@ class ProjectForm(forms.Form):
 
     file = forms.FileField(
         required=False,
-        widget=forms.ClearableFileInput(
-            attrs={"class": "form-control", "accept": ".h5"}
-        ),
+        widget=forms.ClearableFileInput(attrs={"class": "form-control", "accept": ".h5"}),
     )
 
     def __init__(self, *args, **kwargs):

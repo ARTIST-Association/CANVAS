@@ -28,9 +28,7 @@ export class Command {
    * @throws {Error} When the method is not implemented by a subclass.
    */
   execute() {
-    throw new Error(
-      "Abstract method 'execute' must be implemented by subclass",
-    );
+    throw new Error("Abstract method 'execute' must be implemented by subclass");
   }
 
   /**

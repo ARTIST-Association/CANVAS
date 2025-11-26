@@ -5,6 +5,7 @@ import { abstractClassError, methodMustBeImplementedError } from "message_dict";
  * Represents a single component of the inspector
  */
 export class InspectorComponent {
+  #hasBorder = false;
   /**
    * Creates a new inspector component.
    * @throws {Error} if trying to instantiate this abstract class directly
@@ -25,22 +26,63 @@ export class InspectorComponent {
 
   /**
    * Disables the border around the component
-   * @throws {Error} if this method is not implemented in a subclass
    */
   disableBorder() {
-    throw new Error(methodMustBeImplementedError);
+    this.#hasBorder = false;
+  }
+
+  /**
+   * Enables the border around the component
+   */
+  enableBorder() {
+    this.#hasBorder = true;
+  }
+
+  /**
+   * Gets whether the component has a border or not
+   * @returns {boolean} whether the component has a border or not
+   */
+  get hasBorder() {
+    return this.#hasBorder;
+  }
+
+  /**
+   * Creates the wrapper element for the component
+   * @param {string[]} classes the classes to add to the wrapper
+   * @returns {HTMLElement} the created wrapper element
+   */
+  createWrapper(classes) {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add(...classes);
+    if (this.hasBorder) {
+      wrapper.classList.add("border");
+    }
+    return wrapper;
+  }
+
+  /**
+   * Creates the field name element
+   * @param {HTMLElement} wrapper the wrapper to add the field name to
+   * @param {string} fieldNametext the text of the field name
+   * @returns {HTMLElement} the created field name element
+   */
+  createFieldNameElement(wrapper, fieldNametext) {
+    const fieldName = document.createElement("div");
+    fieldName.classList.add("d-flex", "align-items-center", "text-nowrap");
+    fieldName.innerText = fieldNametext + ":";
+    wrapper.appendChild(fieldName);
+    return fieldName;
   }
 }
 
 /**
  * A single field component consists out of a name and the corresponding input field
  */
-export class SingleFieldInspectorComponent extends InspectorComponent {
+export class InputFieldInspectorComponent extends InspectorComponent {
   #fieldName;
   #fieldType;
   #getFieldValueFunc;
   #saveFunc;
-  #hasBorder;
   #InputLimitBottom;
 
   /**
@@ -51,20 +93,14 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
    * @param {Function} saveFunc is the function to update the field value
    * @param {number} InputLimitBottom is the limit of the input field
    */
-  constructor(
-    fieldName,
-    fieldType,
-    getFieldValueFunc,
-    saveFunc,
-    InputLimitBottom,
-  ) {
+  constructor(fieldName, fieldType, getFieldValueFunc, saveFunc, InputLimitBottom) {
     super();
     this.#fieldName = fieldName;
     this.#fieldType = fieldType;
     this.#getFieldValueFunc = getFieldValueFunc;
     this.#saveFunc = saveFunc;
-    this.#hasBorder = true;
     this.#InputLimitBottom = InputLimitBottom;
+    super.enableBorder();
   }
 
   /**
@@ -72,16 +108,9 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
    * @returns {HTMLElement} the rendered component
    */
   render() {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("d-flex", "p-2", "bg-body", "rounded-2", "gap-2");
-    if (this.#hasBorder) {
-      wrapper.classList.add("border");
-    }
+    const wrapper = super.createWrapper(["d-flex", "p-2", "bg-body", "rounded-2", "gap-2"]);
 
-    const fieldName = document.createElement("div");
-    fieldName.classList.add("d-flex", "align-items-center", "text-nowrap");
-    fieldName.innerText = this.#fieldName + ":";
-    wrapper.appendChild(fieldName);
+    super.createFieldNameElement(wrapper, this.#fieldName);
 
     const input = document.createElement("input");
     input.classList.add("form-control", "rounded-1");
@@ -113,13 +142,6 @@ export class SingleFieldInspectorComponent extends InspectorComponent {
 
     return wrapper;
   }
-
-  /**
-   * Disables the border around the component
-   */
-  disableBorder() {
-    this.#hasBorder = false;
-  }
 }
 
 /**
@@ -146,8 +168,7 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
    * @returns {HTMLElement} the rendered component
    */
   render() {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("accordion");
+    const wrapper = super.createWrapper(["accordion"]);
     wrapper.id = this.#title;
 
     const accordionItem = document.createElement("div");
@@ -161,8 +182,7 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
     const headerButton = document.createElement("button");
     headerButton.classList.add("accordion-button", "fw-bold");
     headerButton.type = "button";
-    headerButton.dataset.bsTarget =
-      "#" + this.#title.replace(" ", "") + "Collapse";
+    headerButton.dataset.bsTarget = "#" + this.#title.replace(" ", "") + "Collapse";
     headerButton.dataset.bsToggle = "collapse";
     headerButton.innerText = this.#title;
     header.appendChild(headerButton);
@@ -184,18 +204,13 @@ export class MultiFieldInspectorComponent extends InspectorComponent {
     accordionItem.appendChild(bodyWrapper);
 
     const body = document.createElement("div");
-    body.classList.add(
-      "d-flex",
-      "flex-column",
-      "bg-body",
-      "rounded-3",
-      "gap-2",
-      "accordion-body",
-    );
+    body.classList.add("d-flex", "flex-column", "bg-body", "rounded-3", "gap-2", "accordion-body");
     bodyWrapper.appendChild(body);
 
     this.#componentList.forEach((component) => {
-      component.disableBorder();
+      if (component.hasBorder === true) {
+        component.disableBorder();
+      }
       body.appendChild(component.render());
     });
 
@@ -211,7 +226,6 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
   #options;
   #getFieldValueFunc;
   #saveFunc;
-  #hasBorder;
 
   /**
    * Creates a new single field component
@@ -226,7 +240,7 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
     this.#options = options;
     this.#getFieldValueFunc = getFieldValueFunc;
     this.#saveFunc = saveFunc;
-    this.#hasBorder = true;
+    super.enableBorder();
   }
 
   /**
@@ -234,16 +248,9 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
    * @returns {HTMLElement} the rendered component
    */
   render() {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("d-flex", "p-2", "bg-body", "rounded-3", "gap-2");
-    if (this.#hasBorder) {
-      wrapper.classList.add("border");
-    }
+    const wrapper = super.createWrapper(["d-flex", "p-2", "bg-body", "rounded-3", "gap-2"]);
 
-    const fieldName = document.createElement("div");
-    fieldName.classList.add("d-flex", "align-items-center", "text-nowrap");
-    fieldName.innerText = this.#fieldName + ":";
-    wrapper.appendChild(fieldName);
+    super.createFieldNameElement(wrapper, this.#fieldName);
 
     const select = document.createElement("select");
     select.classList.add("form-select", "rounded-1");
@@ -268,13 +275,6 @@ export class SelectFieldInspectorComponent extends InspectorComponent {
 
     return wrapper;
   }
-
-  /**
-   * Disables the border around the component
-   */
-  disableBorder() {
-    this.#hasBorder = false;
-  }
 }
 
 /**
@@ -287,7 +287,6 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
   #max;
   #getFieldValueFunc;
   #saveFunc;
-  #hasBorder;
 
   /**
    * Creates a new slider component
@@ -298,14 +297,7 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
    * @param {Function} saveFunc the function to save the value
    * @param {number} [step] the step the slider uses
    */
-  constructor(
-    fieldName,
-    min,
-    max,
-    getFieldValueFunc,
-    saveFunc,
-    step = undefined,
-  ) {
+  constructor(fieldName, min, max, getFieldValueFunc, saveFunc, step = undefined) {
     super();
     this.#fieldName = fieldName;
     this.#min = min;
@@ -313,7 +305,7 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
     this.#step = step;
     this.#getFieldValueFunc = getFieldValueFunc;
     this.#saveFunc = saveFunc;
-    this.#hasBorder = true;
+    super.enableBorder();
   }
 
   /**
@@ -321,27 +313,13 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
    * @returns {HTMLElement} the rendered component
    */
   render() {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add(
-      "d-flex",
-      "flex-column",
-      "p-2",
-      "bg-body",
-      "rounded-3",
-      "gap-2",
-    );
-    if (this.#hasBorder) {
-      wrapper.classList.add("border");
-    }
+    const wrapper = super.createWrapper(["d-flex", "flex-column", "p-2", "bg-body", "rounded-3", "gap-2"]);
 
     const header = document.createElement("div");
     header.classList.add("d-flex", "gap-2");
     wrapper.appendChild(header);
 
-    const fieldName = document.createElement("div");
-    fieldName.classList.add("d-flex", "align-items-center", "text-nowrap");
-    fieldName.innerText = this.#fieldName + ":";
-    header.appendChild(fieldName);
+    super.createFieldNameElement(header, this.#fieldName);
 
     const input = document.createElement("input");
     input.classList.add("form-control", "rounded-1");
@@ -391,13 +369,6 @@ export class SliderFieldInspectorComponent extends InspectorComponent {
 
     return wrapper;
   }
-
-  /**
-   * Disables the border around the component
-   */
-  disableBorder() {
-    this.#hasBorder = false;
-  }
 }
 
 /**
@@ -426,8 +397,7 @@ export class HeaderInspectorComponent extends InspectorComponent {
    * @returns {HTMLElement} the rendered component
    */
   render() {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("d-flex", "px-1", "gap-1");
+    const wrapper = super.createWrapper(["d-flex", "px-1", "gap-1"]);
 
     const title = document.createElement("div");
     title.classList.add("fw-bolder", "fs-4");
@@ -440,13 +410,7 @@ export class HeaderInspectorComponent extends InspectorComponent {
 
     const buttonWrapper = document.createElement("div");
     const buttonBackground = document.createElement("div");
-    buttonBackground.classList.add(
-      "rounded-4",
-      "d-flex",
-      "gap-1",
-      "bg-body",
-      "px-2",
-    );
+    buttonBackground.classList.add("rounded-4", "d-flex", "gap-1", "bg-body", "px-2");
     buttonWrapper.appendChild(buttonBackground);
     wrapper.appendChild(buttonWrapper);
 
@@ -464,23 +428,20 @@ export class HeaderInspectorComponent extends InspectorComponent {
     inputField.type = "text";
     inputField.classList.add("form-control", "rounded-1");
 
-    // Event listeners for clicking the title
-    title.addEventListener("click", () => {
+    /**
+     * Enables editing of the title field
+     */
+    const enableEditing = () => {
       title.innerText = "";
       inputField.value = this.#getFieldValueFunc();
       title.appendChild(inputField);
       inputField.focus();
       inputField.select();
-    });
+    };
 
-    // Event listeners for clicking the edit button
-    editButton.addEventListener("click", () => {
-      title.innerText = "";
-      inputField.value = this.#getFieldValueFunc();
-      title.appendChild(inputField);
-      inputField.focus();
-      inputField.select();
-    });
+    // Use the same handler for both events
+    title.addEventListener("click", enableEditing);
+    editButton.addEventListener("click", enableEditing);
 
     // duplicate button
     const duplicateButton = document.createElement("button");
@@ -513,10 +474,7 @@ export class HeaderInspectorComponent extends InspectorComponent {
     });
 
     inputField.addEventListener("change", () => {
-      if (
-        inputField.value !== this.#getFieldValueFunc() &&
-        inputField.value.length < 200
-      ) {
+      if (inputField.value !== this.#getFieldValueFunc() && inputField.value.length < 200) {
         this.#saveFunc(inputField.value);
       }
       inputField.blur();

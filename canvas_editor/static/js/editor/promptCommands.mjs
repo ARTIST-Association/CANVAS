@@ -27,14 +27,7 @@ export class PromptCommand extends HTMLElement {
     super();
     this.#commandName = name;
     this.#commandPrompt = commandPrompt;
-    this.classList.add(
-      "rounded-2",
-      "p-1",
-      "px-2",
-      "d-flex",
-      "justify-content-between",
-      "align-items-center",
-    );
+    this.classList.add("rounded-2", "p-1", "px-2", "d-flex", "justify-content-between", "align-items-center");
     this.style.cursor = "pointer";
 
     this.#commandElem = document.createElement("div");
@@ -57,9 +50,7 @@ export class PromptCommand extends HTMLElement {
 
     // select this element on hover
     this.addEventListener("mousemove", () => {
-      this.#commandPrompt.selectCommand(
-        this.#commandPrompt.currentlyAvailableCommands.indexOf(this),
-      );
+      this.#commandPrompt.selectCommand(this.#commandPrompt.currentlyAvailableCommands.indexOf(this));
     });
   }
 
@@ -96,9 +87,7 @@ export class PromptCommand extends HTMLElement {
     this.#selectedChars = chars;
     if (this.#selectedChars !== null) {
       if (this.#selectedChars.length > 1) {
-        this.#occurrenceLength =
-          this.#selectedChars[this.#selectedChars.length - 1] -
-          this.#selectedChars[0];
+        this.#occurrenceLength = this.#selectedChars[this.#selectedChars.length - 1] - this.#selectedChars[0];
       } else {
         this.#occurrenceLength = 0;
       }
@@ -183,9 +172,7 @@ export class ThemePromptCommand extends PromptCommand {
     if (theme === "auto") {
       document.documentElement.setAttribute(
         "data-bs-theme",
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light",
+        window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
       );
     } else {
       document.documentElement.setAttribute("data-bs-theme", theme);
@@ -446,11 +433,9 @@ export class RenderProjectPromptCommand extends PromptCommand {
     const jobModal = new Modal(document.getElementById("startJobModal"));
     jobModal.show();
 
-    document
-      .getElementById("startJobModal")
-      .addEventListener("shown.bs.modal", () => {
-        document.getElementById("createNewJob").focus();
-      });
+    document.getElementById("startJobModal").addEventListener("shown.bs.modal", () => {
+      document.getElementById("createNewJob").focus();
+    });
   }
 }
 
@@ -491,16 +476,12 @@ export class OpenJobInterfacePromptCommand extends PromptCommand {
    * Executes the open job interface command.
    */
   execute() {
-    const jobInterfaceModal = new Modal(
-      document.getElementById("jobInterface"),
-    );
+    const jobInterfaceModal = new Modal(document.getElementById("jobInterface"));
     jobInterfaceModal.show();
 
-    document
-      .getElementById("jobInterface")
-      .addEventListener("shown.bs.modal", () => {
-        document.getElementById("createNewJob").focus();
-      });
+    document.getElementById("jobInterface").addEventListener("shown.bs.modal", () => {
+      document.getElementById("createNewJob").focus();
+    });
   }
 }
 
@@ -520,9 +501,7 @@ export class OpenKeybindsPromptCommand extends PromptCommand {
    * Executes the open keybindings command.
    */
   execute() {
-    const keybindingsModal = new Modal(
-      document.getElementById("keyboardModal"),
-    );
+    const keybindingsModal = new Modal(document.getElementById("keyboardModal"));
     keybindingsModal.show();
   }
 }
@@ -571,16 +550,12 @@ export class NewProjectPromptCommand extends PromptCommand {
    * Executes the new project command.
    */
   execute() {
-    const newProjectModal = new Modal(
-      document.getElementById("createNewProject"),
-    );
+    const newProjectModal = new Modal(document.getElementById("createNewProject"));
     newProjectModal.show();
 
-    document
-      .getElementById("createNewProject")
-      .addEventListener("shown.bs.modal", () => {
-        document.getElementById("id_name").focus();
-      });
+    document.getElementById("createNewProject").addEventListener("shown.bs.modal", () => {
+      document.getElementById("id_name").focus();
+    });
   }
 }
 
@@ -609,39 +584,15 @@ export class OpenProjectPromptCommand extends PromptCommand {
 customElements.define("light-mode-prompt-command", LightModePromptCommand);
 customElements.define("dark-mode-prompt-command", DarkModePromptCommand);
 customElements.define("auto-mode-prompt-command", AutoModePromptCommand);
-customElements.define(
-  "add-heliostat-prompt-command",
-  AddHeliostatPromptCommand,
-);
+customElements.define("add-heliostat-prompt-command", AddHeliostatPromptCommand);
 customElements.define("add-receiver-prompt-command", AddReceiverPromptCommand);
-customElements.define(
-  "add-light-source-prompt-command",
-  AddLightSourcePromptCommand,
-);
-customElements.define(
-  "toggle-fullscreen-prompt-command",
-  ToggleFullscreenPromptCommand,
-);
-customElements.define(
-  "export-project-prompt-command",
-  ExportProjectPromptCommand,
-);
-customElements.define(
-  "render-project-prompt-command",
-  RenderProjectPromptCommand,
-);
-customElements.define(
-  "open-settings-prompt-command",
-  OpenSettingsPromptCommand,
-);
-customElements.define(
-  "open-job-interface-prompt-command",
-  OpenJobInterfacePromptCommand,
-);
-customElements.define(
-  "open-keybings-prompt-command",
-  OpenKeybindsPromptCommand,
-);
+customElements.define("add-light-source-prompt-command", AddLightSourcePromptCommand);
+customElements.define("toggle-fullscreen-prompt-command", ToggleFullscreenPromptCommand);
+customElements.define("export-project-prompt-command", ExportProjectPromptCommand);
+customElements.define("render-project-prompt-command", RenderProjectPromptCommand);
+customElements.define("open-settings-prompt-command", OpenSettingsPromptCommand);
+customElements.define("open-job-interface-prompt-command", OpenJobInterfacePromptCommand);
+customElements.define("open-keybings-prompt-command", OpenKeybindsPromptCommand);
 customElements.define("logout-prompt-command", LogoutPromptCommand);
 customElements.define("new-project-prompt-command", NewProjectPromptCommand);
 customElements.define("open-project-prompt-command", OpenProjectPromptCommand);

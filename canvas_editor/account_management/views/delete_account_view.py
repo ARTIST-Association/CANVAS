@@ -32,9 +32,7 @@ class DeleteAccountView(LoginRequiredMixin, FormView):
             for error in field.errors:
                 messages.error(self.request, f"Error in {field.label}: {error}")
 
-        return redirect(
-            self.request.META.get("HTTP_REFERER", view_name_dict.account_projects_view)
-        )
+        return redirect(self.request.META.get("HTTP_REFERER", view_name_dict.account_projects_view))
 
     def form_valid(self, form):
         """Handle valid delete account form."""

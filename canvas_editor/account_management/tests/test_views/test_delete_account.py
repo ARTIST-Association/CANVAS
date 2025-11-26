@@ -83,9 +83,7 @@ class DeleteAccountTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(
-            any(message_dict.incorrect_password_text in str(msg) for msg in messages)
-        )
+        self.assertTrue(any(message_dict.incorrect_password_text in str(msg) for msg in messages))
         self.assertTrue(User.objects.filter(id=self.user.id).exists())
 
     def test_post_not_authenticated(self):

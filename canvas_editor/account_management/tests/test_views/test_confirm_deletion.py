@@ -43,9 +43,7 @@ class ConfirmDeletionTest(ParameterizedViewTestMixin, TestCase):
         )
         self.uid = urlsafe_base64_encode(str(self.user.id).encode())
         self.token = default_token_generator.make_token(self.user)
-        self.confirm_deletion_url = reverse(
-            view_name_dict.account_confirm_deletion_view, args=[self.uid, self.token]
-        )
+        self.confirm_deletion_url = reverse(view_name_dict.account_confirm_deletion_view, args=[self.uid, self.token])
 
     def test_get(self):
         """
@@ -53,9 +51,7 @@ class ConfirmDeletionTest(ParameterizedViewTestMixin, TestCase):
 
         Asserts that the correct template is used for the response.
         """
-        self.assert_view_get(
-            self.confirm_deletion_url, path_dict.confirm_deletion_template
-        )
+        self.assert_view_get(self.confirm_deletion_url, path_dict.confirm_deletion_template)
 
     def test_post(self):
         """
@@ -83,9 +79,7 @@ class ConfirmDeletionTest(ParameterizedViewTestMixin, TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, reverse(view_name_dict.account_invalid_link_view)
-        )
+        self.assertRedirects(response, reverse(view_name_dict.account_invalid_link_view))
 
     def test_post_invalid_uid(self):
         """
@@ -101,6 +95,4 @@ class ConfirmDeletionTest(ParameterizedViewTestMixin, TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, reverse(view_name_dict.account_invalid_link_view)
-        )
+        self.assertRedirects(response, reverse(view_name_dict.account_invalid_link_view))

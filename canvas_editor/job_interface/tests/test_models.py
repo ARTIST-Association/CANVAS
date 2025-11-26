@@ -15,9 +15,7 @@ class ModelTests(TestCase):
 
     def setUp(self):
         """Set up a test user for use in all tests."""
-        self.user = User.objects.create_user(
-            username="testuser", password="testpassword"
-        )
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
 
     def _assert_job_created(self, job, owner, project=None):
         """Assert that a job was created correctly."""

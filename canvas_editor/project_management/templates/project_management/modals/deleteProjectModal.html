@@ -1,40 +1,32 @@
 {% load static %}
 {% load custom_filters %}
-<div
-  class="modal fade"
-  id="deleteModal-{{ project.name }}"
-  tabindex="-1"
-  aria-labelledby="deleteModal"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="deleteModalHeader">Delete Project</h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        By clicking
-        <i>Delete {{ project.name | truncate_with_end:15}}</i>, this project and
-        all associated data will be irretrievably removed from the database and
-        cannot be restored.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Cancel
-        </button>
-        <form action="{% url 'deleteProject' project.name %}" method="POST">
-          {% csrf_token %}
-          <button class="btn btn-danger" type="submit">
-            Delete {{ project.name | truncate_with_end:15}}
-          </button>
-        </form>
-      </div>
+<div class="modal fade"
+     id="deleteModal-{{ project.name }}"
+     tabindex="-1"
+     aria-labelledby="deleteModal"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalHeader">Delete Project</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                By clicking
+                <i>Delete {{ project.name | truncate_with_end:15 }}</i>, this project and
+                all associated data will be irretrievably removed from the database and
+                cannot be restored.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{% url 'deleteProject' project.name %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Delete {{ project.name | truncate_with_end:15 }}</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
