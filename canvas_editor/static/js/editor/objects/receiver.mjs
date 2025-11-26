@@ -2,18 +2,18 @@ import { CanvasObject, loadGltf } from "canvasObject";
 import { DeleteReceiverCommand } from "deleteCommands";
 import { DuplicateReceiverCommand } from "duplicateCommands";
 import {
-  HeaderInspectorComponent,
-  InputFieldInspectorComponent,
   MultiFieldInspectorComponent,
   SelectFieldInspectorComponent,
   InspectorComponent,
+  InputFieldInspectorComponent,
 } from "inspectorComponents";
 import { Object3D, Vector3 } from "three";
 import { UndoRedoHandler } from "undoRedoHandler";
 import { UpdateReceiverCommand } from "updateCommands";
 import * as THREE from "three";
 import { towerBasePath, towerTopPath } from "path_dict";
-
+import { Command } from "command";
+import { MovableCanvasObject } from "movableCanvasObjects";
 /**
  * Class that represents the receiver object
  */
@@ -56,19 +56,19 @@ export class Receiver extends CanvasObject {
   curvatureU;
   #undoRedoHandler = UndoRedoHandler.getInstance();
 
+  /**
+   * @type {MovableCanvasObject}
+   */
+  #movement;
+
   #top;
   #base;
 
-  #headerComponent;
-  #positionComponent;
   #normalVectorComponent;
   #towerTypeComponent;
   #curvatureComponent;
   #planeComponent;
   #resolutionComponent;
-  #isMovable = true;
-  #rotatableAxis = null;
-  #lastPosition;
 
   /**
    * Creates a Receiver object
@@ -97,15 +97,13 @@ export class Receiver extends CanvasObject {
     curvatureU,
     apiID = null,
   ) {
-    super(receiverName);
+    super(receiverName, "Receiver", true, true, null);
     // place the 3D object
     this.#base = new ReceiverBase();
     this.add(this.#base);
 
     this.#top = new ReceiverTop();
     this.add(this.#top);
-
-    this.updatePosition(position);
 
     this.apiID = apiID;
     this.towerType = towerType;
@@ -116,52 +114,9 @@ export class Receiver extends CanvasObject {
     this.resolutionU = resolutionU;
     this.curvatureE = curvatureE;
     this.curvatureU = curvatureU;
-    this.#lastPosition = new Vector3(position.x, position.y, position.z);
 
-    // create components for the inspector
-    this.#headerComponent = new HeaderInspectorComponent(
-      () => (this.objectName !== "" && this.objectName ? this.objectName : "Receiver"),
-      (name) => this.updateAndSaveObjectName(name),
-      this,
-    );
-
-    const nCoordinate = new InputFieldInspectorComponent(
-      "N",
-      "number",
-      () => this.lastPosition.x,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "position", new Vector3(newValue, this.position.y, this.position.z)),
-        );
-      },
-      -Infinity,
-    );
-
-    const uCoordinate = new InputFieldInspectorComponent(
-      "U",
-      "number",
-      () => this.lastPosition.y,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "position", new Vector3(this.position.x, newValue, this.position.z)),
-        );
-      },
-      0,
-    );
-
-    const eCoordinate = new InputFieldInspectorComponent(
-      "E",
-      "number",
-      () => this.lastPosition.z,
-      (newValue) => {
-        this.#undoRedoHandler.executeCommand(
-          new UpdateReceiverCommand(this, "position", new Vector3(this.position.x, this.position.y, newValue)),
-        );
-      },
-      -Infinity,
-    );
-
-    this.#positionComponent = new MultiFieldInspectorComponent("Position", [nCoordinate, uCoordinate, eCoordinate]);
+    this.#movement = new MovableCanvasObject(this, position, UpdateReceiverCommand);
+    this.updatePosition(position);
 
     const nNormalVector = new InputFieldInspectorComponent(
       "N",
@@ -302,85 +257,63 @@ export class Receiver extends CanvasObject {
   }
 
   /**
-   * Updates the position of the receiver
-   * @param {Vector3} position - the new position of the receiver
-   */
-  updateAndSaveObjectPosition(position) {
-    this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "position", position));
-  }
-
-  /**
    * Updates the receiver’s position by adjusting both the base and the top, ensuring that the base remains on the ground.
    * @param {THREE.Vector3} position the new position of the receiver
    */
   updatePosition(position) {
-    this.position.copy(position);
-    this.#lastPosition = new Vector3(position.x, position.y, position.z);
+    this.#movement.updatePosition(position);
     this.#base.position.y = -position.y;
   }
 
   /**
-   * Update and save the name of the object
-   * @param {string} name the new name
+   * Returns the command class used to update the name of the object
+   * @returns {new (...args: any[]) => Command} the command class used to update the name
    */
-  updateAndSaveObjectName(name) {
-    this.#undoRedoHandler.executeCommand(new UpdateReceiverCommand(this, "objectName", name));
+  get updatePropertyCommand() {
+    return UpdateReceiverCommand;
   }
 
   /**
-   * Deletes the receiver
+   * Returns the command class used to delete the object
+   * @returns {new (...args: any[]) => Command} the command class used to delete the object
    */
-  delete() {
-    this.#undoRedoHandler.executeCommand(new DeleteReceiverCommand(this));
+  get deleteCommand() {
+    return DeleteReceiverCommand;
   }
 
   /**
-   * Duplicates the receiver
+   * Returns the command class used to duplicate the object
+   * @returns {new (...args: any[]) => Command} the command class used to duplicate the object
    */
-  duplicate() {
-    this.#undoRedoHandler.executeCommand(new DuplicateReceiverCommand(this));
+  get duplicateCommand() {
+    return DuplicateReceiverCommand;
   }
 
   /**
-   * Get all rotatable axis
-   * @returns {string[]} containing all rotatable axis
+   * Call the movableCanvasObject to update and save the position
+   * @param {THREE.Vector3} position the new position of the heliostat
    */
-  get rotatableAxis() {
-    return this.#rotatableAxis;
+  updateAndSaveObjectPosition(position) {
+    this.#movement.updateAndSaveObjectPosition(position);
   }
 
   /**
-   * Get whether the object is movable or not
-   * @returns {boolean} whether the object is movable
-   */
-  get isMovable() {
-    return this.#isMovable;
-  }
-
-  /**
-   * Get whether the object is selectable
-   * @returns {boolean} whether the object is selectable
-   */
-  get isSelectable() {
-    return true;
-  }
-
-  /**
-   * Get the current position of the object
-   * @returns {THREE.Vector3} the current position
+   * Get the last positon of the object from the movableCanvasObject
+   * @returns {THREE.Vector3} the last position of the object
    */
   get lastPosition() {
-    return this.#lastPosition;
+    return this.#movement.lastPosition;
   }
-
   /**
    * Get the inspectorComponents used for this object
+   * Get the HeaderComponent from the super class canvasObject
+   * Get the InspectorComponents from the movableCanvasObject
    * @returns {InspectorComponent[]} array of the inspectorComponents used
    */
   get inspectorComponents() {
     return [
-      this.#headerComponent,
-      this.#positionComponent,
+      ...super.inspectorComponents,
+      ...this.#movement.inspectorComponents,
       this.#normalVectorComponent,
       this.#towerTypeComponent,
       this.#curvatureComponent,

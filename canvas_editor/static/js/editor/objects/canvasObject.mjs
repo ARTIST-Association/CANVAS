@@ -1,41 +1,62 @@
-import { InspectorComponent } from "inspectorComponents";
+import { HeaderInspectorComponent, InspectorComponent } from "inspectorComponents";
 import { Object3D, Vector3 } from "three";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { methodMustBeImplementedError } from "message_dict";
+import {
+  methodMustBeImplementedError,
+  deleteCommandNotImplementedError,
+  duplicateCommandNotImplementedError,
+  updateNameCommandNotImplementedError,
+} from "message_dict";
+import { Command } from "command";
+import { UndoRedoHandler } from "undoRedoHandler";
 
 /**
  * Represents a Object in CANVAS
  */
 export class CanvasObject extends Object3D {
   objectName;
+  #undoRedoHandler;
+  #rotatableAxis;
+  #isMovable;
+  #isSelectable;
+  #headerComponent;
 
   /**
    * Creates a new selectable object
    * @param {string} name the name of the object
+   * @param {string} defaultLabel the default label when no name is given
+   * @param {boolean} isMovable whether the object is movable
+   * @param {boolean} isSelectable whether the object is selectable
+   * @param {string[]} rotatableAxis containing all rotatable axis
    */
-  constructor(name) {
+  constructor(name, defaultLabel, isMovable, isSelectable, rotatableAxis = []) {
     super();
     this.objectName = name;
+    this.#undoRedoHandler = UndoRedoHandler.getInstance();
+    this.#rotatableAxis = rotatableAxis;
+    this.#isMovable = isMovable;
+    this.#isSelectable = isSelectable;
+
+    this.#headerComponent = new HeaderInspectorComponent(
+      () => (this.objectName !== "" && this.objectName ? this.objectName : defaultLabel),
+      (newValue) => this.updateAndSaveObjectName(newValue),
+      this,
+    );
   }
 
   /**
-   * Get a list of inspector components used for this object
-   * @abstract
-   * @throws {Error}  Throws an error if the method is not implemented in subclasses.
-   * @returns {InspectorComponent[]} must be implemented in all subclasses
+   * Update and save the name of the object
+   * @param {string} name the new name
+   * @returns {void}
    */
-  get inspectorComponents() {
-    throw new Error(methodMustBeImplementedError);
-  }
-
-  /**
-   * Updates and saves the new name through a command
-   * @param {string} name the new name you want to save and update
-   */
-  // eslint-disable-next-line no-unused-vars -- required for interface compatibility
   updateAndSaveObjectName(name) {
-    throw new Error(methodMustBeImplementedError);
+    const UpdatePropertyCommand = this.updatePropertyCommand;
+    if (!UpdatePropertyCommand) {
+      throw new Error(updateNameCommandNotImplementedError);
+    }
+
+    this.#undoRedoHandler.executeCommand(new UpdatePropertyCommand(this, "objectName", name));
   }
 
   /**
@@ -75,46 +96,91 @@ export class CanvasObject extends Object3D {
   }
 
   /**
-   * Duplicates the object
+   * Duplicate the object
+   * @returns {void}
    */
   duplicate() {
-    throw new Error(methodMustBeImplementedError);
+    const DuplicateCommand = this.duplicateCommand;
+    if (!DuplicateCommand) {
+      throw new Error(duplicateCommandNotImplementedError);
+    }
+
+    this.#undoRedoHandler.executeCommand(new DuplicateCommand(this));
   }
+
   /**
    * Deletes the object
    */
   delete() {
+    const DeleteCommand = this.deleteCommand;
+    if (!DeleteCommand) {
+      throw new Error(deleteCommandNotImplementedError);
+    }
+
+    this.#undoRedoHandler.executeCommand(new DeleteCommand(this));
+  }
+
+  /**
+   * Get the inspectorComponents used for this object
+   * The child classes should extend this method to add their own components
+   * @returns {InspectorComponent[]} array of the inspectorComponents used
+   */
+  get inspectorComponents() {
+    return [this.#headerComponent];
+  }
+
+  /**
+   * Returns the command class used to update the name of the object
+   * @abstract
+   * @throws {Error}  Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command} the command class used to update the name
+   */
+  get updatePropertyCommand() {
     throw new Error(methodMustBeImplementedError);
   }
 
   /**
-   * Returns the axis on which the object is rotatable
+   * Returns the command class used to duplicate the object
    * @abstract
    * @throws {Error} - Throws an error if the method is not implemented in subclasses.
-   * @returns {string[]} array containing all rotatable axis.
+   * @returns {new (...args: any[]) => Command} the command class used to duplicate the object
+   */
+  get duplicateCommand() {
+    throw new Error(methodMustBeImplementedError);
+  }
+
+  /**
+   * Returns the command class used to delete the object
+   * @abstract
+   * @throws {Error} - Throws an error if the method is not implemented in subclasses.
+   * @returns {new (...args: any[]) => Command} the command class used to delete the object
+   */
+  get deleteCommand() {
+    throw new Error(methodMustBeImplementedError);
+  }
+
+  /**
+   * Returns the rotatable axis of the object
+   * @returns {string[]} containing all rotatable axis
    */
   get rotatableAxis() {
-    throw new Error(methodMustBeImplementedError);
+    return this.#rotatableAxis;
   }
 
   /**
-   * Returns whether the object is movable or not
-   * @abstract
-   * @throws {Error} - Throws an error if the method is not implemented in subclasses.
+   * Returns whether an object is movable or not
    * @returns {boolean} whether the object is movable
    */
   get isMovable() {
-    throw new Error(methodMustBeImplementedError);
+    return this.#isMovable;
   }
 
   /**
    * Returns whether an object is selectable or not
-   * @abstract
-   * @throws {Error} - Throws an error if the method is not implemented in subclasses.
    * @returns {boolean} whether the object is selectable
    */
   get isSelectable() {
-    throw new Error(methodMustBeImplementedError);
+    return this.#isSelectable;
   }
 
   /**
@@ -135,6 +201,14 @@ export class CanvasObject extends Object3D {
    */
   get lastRotation() {
     throw new Error(methodMustBeImplementedError);
+  }
+
+  /**
+   * Returns the undoRedoHandler used for this object
+   * @returns {import("undoRedoHandler").UndoRedoHandler} the undoRedoHandler
+   */
+  get undoRedoHandler() {
+    return this.#undoRedoHandler;
   }
 }
 
