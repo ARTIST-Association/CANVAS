@@ -23,7 +23,7 @@ See [CONTRIBUTING.md](/CONTRIBUTING.md) on how to set up a development environme
 git clone https://github.com/ARTIST-Association/CANVAS.git
 
 # install requirements
-cd CANVAS-PSE2425/canvas_editor/
+cd CANVAS/canvas_editor/
 pip install .
 
 # add the .env file to the root of the canvas_editor folder
