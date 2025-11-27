@@ -50,8 +50,8 @@
   setTheme(getPreferredTheme());
 
   /**
-   *
-   * @param {string} theme theme to show
+   * Updates the theme select dropdown to reflect the active theme.
+   * @param {string} theme - The current theme ("light", "dark", or "auto").
    */
   const showActiveTheme = (theme) => {
     const themeSwitcher = document.querySelector("#theme-switcher");
