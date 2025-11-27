@@ -14,7 +14,8 @@
 
 We heavily recommend to install `CANVAS` package in a dedicated `Python3.10+` virtual environment ([click here for the documentation](https://docs.python.org/3/library/venv.html)).
 
-After setting up and activating the virtual environment _(or deciding against it)_, execute the following instructions, to set up the code base
+After setting up and activating the virtual environment _(or deciding against it)_, execute the following instructions, start the server.
+See [CONTRIBUTING.md](/CONTRIBUTING.md) on how to set up a development environment.
 
 ```bash
 # You may have to replace python with python3, depending on your operating system.
@@ -22,21 +23,14 @@ After setting up and activating the virtual environment _(or deciding against it
 git clone https://github.com/ARTIST-Association/CANVAS.git
 
 # install requirements
-cd CANVAS-PSE2425/
-pip install -r requirements.txt
-
-# Installing Pre-commit Hooks
-pre-commit install
+cd CANVAS/canvas_editor/
+pip install .
 
 # add the .env file to the root of the canvas_editor folder
 # containing debug variable, client_id + secret_key for OpenID, email-host password, etc.
 
 # configure the database
-cd canvas_editor/
 python manage.py migrate
-
-# Install npm dependencies
-npm install
 
 # start the server
 python manage.py runserver
