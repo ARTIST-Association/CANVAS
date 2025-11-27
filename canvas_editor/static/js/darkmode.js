@@ -13,8 +13,8 @@
    */
   const getStoredTheme = () => localStorage.getItem("theme");
   /**
-   * Sets the stored theme in localStorage
-   * @param {string} theme theme to store
+   * Stores the selected theme in localStorage.
+   * @param {string} theme - The theme to be stored ("light", "dark", or "auto").
    * @returns {void}
    */
   const setStoredTheme = (theme) => localStorage.setItem("theme", theme);
