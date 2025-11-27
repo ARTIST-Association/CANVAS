@@ -1,0 +1,7 @@
+<!-- Used from: https://codeberg.org/allauth/django-allauth/src/branch/main/examples/regular-django/example/templates/allauth/elements -->
+{% load allauth %}
+<div role="alert"
+     class="alert alert-xs {% if attrs.level == "error" %}alert-warning{% else %}alert-info{% endif %}">
+    {% slot message %}
+    {% endslot %}
+</div>

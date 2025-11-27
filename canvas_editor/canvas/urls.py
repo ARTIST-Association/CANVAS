@@ -23,11 +23,11 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path(r"", include("account_management.urls")),
+    path(r"", include("project_management.urls")),
+    path(r"settings/", include("user_settings.urls")),
     path(r"api/", include("autosave_api.urls")),
     path(r"jobs/", include("job_interface.urls")),
     path(r"admin/", admin.site.urls),
     path(r"editor/", include("editor.urls")),
-    path(r"projects/", include("project_management.urls")),
     path(r"accounts/", include("allauth.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

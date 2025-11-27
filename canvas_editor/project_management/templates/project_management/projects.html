@@ -26,8 +26,8 @@
 {% block body %}
     <!--create project modal-->
     {% include "modals/createNewProjectModal.html" %}
-    <!--settings modal-->
-    {% include "settings.html" %}
+    <!-- message system -->
+    {% include "messageSystem.html" %}
     <!--project overview-->
     <div class="d-flex flex-column w-100 align-items-center vh-100 gap-2 pt-2">
         <div class="p-2 pt-3">
@@ -49,8 +49,7 @@
                          alt="No projects"
                          class="h-50 w-auto opacity-50" />
                     <i class="text-center fs-4 mb-2 text-secondary opacity-75">
-                        You currently have no projects to work on. Create one to get
-                        started!
+                        You currently have no projects to work on. Create one to get started!
                     </i>
                 </div>
             {% else %}
@@ -61,40 +60,6 @@
             {% endif %}
         </div>
         <!-- user -->
-        <div class="d-flex w-100 justify-content-end p-3">
-            <div class="dropup d-flex justify-content-between mx-3 py-1">
-                <a class="dropdown-toggle d-flex align-items-center link-body-emphasis text-decoration-none"
-                   data-bs-toggle="dropdown"
-                   aria-expanded="false">
-                    <img src="{{ request.user.userprofile.image_url }}"
-                         alt="Profile Picture"
-                         class="rounded-circle me-2"
-                         style="width: 32px;
-                                height: 32px;
-                                object-fit: cover" />
-                    <strong class="me-2">{{ request.user.first_name }}</strong>
-                </a>
-                <ul class="dropdown-menu text-small">
-                    <div class="px-3 gap-1">
-                        <p class="m-0">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                        <p class="text-secondary m-0">{{ request.user.email }}</p>
-                    </div>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <button class="dropdown-item"
-                                data-bs-toggle="modal"
-                                data-bs-target="#settings">Settings</button>
-                    </li>
-                    <li>
-                        <form action="{% url 'logout' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="dropdown-item">Sign out</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <div class="p-3 w-100">{% include "userDropdown.html" %}</div>
     </div>
 {% endblock body %}

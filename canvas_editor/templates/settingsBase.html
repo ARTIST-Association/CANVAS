@@ -1,0 +1,95 @@
+<!-- Base template for all settings. Contains a sidebar with categories and a content block for the actual settings -->
+<!-- Most of them are provided by the allauth package -->
+{% extends "base.html" %}
+{% load allauth %}
+{% block body %}
+    <div class="d-flex vh-100">
+        <div class="d-flex w-25 p-4 flex-column justify-content-between">
+            <ul class="nav nav-pills flex-column gap-1">
+                {% url 'change_username' as change_username_url_ %}
+                {% if change_username_url_ %}
+                    <li class="nav-item">
+                        <a class="nav-link d-flex gap-2 {% if request.path == change_username_url_ %}active{% endif %}"
+                           href="{{ change_username_url_ }}">
+                            <i class="bi bi-person"></i>
+                            <div>Change username</div>
+                        </a>
+                    </li>
+                {% endif %}
+                {% url 'appearance' as appearance_url_ %}
+                {% if appearance_url_ %}
+                    <li class="nav-item">
+                        <a class="nav-link d-flex gap-2 {% if request.path == appearance_url_ %}active{% endif %}"
+                           href="{{ appearance_url_ }}">
+                            <i class="bi bi-palette"></i>
+                            <div>Appearance</div>
+                        </a>
+                    </li>
+                {% endif %}
+                {% url 'account_email' as email_url_ %}
+                {% if email_url_ %}
+                    <li class="nav-item">
+                        <a class="nav-link d-flex gap-2 {% if request.path == email_url_ %}active{% endif %}"
+                           href="{{ email_url_ }}">
+                            <i class="bi bi-envelope"></i>
+                            <div>Change Email</div>
+                        </a>
+                    </li>
+                {% endif %}
+                {% url 'account_change_password' as change_password_url_ %}
+                {% url 'account_set_password' as set_password_url_ %}
+                {% if change_password_url_ %}
+                    <li class="nav-item">
+                        <a class="nav-link d-flex gap-2 {% if request.path == change_password_url_ or request.path == set_password_url_ %}active{% endif %}"
+                           href="{{ change_password_url_ }}">
+                            <i class="bi bi-key"></i>
+                            <div>Change Password</div>
+                        </a>
+                    </li>
+                {% endif %}
+                {% url 'socialaccount_connections' as connections_url_ %}
+                {% if connections_url_ %}
+                    <li class="nav-item">
+                        <a class="nav-link d-flex gap-2 {% if request.path == connections_url_ %}active{% endif %}"
+                           href="{{ connections_url_ }}">
+                            <i class="bi bi-link-45deg"></i>
+                            <div>Third-Party Accounts</div>
+                        </a>
+                    </li>
+                {% endif %}
+                {% url 'usersessions_list' as usersessions_list_url_ %}
+                {% if usersessions_list_url_ %}
+                    <li class="nav-item">
+                        <a class="nav-link d-flex gap-2 {% if request.path == usersessions_list_url_ %}active{% endif %}"
+                           href="{{ usersessions_list_url_ }}">
+                            <i class="bi bi-display"></i>
+                            <div>Sessions</div>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            <a href="{% url 'projects' %}" class="btn btn-secondary d-flex gap-2">
+                <i class="bi bi-arrow-left-circle"></i>
+                <div>Go back to project overview</div>
+            </a>
+        </div>
+        <div class="vr my-4"></div>
+        <main class="d-flex justify-content-center w-100 px-5">
+            <div id="content" class="container">
+                {% if messages %}
+                    <div class="pt-4">
+                        {% for message in messages %}
+                            {% element alert level=message.tags %}
+                                {% slot message %}
+                                    {{ message }}
+                                {% endslot %}
+                            {% endelement %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        <div class="position-absolute bottom-0 end-0 mb-3 me-3">{% include "userDropdown.html" %}</div>
+    </div>
+{% endblock %}

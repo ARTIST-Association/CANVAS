@@ -35,6 +35,7 @@
       "commandPrompt": ["static/js/editor/command_prompt/commandPrompt.mjs"],
       "bootstrap": ["static/js/bootstrap/bootstrap.esm.js"],
       "modeSelector": ["static/js/editor/modeSelector.mjs"],
+      "projectOverviewHandler": ["static/js/projectOverviewHandler.mjs"],
       "message_dict": ["static/js/message_dict.js"],
       "path_dict": ["static/js/path_dict.js"],
       "projectOverviewManager": ["static/js/projectOverviewManager.mjs"]
