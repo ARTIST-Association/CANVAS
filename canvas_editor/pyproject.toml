@@ -38,7 +38,6 @@ include = [
   "hdf_management",
   "job_interface",
   "project_management",
-  "user_settings",
   "static",
   "templates",
 ]
