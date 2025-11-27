@@ -33,8 +33,8 @@
   };
 
   /**
-   *
-   * @param {string}theme theme to set
+   * Sets the theme on the document.
+   * @param {string} theme - The theme to set ("light", "dark", or "auto").
    */
   const setTheme = (theme) => {
     if (theme === "auto") {
