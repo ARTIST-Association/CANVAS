@@ -1,4 +1,4 @@
-import { getCookie } from "../utils/cookieUtils.mjs";
+import { getCookie } from "./utils/cookieUtils.mjs";
 /**
  * Handles the project overview page
  */
