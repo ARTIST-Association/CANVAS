@@ -60,6 +60,7 @@ export class Editor {
   #renderer;
   #camera;
   #scene;
+  #renderScheduled = false;
   #selectableGroup = new THREE.Group();
   #terrain;
   #heliostatList = [];
@@ -100,7 +101,11 @@ export class Editor {
 
     window.addEventListener("resize", () => this.onWindowResize());
 
-    this.animate();
+    this.#setUpRenderTriggers();
+
+    // Render the initial frame. Subsequent frames are only drawn on demand
+    // (see #setUpRenderTriggers), so the GPU stays idle when nothing changes.
+    this.requestRender();
   }
 
   /**
@@ -119,11 +124,39 @@ export class Editor {
   }
 
   /**
-   * Starts the animation loop.
+   * Requests that the scene be (re)drawn on the next animation frame.
+   * Multiple calls within the same frame are coalesced into a single render,
+   * so callers can request a render freely without causing redundant draws.
    */
-  animate() {
-    requestAnimationFrame(() => this.animate());
-    this.render();
+  requestRender() {
+    if (this.#renderScheduled) {
+      return;
+    }
+    this.#renderScheduled = true;
+    requestAnimationFrame(() => {
+      this.#renderScheduled = false;
+      this.render();
+    });
+  }
+
+  /**
+   * Subscribes the renderer to every source that can change what is on screen,
+   * enabling on-demand rendering instead of a perpetual animation loop.
+   */
+  #setUpRenderTriggers() {
+    const requestRender = () => this.requestRender();
+
+    // Camera movement and gizmo interaction (drag, hover highlight).
+    this.#controls.addEventListener("change", requestRender);
+    this.#transformControls.addEventListener("change", requestRender);
+    this.#transformControls.addEventListener("objectChange", requestRender);
+
+    // Selection, attribute edits and deletions update the scene/selection box.
+    // "renderRequest" is dispatched by asynchronous loads (meshes, skybox).
+    const canvas = document.getElementById("canvas");
+    ["itemSelected", "itemCreated", "itemUpdated", "itemDeleted", "renderRequest"].forEach((eventName) => {
+      canvas.addEventListener(eventName, requestRender);
+    });
   }
 
   /**
@@ -178,14 +211,10 @@ export class Editor {
 
     //set up empty scene
     this.#skyboxLoader = new THREE.CubeTextureLoader();
-    this.#skybox = this.#skyboxLoader.load([
-      skyboxPxPath,
-      skyboxNxPath,
-      skyboxPyPath,
-      skyboxNyPath,
-      skyboxPzPath,
-      skyboxNzPath,
-    ]);
+    this.#skybox = this.#skyboxLoader.load(
+      [skyboxPxPath, skyboxNxPath, skyboxPyPath, skyboxNyPath, skyboxPzPath, skyboxNzPath],
+      () => this.requestRender(),
+    );
     this.#scene.background = this.#skybox;
     this.#scene.fog = new THREE.Fog(0xdde0e0, 100, 2200);
 
@@ -200,7 +229,10 @@ export class Editor {
     this.#directionalLight.castShadow = true;
     this.#scene.add(this.#directionalLight);
 
-    this.#directionalLight.shadow.mapSize.set(16384, 16384);
+    // 4096² gives crisp shadows for this scene while keeping the shadow map
+    // around ~64 MB of VRAM. The previous 16384² map needed ~1 GB and exceeded
+    // the texture limits of many GPUs, forcing a slow fallback or failing.
+    this.#directionalLight.shadow.mapSize.set(4096, 4096);
     this.#directionalLight.shadow.radius = 2;
     this.#directionalLight.shadow.blurSamples = 10;
     this.#directionalLight.shadow.camera.top = 200;
@@ -315,6 +347,7 @@ export class Editor {
     // remove the loading screen
     document.getElementById("loadingScreen").classList.add("d-none");
 
+    this.requestRender();
     return this;
   }
 
@@ -327,6 +360,7 @@ export class Editor {
     this.#renderer.shadowMap.enabled = mode;
     this.#directionalLight.castShadow = mode;
     this.#saveAndLoadHandler.updateSettings("shadows", mode);
+    this.requestRender();
     return this;
   }
 
@@ -338,6 +372,7 @@ export class Editor {
   setFog(mode) {
     this.#scene.fog = mode ? new THREE.Fog(0xdde0e0, 100, 2200) : null;
     this.#saveAndLoadHandler.updateSettings("fog", mode);
+    this.requestRender();
     return this;
   }
 

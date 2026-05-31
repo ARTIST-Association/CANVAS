@@ -1,17 +1,36 @@
-django
-djangorestframework
+# Dependency constraints for CANVAS.
+#
+# Versions are pinned to a compatible range: a lower bound that is known to work
+# with this code base and an upper bound at the next major release, so a routine
+# `pip install` cannot silently pull in a breaking major version (the previous
+# fully unpinned list made builds non-reproducible).
+#
+# For fully reproducible installs (exact versions + hashes) generate a lock file
+# from this file, e.g.:
+#     pip install pip-tools && pip-compile --generate-hashes requirements.txt
+# and install from the resulting requirements lock instead.
+
+# --- Runtime ---
+Django>=5.0,<5.1              # verified against 5.0.7
+djangorestframework>=3.14,<4
+torch>=2.0,<3
+django-cleanup>=8.0,<10
+django-allauth>=0.61,<66      # >=0.55 required for AccountMiddleware (used in settings.py)
+requests>=2.31,<3
+PyJWT>=2.8,<3
+python-dotenv>=1.0,<2
+cryptography>=42,<48
+Pillow>=10,<12
+
+# ARTIST ray tracer. NOTE: this is an unpinned git dependency, so every install
+# may pull a different commit. Pin it to a released tag or commit for
+# reproducibility, e.g. ...ARTIST.git@<tag-or-sha>
 git+https://github.com/ARTIST-Association/ARTIST.git
-torch
-django-cleanup
-django-allauth
-requests
-PyJWT
-python-dotenv
-cryptography
-Pillow
-coverage
-mypy
-pre-commit
-ruff
-parameterized
-unittest-xml-reporting
+
+# --- Development & test tooling ---
+coverage>=7.4,<8
+mypy>=1.8,<2
+pre-commit>=3.6,<5
+ruff>=0.5,<1
+parameterized>=0.9,<1
+unittest-xml-reporting>=3.2,<4

@@ -139,15 +139,36 @@ export class CanvasObject extends Object3D {
 }
 
 /**
+ * Caches the parsed scene of each gltf file by path, so a model that is used by
+ * many objects (e.g. a field of identical heliostats) is fetched and parsed
+ * only once instead of once per object.
+ * @type {Map<string, Promise<THREE.Object3D>>}
+ */
+const gltfSceneCache = new Map();
+const gltfLoader = new GLTFLoader();
+
+/**
  * Load a mesh from a gltf file.
+ *
+ * The file is downloaded and parsed at most once per path; every object reuses
+ * that result via a lightweight clone that shares the underlying geometry and
+ * materials. The owning canvas dispatches a "renderRequest" once the mesh is
+ * attached, so on-demand rendering picks up the newly visible geometry.
  * @param {string} path the path of the file.
  * @param {THREE.Object3D} object the object you want to add the mesh to.
  * @param {boolean} castShadows whether the mesh should cast shadows or not.
  */
 export function loadGltf(path, object, castShadows) {
-  const loader = new GLTFLoader();
-  loader.load(path, (gltf) => {
-    const mesh = gltf.scene;
+  let scenePromise = gltfSceneCache.get(path);
+  if (!scenePromise) {
+    scenePromise = gltfLoader.loadAsync(path).then((gltf) => gltf.scene);
+    // Drop failed loads from the cache so a later attempt can retry.
+    scenePromise.catch(() => gltfSceneCache.delete(path));
+    gltfSceneCache.set(path, scenePromise);
+  }
+
+  scenePromise.then((scene) => {
+    const mesh = scene.clone(true);
     if (castShadows) {
       mesh.traverse((child) => {
         if (child.isMesh) {
@@ -156,5 +177,6 @@ export function loadGltf(path, object, castShadows) {
       });
     }
     object.add(mesh);
+    document.getElementById("canvas")?.dispatchEvent(new CustomEvent("renderRequest"));
   });
 }

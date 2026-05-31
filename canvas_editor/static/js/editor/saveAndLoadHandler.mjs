@@ -14,6 +14,16 @@ export class SaveAndLoadHandler {
   #baseAPIUrl;
 
   /**
+   * Pending debounced save timers, keyed per entity (e.g. "heliostat:12").
+   * Rapid edits to the same entity — typing in a field or dragging an object —
+   * are coalesced into a single trailing request instead of one request each.
+   * @type {Map<string, ReturnType<typeof setTimeout>>}
+   */
+  #saveTimers = new Map();
+  /** Trailing debounce window for autosave requests, in milliseconds. */
+  #saveDebounceMs = 400;
+
+  /**
    * Creates a saveAndLoadHandler or returns the existing one
    * @param {number} [projectId] the projectID for api requests.
    */
@@ -165,9 +175,9 @@ export class SaveAndLoadHandler {
 
   // Object updating
   /**
-   * Updates the given heliostat in the backend
+   * Updates the given heliostat in the backend. The save is debounced, so the
+   * request is sent shortly after the last edit.
    * @param {Heliostat} heliostat Is the updated heliostat from the frontend
-   * @returns {Promise<JSON>} JSON representation of the updated heliostat
    */
   async updateHeliostat(heliostat) {
     if (!heliostat.apiID) {
@@ -184,13 +194,13 @@ export class SaveAndLoadHandler {
       position_z: heliostat.position.z,
     };
 
-    return this.#makeApiCall(url, "PUT", body);
+    this.#debounceSave("heliostat:" + heliostat.apiID, url, body);
   }
 
   /**
-   * Updates the given receiver in the backend
+   * Updates the given receiver in the backend. The save is debounced, so the
+   * request is sent shortly after the last edit.
    * @param {Receiver} receiver Is the updated receiver from the frontend
-   * @returns {Promise<JSON>} JSON representation of the updated receiver
    */
   async updateReceiver(receiver) {
     if (!receiver.apiID) {
@@ -217,13 +227,13 @@ export class SaveAndLoadHandler {
       resolution_u: receiver.resolutionU,
     };
 
-    return this.#makeApiCall(url, "PUT", body);
+    this.#debounceSave("receiver:" + receiver.apiID, url, body);
   }
 
   /**
-   * Updates the given light source in the backend
+   * Updates the given light source in the backend. The save is debounced, so the
+   * request is sent shortly after the last edit.
    * @param {LightSource} lightSource Is the updated light source from the frontend
-   * @returns {Promise<JSON>} JSON representation of the updated light source
    */
   async updateLightsource(lightSource) {
     if (!lightSource.apiID) {
@@ -242,15 +252,15 @@ export class SaveAndLoadHandler {
       covariance: lightSource.distributionCovariance,
     };
 
-    return this.#makeApiCall(url, "PUT", body);
+    this.#debounceSave("light_source:" + lightSource.apiID, url, body);
   }
 
   // Settings updating
   /**
-   * Updates the settings according to the given changes
+   * Updates the settings according to the given changes. The save is debounced,
+   * so the request is sent shortly after the last edit.
    * @param {string} attribute the attribute you want to change
    * @param {any} newValue the new value of the attribute
-   * @returns {Promise<JSON>} JSON of all the project settings
    */
   async updateSettings(attribute, newValue) {
     const url = this.#baseAPIUrl + "projects/" + this.#projectID + "/settings/";
@@ -259,7 +269,31 @@ export class SaveAndLoadHandler {
       [attribute]: newValue,
     };
 
-    return this.#makeApiCall(url, "PUT", body);
+    this.#debounceSave("settings:" + attribute, url, body);
+  }
+
+  /**
+   * Schedules a debounced PUT request for an autosave update.
+   * Repeated calls with the same key within the debounce window replace the
+   * previous pending request, so only the most recent state is sent.
+   * @param {string} key identifies the entity being saved (e.g. "heliostat:12")
+   * @param {string} url the endpoint to send the update to
+   * @param {object} body the request body holding the latest state
+   */
+  #debounceSave(key, url, body) {
+    const existingTimer = this.#saveTimers.get(key);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    const timer = setTimeout(() => {
+      this.#saveTimers.delete(key);
+      // Fire-and-forget: autosave failures are logged inside #makeApiCall, so
+      // swallow the rejection here to avoid an unhandled promise rejection.
+      this.#makeApiCall(url, "PUT", body).catch(() => {});
+    }, this.#saveDebounceMs);
+
+    this.#saveTimers.set(key, timer);
   }
 
   /**
@@ -294,20 +328,32 @@ export class SaveAndLoadHandler {
    * @returns {Promise<JSON>} the response of the api call as JSON
    */
   async #makeApiCall(endpoint, method, body) {
-    return fetch(endpoint, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": SaveAndLoadHandler.getCookie("csrftoken"),
-      },
-      body: JSON.stringify(body),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .catch((error) => console.log(error.message));
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": SaveAndLoadHandler.getCookie("csrftoken"),
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (error) {
+      // Network-level failure (offline, DNS, CORS, ...).
+      console.error(`API request to ${endpoint} failed:`, error);
+      throw error;
+    }
+
+    if (!response.ok) {
+      const error = new Error(`Response status: ${response.status}`);
+      console.error(`API request to ${endpoint} failed:`, error);
+      throw error;
+    }
+
+    // 204 No Content (e.g. DELETE) and other empty bodies have no JSON to parse.
+    if (response.status === 204 || response.headers.get("content-length") === "0") {
+      return null;
+    }
+    return response.json();
   }
 }
