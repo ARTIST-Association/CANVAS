@@ -17,6 +17,13 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 HDF5_SCENARIO_DIR = BASE_DIR / "hdf5_management" / "scenarios"
 
+# ARTIST scenario export/import (HDF5) feature flag.
+# Currently disabled: hdf5_management.hdf5_manager was written against an older
+# ARTIST API (e.g. `artist.data_parser`) that no longer exists on the current
+# ARTIST release, so it no longer imports. Keep this False so the rest of the
+# app boots and runs; flip it back on once the ARTIST integration is rebuilt.
+ARTIST_SCENARIO_ENABLED = False
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/

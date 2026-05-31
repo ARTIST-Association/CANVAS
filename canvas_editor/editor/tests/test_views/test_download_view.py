@@ -1,7 +1,6 @@
 import io
+from unittest import skip
 
-import h5py
-from artist.util import config_dictionary
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -57,8 +56,19 @@ class DownloadViewTest(TestCase):
         light_source.number_of_rays = 42
         light_source.save()
 
+    def test_download_disabled(self):
+        """When the ARTIST integration is disabled, export returns 503 instead of a file."""
+        response = self.client.get(self.download)
+        self.assertEqual(response.status_code, 503)
+
+    @skip("ARTIST HDF5 scenario export is disabled pending the ARTIST integration rebuild.")
     def test_download(self):
         """Test downloading the project as an hdf5 file."""
+        # Imported here (not at module top) because the current ARTIST release no
+        # longer provides this API; keep local until the integration is rebuilt.
+        import h5py
+        from artist.util import config_dictionary
+
         response = self.client.get(self.download)
 
         # assert that response is a file response containing a hdf5 file

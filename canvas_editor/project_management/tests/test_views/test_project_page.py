@@ -1,4 +1,5 @@
 import pathlib
+from unittest import skip
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -125,6 +126,7 @@ class ProjectPageTest(TestCase):
         self.assertEqual(Project.objects.last().description, PROJECT_DESCRIPTION_PROJECT_PAGE_TEST)
         self.assertEqual(Project.objects.last().owner, self.user)
 
+    @skip("ARTIST HDF5 scenario import is disabled pending the ARTIST integration rebuild.")
     def test_projects_post_with_file(self):
         """Test creating a new project via POST request with a file."""
         file_path = pathlib.Path(settings.BASE_DIR) / hdf5_management_test_scenario_template
@@ -163,6 +165,7 @@ class ProjectPageTest(TestCase):
         self.assertEqual(Project.objects.count(), 1)
         self.assertTemplateUsed(response, "project_management/projects.html")
 
+    @skip("ARTIST HDF5 scenario import is disabled pending the ARTIST integration rebuild.")
     def test_projects_post_with_file_space_in_name(self):
         """Test creating a new project via POST request with a file and spaces in the name."""
         file_path = pathlib.Path(settings.BASE_DIR) / hdf5_management_test_scenario_template

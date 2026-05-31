@@ -13,7 +13,8 @@
 # --- Runtime ---
 Django>=5.0,<5.1              # verified against 5.0.7
 djangorestframework>=3.14,<4
-torch>=2.0,<3
+torch>=2.0,<3                 # only used by the (currently disabled) ARTIST HDF5 export
+h5py>=3.10,<4                 # HDF5 read/write; was previously pulled in only transitively via ARTIST
 django-cleanup>=8.0,<10
 django-allauth>=0.61,<66      # >=0.55 required for AccountMiddleware (used in settings.py)
 requests>=2.31,<3
@@ -22,9 +23,16 @@ python-dotenv>=1.0,<2
 cryptography>=42,<48
 Pillow>=10,<12
 
-# ARTIST ray tracer. NOTE: this is an unpinned git dependency, so every install
-# may pull a different commit. Pin it to a released tag or commit for
-# reproducibility, e.g. ...ARTIST.git@<tag-or-sha>
+# ARTIST ray tracer.
+# WARNING: the in-app ARTIST integration (HDF5 scenario export/import in
+# hdf5_management/) is currently BROKEN and DISABLED. It was written against an
+# older ARTIST API (e.g. `artist.data_parser`) that no longer exists on the
+# current ARTIST main, so it no longer imports. The feature is gated off via
+# settings.ARTIST_SCENARIO_ENABLED until the integration is rebuilt.
+#
+# This is also an unpinned git dependency, so every install may pull a different
+# commit. When the integration is rebuilt, pin it to the matching released tag
+# or commit, e.g. ...ARTIST.git@<tag-or-sha>
 git+https://github.com/ARTIST-Association/ARTIST.git
 
 # --- Development & test tooling ---
