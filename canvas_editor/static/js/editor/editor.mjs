@@ -144,7 +144,7 @@ export class Editor {
    * enabling on-demand rendering instead of a perpetual animation loop.
    */
   #setUpRenderTriggers() {
-    const requestRender = () => this.requestRender();
+    const requestRender = this.requestRender.bind(this);
 
     // Camera movement and gizmo interaction (drag, hover highlight).
     this.#controls.addEventListener("change", requestRender);
