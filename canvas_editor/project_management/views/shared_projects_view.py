@@ -51,7 +51,7 @@ class SharedProjectView(LoginRequiredMixin, View):
             raise Http404
 
         # copy the associated project to the user
-        fks_to_copy = list(project.heliostats.all()) + list(project.receivers.all()) + list(project.light_sources.all())
+        fks_to_copy = list(project.scene_objects.all())
         settings = project.settings
         project.pk = None
         project.favorite = False

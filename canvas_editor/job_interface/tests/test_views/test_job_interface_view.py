@@ -18,7 +18,7 @@ from canvas.test_constants import (
 )
 from canvas.view_name_dict import job_create_new_job_view, job_status_view
 from job_interface.models import Job
-from project_management.models import Heliostat, LightSource, Project, Receiver
+from project_management.models import Project, SceneObject
 
 
 class JobInterfaceViewTest(TestCase):
@@ -36,9 +36,9 @@ class JobInterfaceViewTest(TestCase):
             description=TEST_PROJECT_DESCRIPTION,
             owner=self.user,
         )
-        Heliostat.objects.create(project=self.project)
-        Receiver.objects.create(project=self.project)
-        LightSource.objects.create(project=self.project)
+        SceneObject.objects.create(project=self.project, type="heliostat", properties={})
+        SceneObject.objects.create(project=self.project, type="receiver", properties={})
+        SceneObject.objects.create(project=self.project, type="light_source", properties={})
         self.job = Job.objects.create(owner=self.user, project=self.project)
         self.client.login(username=TEST_USERNAME, password=SECURE_PASSWORD)
 

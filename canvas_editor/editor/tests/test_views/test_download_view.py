@@ -13,7 +13,7 @@ from canvas.test_constants import (
     TEST_USERNAME,
 )
 from canvas.view_name_dict import editor_download_view
-from project_management.models import Heliostat, LightSource, Project, Receiver
+from project_management.models import Project
 
 
 class DownloadViewTest(TestCase):
@@ -34,27 +34,6 @@ class DownloadViewTest(TestCase):
         project.description = TEST_PROJECT_DESCRIPTION
         project.owner = user
         project.save()
-
-        # Add a heliostat to the project
-        heliostat = Heliostat()
-        heliostat.name = "testHeliostat"
-        heliostat.project = project
-        heliostat.position_x = 42
-        heliostat.save()
-
-        # Add a receiver to the project
-        receiver = Receiver()
-        receiver.name = "testReceiver"
-        receiver.project = project
-        receiver.normal_x = 42
-        receiver.save()
-
-        # Add a light source to the project
-        light_source = LightSource()
-        light_source.name = "testLightSource"
-        light_source.project = project
-        light_source.number_of_rays = 42
-        light_source.save()
 
     def test_download_disabled(self):
         """When the ARTIST integration is disabled, export returns 503 instead of a file."""

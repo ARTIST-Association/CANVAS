@@ -12,9 +12,7 @@ class DuplicateProjectView(LoginRequiredMixin, View):
         """Duplicates the project specified by the url."""
         project = Project.objects.get(owner=request.user, name=project_name)
         if project.owner == request.user:
-            fks_to_copy = (
-                list(project.heliostats.all()) + list(project.receivers.all()) + list(project.light_sources.all())
-            )
+            fks_to_copy = list(project.scene_objects.all())
             settings = project.settings
             project.pk = None
             project.favorite = False
