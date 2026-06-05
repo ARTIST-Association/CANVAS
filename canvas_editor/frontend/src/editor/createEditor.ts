@@ -1,17 +1,23 @@
 import { ApiClient } from "@/api/ApiClient";
 import {
+  CreateObjectCommand,
   DeleteObjectCommand,
   DuplicateObjectCommand,
   UndoRedoService,
   UpdatePropertyCommand,
 } from "@/commands/commands";
+import { getCookie } from "@/core/csrf";
+import { setTheme } from "@/core/theme";
 import type { Vector3Tuple } from "@/core/types";
 import { Selection } from "@/editor/Selection";
 import { ObjectFactory } from "@/objects/ObjectFactory";
 import { ObjectStore } from "@/objects/ObjectStore";
 import { ObjectTypeRegistry } from "@/objects/registry";
 import { Renderer } from "@/rendering/Renderer";
+import { CommandPrompt, type PromptAction } from "@/ui/CommandPrompt";
 import { Inspector } from "@/ui/Inspector";
+import { JobInterface } from "@/ui/JobInterface";
+import { Keybindings } from "@/ui/Keybindings";
 import { Overview } from "@/ui/Overview";
 import { Placement } from "@/ui/Placement";
 
@@ -23,6 +29,9 @@ export interface EditorElements {
   shadowsToggle?: HTMLInputElement;
   fogToggle?: HTMLInputElement;
   loadingScreen?: HTMLElement;
+  commandsButton?: HTMLElement | null;
+  jobsButton?: HTMLElement | null;
+  keybindingsButton?: HTMLElement | null;
 }
 
 export interface EditorOptions {
@@ -50,8 +59,26 @@ export async function createEditor({ projectId, elements }: EditorOptions): Prom
   new Overview(elements.overview, store, selection);
   new Placement(elements.placement, registry, factory, store, undoRedo, selection);
 
+  // Shared helper: create + select an object of a given type (used by the
+  // command palette and the number-key quick selector).
+  const addObject = (type: string): void => {
+    const object = factory.create(type);
+    undoRedo.execute(new CreateObjectCommand(store, object));
+    selection.select(object);
+  };
+
+  const keybindings = new Keybindings();
+  const jobInterface = new JobInterface(projectId);
+  const commandPrompt = new CommandPrompt(
+    buildCommands({ registry, undoRedo, addObject, keybindings, jobInterface }),
+  );
+
+  bindClick(elements.commandsButton, () => commandPrompt.toggle());
+  bindClick(elements.jobsButton, () => jobInterface.open());
+  bindClick(elements.keybindingsButton, () => keybindings.open());
+
   wireGizmoDragCommit(renderer, selection, undoRedo, store);
-  wireKeyboardShortcuts(selection, undoRedo, store, factory);
+  wireKeyboardShortcuts(selection, undoRedo, store, factory, registry, addObject);
 
   const project = await api.getProject();
   for (const data of project.objects) {
@@ -99,7 +126,11 @@ function wireKeyboardShortcuts(
   undoRedo: UndoRedoService,
   store: ObjectStore,
   factory: ObjectFactory,
+  registry: ObjectTypeRegistry,
+  addObject: (type: string) => void,
 ): void {
+  const types = registry.all().map((spec) => spec.type);
+
   window.addEventListener("keydown", (event) => {
     const meta = event.ctrlKey || event.metaKey;
     if (meta && event.key.toLowerCase() === "z") {
@@ -121,6 +152,17 @@ function wireKeyboardShortcuts(
     if (target && (target.tagName === "INPUT" || target.tagName === "SELECT" || target.isContentEditable)) {
       return; // don't hijack typing
     }
+
+    // Quick selector: number keys add the nth registered object type.
+    if (!meta && /^[1-9]$/.test(event.key)) {
+      const type = types[Number(event.key) - 1];
+      if (type) {
+        event.preventDefault();
+        addObject(type);
+      }
+      return;
+    }
+
     const object = selection.selected.value;
     if (!object) {
       return;
@@ -136,6 +178,53 @@ function wireKeyboardShortcuts(
       selection.select(command.clone);
     }
   });
+}
+
+function bindClick(element: HTMLElement | null | undefined, handler: () => void): void {
+  element?.addEventListener("click", handler);
+}
+
+function toggleFullscreen(): void {
+  if (document.fullscreenElement) {
+    void document.exitFullscreen();
+  } else {
+    void document.documentElement.requestFullscreen();
+  }
+}
+
+function exportProject(): void {
+  // The editor URL is /editor/<name>; the HDF5 export lives at .../download.
+  window.location.assign(`${window.location.href.replace(/\/$/, "")}/download`);
+}
+
+function logout(): void {
+  void fetch(`${window.location.origin}/logout/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") ?? "" },
+  }).then(() => window.location.assign(window.location.origin));
+}
+
+function buildCommands(deps: {
+  registry: ObjectTypeRegistry;
+  undoRedo: UndoRedoService;
+  addObject: (type: string) => void;
+  keybindings: Keybindings;
+  jobInterface: JobInterface;
+}): PromptAction[] {
+  const { registry, undoRedo, addObject, keybindings, jobInterface } = deps;
+  return [
+    { name: "Use theme: light", run: () => setTheme("light") },
+    { name: "Use theme: dark", run: () => setTheme("dark") },
+    { name: "Use theme: system", run: () => setTheme("auto") },
+    ...registry.all().map((spec) => ({ name: `Add ${spec.label}`, run: () => addObject(spec.type) })),
+    { name: "Undo", keybind: "Ctrl+Z", run: () => undoRedo.undo() },
+    { name: "Redo", keybind: "Ctrl+Y", run: () => undoRedo.redo() },
+    { name: "Toggle fullscreen", run: toggleFullscreen },
+    { name: "Export project (HDF5)", run: exportProject },
+    { name: "Open render jobs", run: () => jobInterface.open() },
+    { name: "Show keyboard shortcuts", keybind: "?", run: () => keybindings.open() },
+    { name: "Log out", run: logout },
+  ];
 }
 
 function wireSettingToggle(

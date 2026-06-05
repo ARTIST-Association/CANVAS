@@ -13,7 +13,10 @@ export default defineConfig({
     emptyOutDir: true,
     manifest: "manifest.json",
     rollupOptions: {
-      input: resolve(__dirname, "frontend/src/main.ts"),
+      input: {
+        editor: resolve(__dirname, "frontend/src/main.ts"),
+        projects: resolve(__dirname, "frontend/src/projects.ts"),
+      },
     },
   },
   server: {

@@ -3,6 +3,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "@/styles/editor.css";
 import { createEditor } from "@/editor/createEditor";
+import { initTheme } from "@/core/theme";
 
 function required<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -17,6 +18,7 @@ function optionalInput(id: string): HTMLInputElement | undefined {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  initTheme();
   const root = required("editor-root");
   const projectId = Number(root.dataset.projectId);
   void createEditor({
@@ -29,6 +31,9 @@ window.addEventListener("DOMContentLoaded", () => {
       shadowsToggle: optionalInput("toggle-shadows"),
       fogToggle: optionalInput("toggle-fog"),
       loadingScreen: document.getElementById("loadingScreen") ?? undefined,
+      commandsButton: document.getElementById("open-commands"),
+      jobsButton: document.getElementById("open-jobs"),
+      keybindingsButton: document.getElementById("open-keybindings"),
     },
   });
 });

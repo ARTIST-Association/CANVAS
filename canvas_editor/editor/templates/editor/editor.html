@@ -22,7 +22,7 @@
                     <img src="{% static 'img/logo_canvas.svg' %}" alt="CANVAS" height="24">
                 </a>
                 <span class="navbar-text text-light">{{ project_name }}</span>
-                <div class="d-flex gap-3 text-light">
+                <div class="d-flex align-items-center gap-3 text-light">
                     <div class="form-check form-switch mb-0">
                         <input class="form-check-input" type="checkbox" id="toggle-shadows" checked>
                         <label class="form-check-label" for="toggle-shadows">Shadows</label>
@@ -30,6 +30,17 @@
                     <div class="form-check form-switch mb-0">
                         <input class="form-check-input" type="checkbox" id="toggle-fog" checked>
                         <label class="form-check-label" for="toggle-fog">Fog</label>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-light" id="open-commands" title="Command palette (Ctrl+Space)">
+                            <i class="bi bi-command"></i> Commands
+                        </button>
+                        <button type="button" class="btn btn-outline-light" id="open-jobs" title="Render jobs">
+                            <i class="bi bi-cpu"></i> Jobs
+                        </button>
+                        <button type="button" class="btn btn-outline-light" id="open-keybindings" title="Keyboard shortcuts (?)">
+                            <i class="bi bi-question-lg"></i>
+                        </button>
                     </div>
                 </div>
             </nav>

@@ -1,16 +1,5 @@
+import { getCookie } from "@/core/csrf";
 import type { ObjectTypeSpec, ProjectData, Properties, SceneObjectData } from "@/core/types";
-
-/** Reads a cookie value (used for Django's CSRF token). */
-function getCookie(name: string): string | null {
-  if (!document.cookie) {
-    return null;
-  }
-  const match = document.cookie
-    .split(";")
-    .map((part) => part.trim())
-    .find((part) => part.startsWith(`${name}=`));
-  return match ? decodeURIComponent(match.split("=")[1]) : null;
-}
 
 export interface NewSceneObject {
   type: string;

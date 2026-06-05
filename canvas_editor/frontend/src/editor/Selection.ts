@@ -52,6 +52,9 @@ export class Selection {
     if (moved > CLICK_DRAG_THRESHOLD_PX || this.#renderer.transformControls.dragging) {
       return; // an orbit/gizmo drag, not a selection click
     }
+    if (this.#renderer.tryHandleCompass(event)) {
+      return; // click was on the orientation compass
+    }
 
     const rect = this.#renderer.domElement.getBoundingClientRect();
     const pointer = new THREE.Vector2(

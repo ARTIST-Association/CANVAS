@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls.js";
+import { ViewHelper } from "three/examples/jsm/helpers/ViewHelper.js";
 
 const SKYBOX_FACES = ["px", "nx", "py", "ny", "pz", "nz"] as const;
 
@@ -20,6 +21,8 @@ export class Renderer {
   readonly #transformControls: TransformControls;
   readonly #selectionBox = new THREE.BoxHelper(new THREE.Object3D());
   readonly #directionalLight: THREE.DirectionalLight;
+  readonly #viewHelper: ViewHelper;
+  readonly #clock = new THREE.Clock();
 
   #renderScheduled = false;
 
@@ -31,6 +34,8 @@ export class Renderer {
 
     this.#renderer = new THREE.WebGLRenderer({ antialias: true });
     this.#renderer.shadowMap.enabled = true;
+    // We draw the scene and then the compass overlay, so clear manually.
+    this.#renderer.autoClear = false;
     this.#renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(this.#renderer.domElement);
 
@@ -58,6 +63,10 @@ export class Renderer {
     this.#controls.maxDistance = 500;
     this.#controls.minDistance = 10;
     this.#controls.maxPolarAngle = Math.PI / 2 - 0.02;
+
+    // Orientation compass (N/U/E) rendered as a bottom-right overlay.
+    this.#viewHelper = new ViewHelper(this.#camera, this.#renderer.domElement);
+    this.#viewHelper.setLabels("N", "U", "E");
 
     this.#setupRenderTriggers();
     window.addEventListener("resize", () => this.onResize());
@@ -134,11 +143,39 @@ export class Renderer {
     this.requestRender();
   }
 
+  /**
+   * Let the compass handle a click; returns true (and animates the camera to
+   * the chosen axis) when the click hit the compass, so callers skip picking.
+   */
+  tryHandleCompass(event: PointerEvent): boolean {
+    if (this.#viewHelper.handleClick(event)) {
+      this.#animateCompass();
+      return true;
+    }
+    return false;
+  }
+
   #render(): void {
     if (this.#selectionBox.visible) {
       this.#selectionBox.update();
     }
+    this.#renderer.clear();
     this.#renderer.render(this.scene, this.#camera);
+    this.#viewHelper.render(this.#renderer);
+  }
+
+  /** Drive the compass snap animation to completion (temporary frame loop). */
+  #animateCompass(): void {
+    this.#clock.getDelta();
+    const tick = (): void => {
+      if (!this.#viewHelper.animating) {
+        return;
+      }
+      this.#viewHelper.update(this.#clock.getDelta());
+      this.#render();
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 
   #setupRenderTriggers(): void {
