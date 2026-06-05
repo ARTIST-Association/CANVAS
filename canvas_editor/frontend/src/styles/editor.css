@@ -1,0 +1,50 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#editor-root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor-main {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
+#canvas {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+#canvas > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.editor-sidebar {
+  width: 340px;
+  flex: 0 0 340px;
+  overflow-y: auto;
+}
+
+#placement {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  background: rgba(33, 37, 41, 0.85);
+  backdrop-filter: blur(4px);
+}

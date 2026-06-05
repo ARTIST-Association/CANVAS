@@ -1,7 +1,6 @@
 import io
+from unittest import skip
 
-import h5py
-from artist.util import config_dictionary
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -14,7 +13,7 @@ from canvas.test_constants import (
     TEST_USERNAME,
 )
 from canvas.view_name_dict import editor_download_view
-from project_management.models import Heliostat, LightSource, Project, Receiver
+from project_management.models import Project
 
 
 class DownloadViewTest(TestCase):
@@ -36,29 +35,19 @@ class DownloadViewTest(TestCase):
         project.owner = user
         project.save()
 
-        # Add a heliostat to the project
-        heliostat = Heliostat()
-        heliostat.name = "testHeliostat"
-        heliostat.project = project
-        heliostat.position_x = 42
-        heliostat.save()
+    def test_download_disabled(self):
+        """When the ARTIST integration is disabled, export returns 503 instead of a file."""
+        response = self.client.get(self.download)
+        self.assertEqual(response.status_code, 503)
 
-        # Add a receiver to the project
-        receiver = Receiver()
-        receiver.name = "testReceiver"
-        receiver.project = project
-        receiver.normal_x = 42
-        receiver.save()
-
-        # Add a light source to the project
-        light_source = LightSource()
-        light_source.name = "testLightSource"
-        light_source.project = project
-        light_source.number_of_rays = 42
-        light_source.save()
-
+    @skip("ARTIST HDF5 scenario export is disabled pending the ARTIST integration rebuild.")
     def test_download(self):
         """Test downloading the project as an hdf5 file."""
+        # Imported here (not at module top) because the current ARTIST release no
+        # longer provides this API; keep local until the integration is rebuilt.
+        import h5py
+        from artist.util import config_dictionary
+
         response = self.client.get(self.download)
 
         # assert that response is a file response containing a hdf5 file

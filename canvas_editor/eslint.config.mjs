@@ -1,34 +1,18 @@
-import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
-import jsdoc from "eslint-plugin-jsdoc";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
-export default defineConfig([
+export default tseslint.config(
+  { ignores: ["static/**", "node_modules/**", "**/*.js", "**/*.mjs"] },
   js.configs.recommended,
-  jsdoc.configs["flat/recommended"],
+  ...tseslint.configs.recommended,
   {
-    languageOptions: { globals: globals.browser },
-  },
-  {
+    files: ["frontend/**/*.ts"],
+    languageOptions: {
+      globals: { ...globals.browser },
+    },
     rules: {
-      "jsdoc/require-jsdoc": [
-        "warn",
-        {
-          require: {
-            FunctionDeclaration: true,
-            MethodDefinition: true,
-            ClassDeclaration: true,
-            ArrowFunctionExpression: true,
-            FunctionExpression: true,
-          },
-        },
-      ],
-      "jsdoc/require-description": [
-        "warn",
-        {
-          contexts: ["FunctionDeclaration", "MethodDefinition", "ClassDeclaration"],
-        },
-      ],
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
     },
   },
-]);
+);

@@ -17,6 +17,13 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 HDF5_SCENARIO_DIR = BASE_DIR / "hdf5_management" / "scenarios"
 
+# ARTIST scenario export/import (HDF5) feature flag.
+# Currently disabled: hdf5_management.hdf5_manager was written against an older
+# ARTIST API (e.g. `artist.data_parser`) that no longer exists on the current
+# ARTIST release, so it no longer imports. Keep this False so the rest of the
+# app boots and runs; flip it back on once the ARTIST integration is rebuilt.
+ARTIST_SCENARIO_ENABLED = False
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -41,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_vite",
     "editor",
     "autosave_api",
     "job_interface",
@@ -161,6 +169,19 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Vite integration (django-vite). The frontend lives in frontend/ and is built
+# by Vite into static/dist/ with a manifest. In dev, set DJANGO_VITE_DEV=1 and
+# run `npm run dev` for HMR; otherwise the built assets are served via the
+# manifest.
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": os.environ.get("DJANGO_VITE_DEV") == "1",
+        "dev_server_port": 5173,
+        "manifest_path": BASE_DIR / "static" / "dist" / "manifest.json",
+        "static_url_prefix": "dist",
+    }
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

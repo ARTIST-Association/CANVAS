@@ -4,43 +4,14 @@ from django.test import TestCase
 from django.utils import timezone
 
 from canvas.test_constants import (
-    HELIOSTAT_POSITION_X,
-    HELIOSTAT_POSITION_Y,
-    HELIOSTAT_POSITION_Z,
-    LIGHT_SOURCE_COVARIANCE,
-    LIGHT_SOURCE_DISTRIBUTION_TYPE,
-    LIGHT_SOURCE_MEAN,
-    LIGHT_SOURCE_NUMBER_OF_RAYS,
-    LIGHT_SOURCE_TYPE,
-    RECEIVER_CURVATURE_E,
-    RECEIVER_CURVATURE_U,
-    RECEIVER_NORMAL_X,
-    RECEIVER_NORMAL_Y,
-    RECEIVER_NORMAL_Z,
-    RECEIVER_PLANE_E,
-    RECEIVER_PLANE_U,
-    RECEIVER_POSITION_X,
-    RECEIVER_POSITION_Y,
-    RECEIVER_POSITION_Z,
-    RECEIVER_RESOLUTION_E,
-    RECEIVER_RESOLUTION_U,
-    RECEIVER_TYPE_PLANAR,
     SECURE_PASSWORD,
-    TEST_HELIOSTAT_NAME,
-    TEST_LIGHT_SOURCE_NAME,
     TEST_PROJECT_DESCRIPTION,
     TEST_PROJECT_NAME,
     TEST_PROJECT_NAME_2,
-    TEST_RECEIVER_NAME,
     TEST_USERNAME,
 )
-from project_management.models import (
-    Heliostat,
-    LightSource,
-    Project,
-    Receiver,
-    Settings,
-)
+from project_management import object_types
+from project_management.models import Project, SceneObject, Settings
 
 
 class ModelTests(TestCase):
@@ -69,72 +40,34 @@ class ModelTests(TestCase):
         self.assertEqual(self.project.last_shared, None)
         self.assertFalse(self.project.preview)
         try:
-            Project.objects.create(
-                name=TEST_PROJECT_NAME,
-                description=TEST_PROJECT_DESCRIPTION,
-                owner=self.user,
-            )
-        except IntegrityError as e:
-            duplicate_exception = e
+            Project.objects.create(name=TEST_PROJECT_NAME, owner=self.user)
+        except IntegrityError as exc:
+            duplicate_exception = exc
         self.assertEqual(
             str(duplicate_exception),
             "UNIQUE constraint failed: project_management_project.name, project_management_project.owner_id",
         )
 
-    def test_heliostat(self):
-        """Test the Heliostat model."""
-        heliostat = Heliostat.objects.create(project=self.project)
-
-        self.assertTrue(isinstance(heliostat, Heliostat))
-        self.assertEqual(heliostat.project, self.project)
-        self.assertEqual(heliostat.name, TEST_HELIOSTAT_NAME)
-        self.assertEqual(heliostat.position_x, HELIOSTAT_POSITION_X)
-        self.assertEqual(heliostat.position_y, HELIOSTAT_POSITION_Y)
-        self.assertEqual(heliostat.position_z, HELIOSTAT_POSITION_Z)
-        self.assertEqual(
-            str(heliostat),
-            f"{heliostat.project} {heliostat.__class__.__name__} {heliostat.pk}",
+    def test_scene_object(self):
+        """A SceneObject stores its type, name and JSON properties."""
+        obj = SceneObject.objects.create(
+            project=self.project, type="heliostat", name="H", properties={"position": [1, 2, 3]}
         )
+        self.assertEqual(obj.project, self.project)
+        self.assertEqual(obj.type, "heliostat")
+        self.assertEqual(obj.properties["position"], [1, 2, 3])
+        self.assertEqual(str(obj), f"{self.project} heliostat {obj.pk}")
+        self.assertEqual(list(self.project.scene_objects.all()), [obj])
 
-    def test_receiver(self):
-        """Test the Receiver model."""
-        receiver = Receiver.objects.create(project=self.project)
-
-        self.assertTrue(isinstance(receiver, Receiver))
-        self.assertEqual(receiver.name, TEST_RECEIVER_NAME)
-        self.assertEqual(receiver.position_x, RECEIVER_POSITION_X)
-        self.assertEqual(receiver.position_y, RECEIVER_POSITION_Y)
-        self.assertEqual(receiver.position_z, RECEIVER_POSITION_Z)
-        self.assertEqual(receiver.normal_x, RECEIVER_NORMAL_X)
-        self.assertEqual(receiver.normal_y, RECEIVER_NORMAL_Y)
-        self.assertEqual(receiver.normal_z, RECEIVER_NORMAL_Z)
-        self.assertEqual(receiver.receiver_type, RECEIVER_TYPE_PLANAR)
-        self.assertEqual(receiver.curvature_e, RECEIVER_CURVATURE_E)
-        self.assertEqual(receiver.curvature_u, RECEIVER_CURVATURE_U)
-        self.assertEqual(receiver.plane_e, RECEIVER_PLANE_E)
-        self.assertEqual(receiver.plane_u, RECEIVER_PLANE_U)
-        self.assertEqual(receiver.resolution_e, RECEIVER_RESOLUTION_E)
-        self.assertEqual(receiver.resolution_u, RECEIVER_RESOLUTION_U)
-        self.assertEqual(
-            str(receiver),
-            f"{receiver.project} {receiver.__class__.__name__} {receiver.pk}",
-        )
-
-    def test_light_source(self):
-        """Test the LightSource model."""
-        light_source = LightSource.objects.create(project=self.project)
-
-        self.assertTrue(isinstance(light_source, LightSource))
-        self.assertEqual(light_source.name, TEST_LIGHT_SOURCE_NAME)
-        self.assertEqual(light_source.number_of_rays, LIGHT_SOURCE_NUMBER_OF_RAYS)
-        self.assertEqual(light_source.light_source_type, LIGHT_SOURCE_TYPE)
-        self.assertEqual(light_source.distribution_type, LIGHT_SOURCE_DISTRIBUTION_TYPE)
-        self.assertEqual(light_source.mean, LIGHT_SOURCE_MEAN)
-        self.assertEqual(light_source.covariance, LIGHT_SOURCE_COVARIANCE)
-        self.assertEqual(
-            str(light_source),
-            f"{light_source.project} {light_source.__class__.__name__} {light_source.pk}",
-        )
+    def test_registry_defaults_and_validation(self):
+        """The object-type registry defaults and validates properties."""
+        self.assertEqual(object_types.default_properties("heliostat"), {"position": [0.0, 0.0, 0.0]})
+        # missing values are defaulted; unknown/invalid ones are rejected.
+        self.assertEqual(object_types.validate_properties("receiver", {})["resolution_e"], 256)
+        with self.assertRaises(object_types.SchemaError):
+            object_types.validate_properties("heliostat", {"position": [1, 2]})
+        with self.assertRaises(object_types.SchemaError):
+            object_types.validate_properties("nope", {})
 
     def test_settings(self):
         """Test the Settings model."""
@@ -143,7 +76,4 @@ class ModelTests(TestCase):
         self.assertTrue(isinstance(settings, Settings))
         self.assertTrue(settings.shadows)
         self.assertTrue(settings.fog)
-        self.assertEqual(
-            str(settings),
-            f"{settings.project} {settings.__class__.__name__}",
-        )
+        self.assertEqual(str(settings), f"{settings.project} {settings.__class__.__name__}")

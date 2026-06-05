@@ -1,103 +1,91 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block style %}
-    {{ block.super }}
-    <link href="{% static 'css/editor.css' %}" rel="stylesheet" type="text/css" />
-{% endblock %}
-{% block script %}
-    <script src="{% static 'js/darkmode.js' %}"></script>
-    <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js",
-      "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.178.0/examples/jsm/",
-      "bootstrap": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.esm.min.js",
-      "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/esm/popper.min.js",
-      "navbar": "{% static 'js/editor/navbar.mjs' %}",
-      "compass": "{% static 'js/editor/compass.mjs' %}",
-      "objects": "{% static 'js/editor/objects.mjs' %}",
-      "canvasObject": "{% static 'js/editor/objects/canvasObject.mjs' %}",
-      "heliostat": "{% static 'js/editor/objects/heliostat.mjs' %}",
-      "receiver": "{% static 'js/editor/objects/receiver.mjs' %}",
-      "lightSource": "{% static 'js/editor/objects/lightSource.mjs' %}",
-      "terrain": "{% static 'js/editor/objects/terrain.mjs' %}",
-      "command": "{% static 'js/commands/command.mjs' %}",
-      "undoRedoHandler": "{% static 'js/commands/undoRedoHandler.mjs' %}",
-      "singleObjectCommands": "{% static 'js/commands/singleObjectCommands.mjs' %}",
-      "picker": "{% static 'js/editor/picker.mjs' %}",
-      "saveAndLoadHandler": "{% static 'js/editor/saveAndLoadHandler.mjs' %}",
-      "bulkObjectCommands": "{% static 'js/commands/bulkObjectCommands.mjs' %}",
-      "overviewHandler": "{% static 'js/editor/overviewHandler.mjs' %}",
-      "editor": "{% static 'js/editor/editor.mjs' %}",
-      "objectManager": "{% static 'js/editor/objectManager.mjs' %}",
-      "quickSelector": "{% static 'js/editor/quickSelector.mjs' %}",
-      "updateCommands": "{% static 'js/commands/updateCommands.mjs' %}",
-      "duplicateCommands": "{% static 'js/commands/duplicateCommands.mjs' %}",
-      "deleteCommands": "{% static 'js/commands/deleteCommands.mjs' %}",
-      "inspectorComponents": "{% static 'js/editor/inspectorComponents.mjs' %}",
-      "inspectorClass": "{% static 'js/editor/inspector.mjs' %}",
-      "previewHandler": "{% static 'js/editor/previewHandler.mjs' %}",
-      "projectSettingsManager": "{% static 'js/editor/projectSettingsManager.mjs' %}",
-      "overview": "{% static 'js/editor/overview.mjs' %}",
-      "createCommands": "{% static 'js/commands/createCommands.mjs' %}",
-      "navBar": "{% static 'js/editor/navbar.mjs' %}",
-      "jobInterface": "{% static 'js/editor/jobInterface.mjs' %}",
-      "commandPrompt": "{% static 'js/editor/command_prompt/commandPrompt.mjs' %}",
-      "modeSelector": "{% static 'js/editor/modeSelector.mjs' %}",
-      "message_dict": "{% static 'js/message_dict.js' %}",
-      "path_dict": "{% static 'js/path_dict.js' %}",
-      "projectOverviewManager": "{% static 'js/projectOverviewManager.mjs' %}"
-    }
-  }
-    </script>
-    <script type="module">
-  import { Editor } from "{% static 'js/editor/editor.mjs' %}";
-
-  window.addEventListener("DOMContentLoaded", (_) => {
-    const editor = Editor.getInstance("{{ project_id }}");
-    editor.loadProject();
-  });
-    </script>
-{% endblock %}
-{% block body %}
-    <!-- loading animation -->
-    {% include "editor/loadingAnimation.html" %}
-    <!-- message system -->
-    {% include "editor/messageSystem.html" %}
-    <!-- HDF5 Creation Modal -->
-    {% include "editor/modals/hdf5CreationModal.html" %}
-    <!--settings modal-->
-    {% include "settings.html" %}
-    <!--job interface modal-->
-    {% include "editor/modals/jobInterface.html" %}
-    <!-- command prompt modal-->
-    {% include "editor/modals/commandPromptModal.html" %}
-    <!-- create new project modal -->
-    {% include "modals/createNewProjectModal.html" %}
-    <!-- open existing project modal -->
-    {% include "editor/modals/openExistingProjectModal.html" %}
-    <!-- confirm modal to download the project -->
-    {% include "editor/modals/confirmDownloadModal.html" %}
-    <!-- keybindings modal -->
-    {% include "editor/modals/keybindingsModal.html" %}
-    <!-- about modal -->
-    {% include "editor/modals/aboutModal.html" %}
-    <!-- main content -->
-    <div class="container-fluid d-flex flex-column min-vh-100 p-0">
-        <!-- navigation bar -->
-        {% include "editor/navbar.html" %}
-        <!-- main editor pane -->
-        <main class="d-flex flex-row flex-fill">
-            <!-- canvas -->
-            <div class="mb-2 mx-0 ms-2 overflow-hidden rounded-3 shadow position-relative"
-                 id="canvas">
-                <!--mode selector-->
-                {% include "editor/modeSelector.html" %}
-                <!--quick settings-->
-                {% include "editor/quickSettings.html" %}
-            </div>
-            <!-- sidebar -->
-            {% include "editor/sidebar/sidebar.html" %}
-        </main>
-    </div>
-{% endblock body %}
+{% load static django_vite %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>CANVAS Editor – {{ project_name }}</title>
+        <link rel="icon"
+              href="{% static 'img/logo_canvas_round.svg' %}"
+              type="image/x-icon">
+        {% vite_hmr_client %}
+        {% vite_asset 'frontend/src/main.ts' %}
+    </head>
+    <body>
+        {# Ensures the csrftoken cookie is set for the autosave API. #}
+        <form hidden>
+            {% csrf_token %}
+        </form>
+        <div id="editor-root" data-project-id="{{ project_id }}">
+            {% include "editor/loadingAnimation.html" %}
+            <!-- top bar -->
+            <nav class="navbar navbar-dark bg-dark px-3 flex-shrink-0">
+                <a class="navbar-brand d-flex align-items-center gap-2"
+                   href="{% url 'projects' %}">
+                    <img src="{% static 'img/logo_canvas.svg' %}" alt="CANVAS" height="24">
+                </a>
+                <span class="navbar-text text-light">{{ project_name }}</span>
+                <div class="d-flex align-items-center gap-3 text-light">
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="toggle-shadows" checked>
+                        <label class="form-check-label" for="toggle-shadows">Shadows</label>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="toggle-fog" checked>
+                        <label class="form-check-label" for="toggle-fog">Fog</label>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button"
+                                class="btn btn-outline-light"
+                                id="open-commands"
+                                title="Command palette (Ctrl+Space)">
+                            <i class="bi bi-command"></i> Commands
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-light"
+                                id="open-jobs"
+                                title="Render jobs">
+                            <i class="bi bi-cpu"></i> Jobs
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-light"
+                                id="open-keybindings"
+                                title="Keyboard shortcuts (?)">
+                            <i class="bi bi-question-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+            <!-- main editor pane -->
+            <main class="editor-main">
+                <div id="canvas">
+                    <div id="placement"></div>
+                </div>
+                <aside class="editor-sidebar bg-body-tertiary border-start">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#inspector-pane"
+                                    type="button">Inspector</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#overview-pane"
+                                    type="button">Overview</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-2">
+                        <div class="tab-pane fade show active" id="inspector-pane" role="tabpanel">
+                            <div id="inspector" class="d-flex flex-column gap-2"></div>
+                        </div>
+                        <div class="tab-pane fade" id="overview-pane" role="tabpanel">
+                            <div id="overview" class="list-group"></div>
+                        </div>
+                    </div>
+                </aside>
+            </main>
+        </div>
+    </body>
+</html>

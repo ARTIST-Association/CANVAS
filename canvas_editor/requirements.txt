@@ -1,17 +1,45 @@
-django
-djangorestframework
+# Dependency constraints for CANVAS.
+#
+# Versions are pinned to a compatible range: a lower bound that is known to work
+# with this code base and an upper bound at the next major release, so a routine
+# `pip install` cannot silently pull in a breaking major version (the previous
+# fully unpinned list made builds non-reproducible).
+#
+# For fully reproducible installs (exact versions + hashes) generate a lock file
+# from this file, e.g.:
+#     pip install pip-tools && pip-compile --generate-hashes requirements.txt
+# and install from the resulting requirements lock instead.
+
+# --- Runtime ---
+Django>=5.0,<5.1              # verified against 5.0.7
+djangorestframework>=3.14,<4
+django-vite>=3,<4             # serves the Vite/TypeScript frontend bundle (dev HMR + prod manifest)
+torch>=2.0,<3                 # only used by the (currently disabled) ARTIST HDF5 export
+h5py>=3.10,<4                 # HDF5 read/write; was previously pulled in only transitively via ARTIST
+django-cleanup>=8.0,<10
+django-allauth>=0.61,<66      # >=0.55 required for AccountMiddleware (used in settings.py)
+requests>=2.31,<3
+PyJWT>=2.8,<3
+python-dotenv>=1.0,<2
+cryptography>=42,<48
+Pillow>=10,<12
+
+# ARTIST ray tracer.
+# WARNING: the in-app ARTIST integration (HDF5 scenario export/import in
+# hdf5_management/) is currently BROKEN and DISABLED. It was written against an
+# older ARTIST API (e.g. `artist.data_parser`) that no longer exists on the
+# current ARTIST main, so it no longer imports. The feature is gated off via
+# settings.ARTIST_SCENARIO_ENABLED until the integration is rebuilt.
+#
+# This is also an unpinned git dependency, so every install may pull a different
+# commit. When the integration is rebuilt, pin it to the matching released tag
+# or commit, e.g. ...ARTIST.git@<tag-or-sha>
 git+https://github.com/ARTIST-Association/ARTIST.git
-torch
-django-cleanup
-django-allauth
-requests
-PyJWT
-python-dotenv
-cryptography
-Pillow
-coverage
-mypy
-pre-commit
-ruff
-parameterized
-unittest-xml-reporting
+
+# --- Development & test tooling ---
+coverage>=7.4,<8
+mypy>=1.8,<2
+pre-commit>=3.6,<5
+ruff>=0.5,<1
+parameterized>=0.9,<1
+unittest-xml-reporting>=3.2,<4
