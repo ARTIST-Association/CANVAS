@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_vite",
     "editor",
     "autosave_api",
     "job_interface",
@@ -168,6 +169,19 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Vite integration (django-vite). The frontend lives in frontend/ and is built
+# by Vite into static/dist/ with a manifest. In dev, set DJANGO_VITE_DEV=1 and
+# run `npm run dev` for HMR; otherwise the built assets are served via the
+# manifest.
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": os.environ.get("DJANGO_VITE_DEV") == "1",
+        "dev_server_port": 5173,
+        "manifest_path": BASE_DIR / "static" / "dist" / "manifest.json",
+        "static_url_prefix": "dist",
+    }
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

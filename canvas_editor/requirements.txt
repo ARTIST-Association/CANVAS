@@ -13,6 +13,7 @@
 # --- Runtime ---
 Django>=5.0,<5.1              # verified against 5.0.7
 djangorestframework>=3.14,<4
+django-vite>=3,<4             # serves the Vite/TypeScript frontend bundle (dev HMR + prod manifest)
 torch>=2.0,<3                 # only used by the (currently disabled) ARTIST HDF5 export
 h5py>=3.10,<4                 # HDF5 read/write; was previously pulled in only transitively via ARTIST
 django-cleanup>=8.0,<10
