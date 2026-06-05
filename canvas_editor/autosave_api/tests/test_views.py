@@ -88,7 +88,9 @@ class AutosaveApiTests(TestCase):
 
     def test_update_object(self):
         """An object's name and properties can be updated."""
-        obj = SceneObject.objects.create(project=self.project, type="heliostat", name="H", properties={"position": [0, 0, 0]})
+        obj = SceneObject.objects.create(
+            project=self.project, type="heliostat", name="H", properties={"position": [0, 0, 0]}
+        )
         response = self.client.put(
             self._object_url(obj.id),
             {"type": "heliostat", "name": "H2", "properties": {"position": [5, 6, 7]}},

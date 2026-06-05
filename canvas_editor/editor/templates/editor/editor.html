@@ -13,12 +13,15 @@
     </head>
     <body>
         {# Ensures the csrftoken cookie is set for the autosave API. #}
-        <form hidden>{% csrf_token %}</form>
+        <form hidden>
+            {% csrf_token %}
+        </form>
         <div id="editor-root" data-project-id="{{ project_id }}">
             {% include "editor/loadingAnimation.html" %}
             <!-- top bar -->
             <nav class="navbar navbar-dark bg-dark px-3 flex-shrink-0">
-                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'projects' %}">
+                <a class="navbar-brand d-flex align-items-center gap-2"
+                   href="{% url 'projects' %}">
                     <img src="{% static 'img/logo_canvas.svg' %}" alt="CANVAS" height="24">
                 </a>
                 <span class="navbar-text text-light">{{ project_name }}</span>
@@ -32,13 +35,22 @@
                         <label class="form-check-label" for="toggle-fog">Fog</label>
                     </div>
                     <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-outline-light" id="open-commands" title="Command palette (Ctrl+Space)">
+                        <button type="button"
+                                class="btn btn-outline-light"
+                                id="open-commands"
+                                title="Command palette (Ctrl+Space)">
                             <i class="bi bi-command"></i> Commands
                         </button>
-                        <button type="button" class="btn btn-outline-light" id="open-jobs" title="Render jobs">
+                        <button type="button"
+                                class="btn btn-outline-light"
+                                id="open-jobs"
+                                title="Render jobs">
                             <i class="bi bi-cpu"></i> Jobs
                         </button>
-                        <button type="button" class="btn btn-outline-light" id="open-keybindings" title="Keyboard shortcuts (?)">
+                        <button type="button"
+                                class="btn btn-outline-light"
+                                id="open-keybindings"
+                                title="Keyboard shortcuts (?)">
                             <i class="bi bi-question-lg"></i>
                         </button>
                     </div>

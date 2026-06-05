@@ -8,35 +8,42 @@ class Migration(migrations.Migration):
     """Replace the per-type object models with a single generic SceneObject."""
 
     dependencies = [
-        ('project_management', '0001_initial'),
+        ("project_management", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='lightsource',
-            name='project',
+            model_name="lightsource",
+            name="project",
         ),
         migrations.RemoveField(
-            model_name='receiver',
-            name='project',
+            model_name="receiver",
+            name="project",
         ),
         migrations.CreateModel(
-            name='SceneObject',
+            name="SceneObject",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(max_length=50)),
-                ('name', models.CharField(blank=True, default='', max_length=200)),
-                ('properties', models.JSONField(blank=True, default=dict)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='scene_objects', to='project_management.project')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("type", models.CharField(max_length=50)),
+                ("name", models.CharField(blank=True, default="", max_length=200)),
+                ("properties", models.JSONField(blank=True, default=dict)),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="scene_objects",
+                        to="project_management.project",
+                    ),
+                ),
             ],
         ),
         migrations.DeleteModel(
-            name='Heliostat',
+            name="Heliostat",
         ),
         migrations.DeleteModel(
-            name='LightSource',
+            name="LightSource",
         ),
         migrations.DeleteModel(
-            name='Receiver',
+            name="Receiver",
         ),
     ]
