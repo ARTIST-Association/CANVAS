@@ -1,50 +1,41 @@
-"""Contains all the serializers for the autosave api.
+"""Serializers for the autosave API.
 
-They are used to convert the models into JSON and back.
-A detail serializer of a model is used when the normal serializer doesn't serialize all attributes
-of the model, in most cases those would be foreign fields.
-The meta class defines the model used by serializer and also the fields that should be serialized.
+Scene objects are stored generically (type + JSON properties) and validated
+against the object-type registry, so there is a single serializer for every
+object type instead of one per type.
 """
 
 from rest_framework import serializers
 
-from project_management.models import (
-    Heliostat,
-    LightSource,
-    Project,
-    Receiver,
-    Settings,
-)
+from project_management import object_types
+from project_management.models import Project, SceneObject, Settings
 
 
-class HeliostatSerializer(serializers.ModelSerializer):
-    """Serializer to convert a heliostat into JSON or to convert JSON into a heliostat."""
+class SceneObjectSerializer(serializers.ModelSerializer):
+    """Serialize any scene object, validating ``properties`` against its type."""
 
     class Meta:
-        """Meta class for HeliostatSerializer."""
+        """Meta class for SceneObjectSerializer."""
 
-        model = Heliostat
-        exclude = ["project"]
+        model = SceneObject
+        fields = ["id", "type", "name", "properties"]
 
+    def validate(self, attrs):
+        """Validate the type and coerce/default properties against the registry."""
+        # type is required on create; on partial update fall back to the instance.
+        type_ = attrs.get("type") or getattr(self.instance, "type", None)
+        if type_ not in object_types.REGISTRY:
+            raise serializers.ValidationError({"type": f"Unknown object type '{type_}'."})
 
-class ReceiverSerializer(serializers.ModelSerializer):
-    """Serializer to convert a receiver into JSON or to convert JSON into a receiver."""
+        raw = attrs.get("properties")
+        if raw is None:
+            raw = self.instance.properties if self.instance is not None else {}
 
-    class Meta:
-        """Meta class for ReceiverSerializer."""
-
-        model = Receiver
-        exclude = ["project"]
-
-
-class LightSourceSerializer(serializers.ModelSerializer):
-    """Serializer to convert a light source into JSON or to convert JSON into a light source."""
-
-    class Meta:
-        """Meta class for LightSourceSerializer."""
-
-        model = LightSource
-        exclude = ["project"]
+        try:
+            attrs["properties"] = object_types.validate_properties(type_, raw)
+        except object_types.SchemaError as exc:
+            raise serializers.ValidationError({"properties": str(exc)})
+        return attrs
 
 
 class SettingsSerializer(serializers.ModelSerializer):
@@ -68,24 +59,13 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
-    """Serializer to convert a project into JSON or to convert JSON into a project.
+    """Full project payload: all scene objects plus the project settings."""
 
-    The ProjectDetailSerializer contains all the linked foreign fields not included in the ProjectSerializer.
-    """
-
-    heliostats = HeliostatSerializer(many=True, read_only=True)
-    receivers = ReceiverSerializer(many=True, read_only=True)
-    light_sources = LightSourceSerializer(many=True, read_only=True)
+    objects = SceneObjectSerializer(source="scene_objects", many=True, read_only=True)
     settings = SettingsSerializer(read_only=True)
 
     class Meta:
         """Meta class for ProjectDetailSerializer."""
 
         model = Project
-        fields = [
-            "name",
-            "heliostats",
-            "receivers",
-            "light_sources",
-            "settings",
-        ]
+        fields = ["name", "objects", "settings"]

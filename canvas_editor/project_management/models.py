@@ -33,72 +33,23 @@ class Project(models.Model):
         return self.name
 
 
-class Heliostat(models.Model):
-    """Represents a Heliostat in the database, contains all the necessary fields to configure a heliostat."""
+class SceneObject(models.Model):
+    """A single object placed in a project's scene (heliostat, receiver, ...).
 
-    project = models.ForeignKey(
-        # related name is needed for accessing the foreign key
-        Project,
-        related_name="heliostats",
-        on_delete=models.CASCADE,
-    )
-    name = models.CharField(max_length=200, blank=True, default="Heliostat")
-    position_x = models.FloatField(default=0)
-    position_y = models.FloatField(default=0)
-    position_z = models.FloatField(default=0)
+    The concrete type is identified by ``type`` and validated against the
+    object-type registry (:mod:`project_management.object_types`). All
+    type-specific data lives in ``properties`` (JSON), so adding a new object
+    type needs only a registry entry - no schema migration.
+    """
 
-    # actuator config
-    def __str__(self) -> str:
-        """Get the stringified version of the heliostat."""
-        return str(self.project) + " Heliostat " + str(self.pk)
-
-
-class Receiver(models.Model):
-    """Represents a receiver in the database, contains all the necessary fields to configure a receiver."""
-
-    project = models.ForeignKey(Project, related_name="receivers", on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, blank=True, default="Receiver")
-    position_x = models.FloatField(default=0)
-    position_y = models.FloatField(default=50)
-    position_z = models.FloatField(default=0)
-
-    # The default values of the target area match the ones used in the tutorial of ARTIST
-    # https://artist.readthedocs.io/en/latest/tutorial_generating_scenario.html#generating-a-scenario-with-stral-data
-    normal_x = models.FloatField(default=0)
-    normal_y = models.FloatField(default=1)
-    normal_z = models.FloatField(default=0)
-    receiver_type = models.CharField(max_length=50, default="planar")
-    plane_e = models.FloatField(default=8.629666667)
-    plane_u = models.FloatField(default=7.0)
-    resolution_e = models.IntegerField(default=256)
-    resolution_u = models.IntegerField(default=256)
-
-    # optional fields
-    curvature_e = models.FloatField(default=0)
-    curvature_u = models.FloatField(default=0)
+    project = models.ForeignKey(Project, related_name="scene_objects", on_delete=models.CASCADE)
+    type = models.CharField(max_length=50)
+    name = models.CharField(max_length=200, blank=True, default="")
+    properties = models.JSONField(default=dict, blank=True)
 
     def __str__(self) -> str:
-        """Get the stringified version of the receiver."""
-        return str(self.project) + " Receiver " + str(self.pk)
-
-
-class LightSource(models.Model):
-    """Represents a light source in the database, contains all the necessary fields to configure a light source."""
-
-    project = models.ForeignKey(Project, related_name="light_sources", on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, blank=True, default="Light source")
-
-    # The default values of the light source match the ones used in the tutorial of ARTIST
-    # https://artist.readthedocs.io/en/latest/tutorial_generating_scenario.html#generating-a-scenario-with-stral-data
-    number_of_rays = models.IntegerField(default=100)
-    light_source_type = models.CharField(max_length=50, default="sun")
-    distribution_type = models.CharField(max_length=50, default="normal")
-    mean = models.FloatField(default=0)
-    covariance = models.FloatField(default=4.3681e-06)
-
-    def __str__(self) -> str:
-        """Get the stringified version of the light source."""
-        return str(self.project) + " LightSource " + str(self.pk)
+        """Get the stringified version of the scene object."""
+        return f"{self.project} {self.type} {self.pk}"
 
 
 class Settings(models.Model):
