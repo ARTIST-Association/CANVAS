@@ -64,7 +64,7 @@
                     <form id="exportForm"
                           class="dropdown-item"
                           action="{% url 'download' project_name=project_name %}"
-                          method="GET">
+                          method="get">
                         {% csrf_token %}
                         <button class="btn link-btn" type="submit">
                             <i class="bi-file-earmark-arrow-down me-2"></i>Export
