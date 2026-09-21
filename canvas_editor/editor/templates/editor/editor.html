@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 {% block style %}
     {{ block.super }}
-    <link href="{% static 'css/editor.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/editor.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block script %}
     <script src="{% static 'js/darkmode.js' %}"></script>

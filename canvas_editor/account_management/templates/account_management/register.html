@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 {% block style %}
     {{ block.super }}
-    <link href="{% static 'css/login.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/login.css' %}" rel="stylesheet" />
 {% endblock style %}
 {% block body %}
     <div class="d-flex vh-100 align-items-center">
@@ -28,7 +28,7 @@
             </div>
             <!-- Form -->
             <form class="d-flex flex-column"
-                  method="POST"
+                  method="post"
                   action="{% url 'register' %}">
                 {% csrf_token %}
                 {% if form.errors %}
