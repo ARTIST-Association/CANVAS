@@ -90,38 +90,39 @@ By participating, you can help improve the project and make it even better :rais
 
    ```python
    class ParentClass:
-     """
-     The docstring for the parent class.
+       """
+       The docstring for the parent class.
 
-     Attributes
-     ----------
-     attribute : type
-         Description of attribute.
+       Attributes
+       ----------
+       attribute : type
+           Description of attribute.
 
-     Methods
-     -------
-     method()
-         Description of method.
-     """
+       Methods
+       -------
+       method()
+           Description of method.
+       """
+
 
    class ChildClass(ParentClass):
-     """
-     The docstring for the child class.
+       """
+       The docstring for the child class.
 
-     Attributes
-     ----------
-     attribute_child : type
-         Description of attribute_child.
+       Attributes
+       ----------
+       attribute_child : type
+           Description of attribute_child.
 
-     Methods
-     ----------
-     method_child()
-         Description of method_child.
+       Methods
+       ----------
+       method_child()
+           Description of method_child.
 
-     See Also
-     --------
-       :class:`ParentClass` : Reference to the parent class.
-     """
+       See Also
+       --------
+         :class:`ParentClass` : Reference to the parent class.
+       """
    ```
 
    In the example above, `` :class:`ParentClass` `` is used to create a reference to the parent class `ParentClass`.

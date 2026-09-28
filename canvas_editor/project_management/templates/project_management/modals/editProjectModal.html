@@ -19,7 +19,7 @@
                     unique name!
                 </p>
                 <form action="{% url 'updateProject' project_name=project.name %}"
-                      method="POST"
+                      method="post"
                       class="d-flex flex-column gap-2">
                     {% csrf_token %}
                     <label for="projectName_{{ forloop.counter }}">Project Name</label>
