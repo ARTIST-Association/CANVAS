@@ -22,9 +22,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{% url 'deleteProject' project.name %}" method="POST">
+                <form action="{% url 'deleteProject' project.name %}" method="post">
                     {% csrf_token %}
-                    <button class="btn btn-danger" type="submit">Delete {{ project.name | truncate_with_end:15 }}</button>
+                    <button class="btn btn-danger"
+                            type="submit">Delete {{ project.name | truncate_with_end:15 }}</button>
                 </form>
             </div>
         </div>
