@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 {% block style %}
     {{ block.super }}
-    <link href="{% static 'css/login.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/login.css' %}" rel="stylesheet" />
 {% endblock style %}
 {% block body %}
     <div class="d-flex justify-content-center align-items-center"
@@ -15,7 +15,7 @@
                 <br>
                 If you did not create this account, you can delete it now.
             </p>
-            <form method="POST">
+            <form method="post">
                 {% csrf_token %}
                 <div class="d-flex justify-content-center gap-3">
                     <button type="submit" class="btn btn-primary rounded-5 fw-bold">Delete Account</button>
