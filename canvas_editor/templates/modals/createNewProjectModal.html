@@ -11,7 +11,7 @@
                     your already existing projects!
                 </p>
                 <form action="{% url 'projects' %}"
-                      method="POST"
+                      method="post"
                       class="d-flex flex-column gap-3"
                       enctype="multipart/form-data">
                     {% csrf_token %} {{ create_new_project_form }}

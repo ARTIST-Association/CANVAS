@@ -1,9 +1,9 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 {% load socialaccount %}
 {% block style %}
     {{ block.super }}
-    <link href="{% static 'css/login.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/login.css' %}" rel="stylesheet" />
 {% endblock style %}
 {% block body %}
     <div class="d-flex vh-100 align-items-center">
@@ -30,7 +30,7 @@
                 </div>
                 <hr>
                 <form class="d-flex flex-column"
-                      method="POST"
+                      method="post"
                       action="{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
                     {% csrf_token %}
                     {% if form.errors %}
@@ -77,5 +77,5 @@
         <div class="flex-grow-1 vh-100 rounded-start-5"
              style="background: url('{% static 'img/loginPlaceholder.png' %}') center/cover no-repeat"></div>
     </div>
-</div>
+    </div>
 {% endblock body %}
